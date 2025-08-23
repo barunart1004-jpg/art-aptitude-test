@@ -1,85 +1,118 @@
-
 <!doctype html>
 <html lang="ko">
-<meta charset="utf-8">
+<head>
+<meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>ArtTest Admin</title>
 <style>
-  body{font-family:system-ui,Apple SD Gothic Neo,Segoe UI,Roboto;padding:16px}
-  table{border-collapse:collapse;width:100%} th,td{border:1px solid #ddd;padding:8px;font-size:12px}
-  input,textarea{width:100%;padding:8px} .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+:root{
+  --bg:#fff7ed; --surface:#ffffff; --ink:#111827; --muted:#6b7280;
+  --accent:#ff7a00; --line:#f2f2f2; --radius:16px; --shadow:0 10px 30px rgba(17,24,39,.08);
+}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,"Noto Sans KR",Segoe UI,Roboto,Arial}
+.wrap{max-width:1080px;margin:0 auto;padding:24px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+h2{margin:0 0 12px} .muted{color:var(--muted)} .small{font-size:13px}
+.btn{background:linear-gradient(90deg,var(--accent),#ffae42);color:#111;border:none;padding:10px 14px;border-radius:10px;font-weight:800;cursor:pointer}
+.btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line);padding:10px 12px;border-radius:10px;font-weight:700;cursor:pointer}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px}
+.grid{display:grid;gap:14px} .grid-2{grid-template-columns:1fr 1fr}
+@media(max-width:900px){.grid-2{grid-template-columns:1fr}}
+table{border-collapse:collapse;width:100%} th,td{border:1px solid var(--line);padding:8px;font-size:12px}
+.header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.badge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(90deg,var(--accent),#ffae42);color:#111;padding:6px 10px;border-radius:999px;font-weight:800}
 </style>
+</head>
 <body>
-<h2>관리자 로그인</h2>
-<button id="signin">Google로 로그인</button>
-<button id="signout" style="display:none">로그아웃</button>
-<div id="me" style="margin:8px 0;color:#666"></div>
-<hr/>
-
-<h2>결과 리스트</h2>
-<div id="results">-</div>
-<hr/>
-
-<h2>문항 수정</h2>
-<div class="grid">
-  <div>
-    <label>문항 선택</label>
-    <select id="qsel"></select>
-    <label>질문</label><textarea id="prompt" rows="2"></textarea>
-    <label>A label</label><input id="A_label"/><label>A image</label><input id="A_image"/>
-    <label>A weights(JSON)</label><input id="A_weights" placeholder='{"관찰력":1}'/>
-    <label>B label</label><input id="B_label"/><label>B image</label><input id="B_image"/>
-    <label>B weights(JSON)</label><input id="B_weights"/>
+<div class="wrap">
+  <div class="header">
+    <h2>ArtTest Admin</h2>
+    <div>
+      <button id="signin" class="btn">Google 로그인</button>
+      <button id="signout" class="btn-ghost" style="display:none">로그아웃</button>
+    </div>
   </div>
-  <div>
-    <label>C label</label><input id="C_label"/><label>C image</label><input id="C_image"/>
-    <label>C weights(JSON)</label><input id="C_weights"/>
-    <label>D label</label><input id="D_label"/><label>D image</label><input id="D_image"/>
-    <label>D weights(JSON)</label><input id="D_weights"/>
-    <button onclick="save()">저장</button>
-    <div id="msg" style="margin-top:8px;color:#2b7"></div>
+
+  <div class="card" style="margin-bottom:16px">
+    <div class="badge">Results</div>
+    <div id="results" class="small muted">로그인 후 조회됩니다.</div>
+  </div>
+
+  <div class="card">
+    <div class="badge">Questions · 문항/이미지 교체</div>
+    <div class="grid grid-2" style="margin-top:12px">
+      <div>
+        <label>문항 선택</label>
+        <select id="qsel"></select>
+        <label style="margin-top:8px">질문</label>
+        <textarea id="prompt" rows="2"></textarea>
+
+        <label style="margin-top:8px">A label</label><input id="A_label"/>
+        <label>A image URL</label><input id="A_image" placeholder="https://drive.google.com/uc?export=view&id=..."/>
+        <label>A weights(JSON)</label><input id="A_weights" placeholder='{"관찰력":1}'/>
+
+        <label style="margin-top:8px">B label</label><input id="B_label"/>
+        <label>B image URL</label><input id="B_image"/><label>B weights(JSON)</label><input id="B_weights"/>
+      </div>
+      <div>
+        <label>C label</label><input id="C_label"/>
+        <label>C image URL</label><input id="C_image"/><label>C weights(JSON)</label><input id="C_weights"/>
+
+        <label style="margin-top:8px">D label</label><input id="D_label"/>
+        <label>D image URL</label><input id="D_image"/><label>D weights(JSON)</label><input id="D_weights"/>
+
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="btn" onclick="save()">저장</button>
+          <button class="btn-ghost" onclick="reload()">다시 불러오기</button>
+        </div>
+        <div id="msg" class="small muted" style="margin-top:6px"></div>
+      </div>
+    </div>
+    <p class="small muted" style="margin-top:10px">※ 시트의 해당 계정에 <b>편집권한</b>이 있어야 저장됩니다.</p>
   </div>
 </div>
 
+<!-- GIS & GAPI -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://apis.google.com/js/api.js" async defer></script>
 <script>
-const CLIENT_ID = 'YOUR_OAUTH_CLIENT_ID.apps.googleusercontent.com';  // ← 변경
-const API_KEY = 'YOUR_BROWSER_API_KEY';                               // ← 변경
-const SHEET_ID = 'YOUR_SHEET_ID';                                     // ← 변경
+/* ===================== 꼭 바꿔야 하는 값 (TODO) ===================== */
+// 1) 브라우저 API 키 (HTTP referrer 제한 + Sheets API 제한)
+const API_KEY   = 'YOUR_BROWSER_API_KEY'; // ← TODO
+
+// 2) OAuth 클라이언트 ID (Web)
+const CLIENT_ID = 'YOUR_OAUTH_CLIENT_ID.apps.googleusercontent.com'; // ← TODO
+
+// 3) 스프레드시트 ID
+const SHEET_ID  = 'YOUR_SHEET_ID'; // ← TODO
+/* ================================================================ */
+
 const DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
 const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
 
 let tokenClient, gapiInited=false, gisInited=false;
 
-function g(id){return document.getElementById(id)}
+function g(id){return document.getElementById(id);}
 
 window.onload = () => {
   gapi.load('client', async () => {
     await gapi.client.init({ apiKey: API_KEY, discoveryDocs: DISCOVERY_DOCS });
-    gapiInited = true; maybeEnableButtons();
+    gapiInited = true; maybeEnableSignIn();
   });
   tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID, scope: SCOPES,
-    callback: (resp) => { if (resp.access_token) { onSignedIn(); } }
+    client_id: CLIENT_ID, scope: SCOPES, callback: (resp)=>{ if(resp.access_token){ onSignedIn(); } }
   });
-  gisInited = true; maybeEnableButtons();
+  gisInited = true; maybeEnableSignIn();
+
+  g('signin').onclick = ()=> tokenClient.requestAccessToken({ prompt:'' });
+  g('signout').onclick = ()=>{ const t=gapi.client.getToken(); if(t){ google.accounts.oauth2.revoke(t.access_token); gapi.client.setToken(''); } onSignedOut(); };
 };
 
-function maybeEnableButtons(){
-  if (gapiInited && gisInited) document.getElementById('signin').disabled = false;
-}
-document.getElementById('signin').onclick = () => tokenClient.requestAccessToken({ prompt: '' });
-document.getElementById('signout').onclick = () => { google.accounts.oauth2.revoke(gapi.client.getToken().access_token); gapi.client.setToken(''); onSignedOut(); }
-
-async function onSignedIn(){
-  g('signin').style.display='none'; g('signout').style.display='inline-block';
-  g('me').textContent='로그인됨';
-  await loadResults(); await loadQuestions();
-}
+function maybeEnableSignIn(){ if(gapiInited && gisInited){ g('signin').disabled=false; } }
+function onSignedIn(){ g('signin').style.display='none'; g('signout').style.display='inline-block'; loadResults(); loadQuestions(); }
 function onSignedOut(){
   g('signin').style.display='inline-block'; g('signout').style.display='none';
-  g('me').textContent=''; g('results').innerHTML='-'; g('qsel').innerHTML='';
+  g('results').innerHTML='-'; g('qsel').innerHTML=''; g('msg').textContent='';
 }
 
 async function readRange(range){
@@ -92,55 +125,60 @@ async function writeRange(range, values){
   });
 }
 
-/* 결과 목록 */
+/* Results */
 async function loadResults(){
   const rows = await readRange('Results!A1:K10000');
   const header = rows.shift()||[];
   const idx = Object.fromEntries(header.map((h,i)=>[h,i]));
   const html = ['<table><tr><th>time</th><th>child</th><th>phone</th><th>top3</th></tr>'];
-  (rows||[]).slice(-100).reverse().forEach(r=>{
+  (rows||[]).slice(-200).reverse().forEach(r=>{
     html.push(`<tr><td>${r[idx['timestamp']]||''}</td><td>${r[idx['child_name']]||''}</td><td>${r[idx['phone']]||''}</td><td>${r[idx['top3(csv)']]||''}</td></tr>`);
   });
-  html.push('</table>'); g('results').innerHTML = html.join('');
+  html.push('</table>');
+  g('results').innerHTML = html.join('');
 }
 
-/* 문항 불러오기/저장 */
-let QUESTIONS=[], Q_IDX={};
+/* Questions */
+let QUESTIONS=[], QIDX={};
 async function loadQuestions(){
   const rows = await readRange('Questions!A1:P1000');
-  const header = rows.shift()||[]; const idx = Object.fromEntries(header.map((h,i)=>[h,i]));
-  QUESTIONS = rows.map(r => ({
-    _row: r, _rowNum: rows.indexOf(r)+2, id:r[idx.id], order:+(r[idx.order]||0), prompt:r[idx.prompt]||'',
-    A_label:r[idx.A_label]||'', A_image:r[idx.A_image]||'', A_weights:r[idx.A_weights]||'',
-    B_label:r[idx.B_label]||'', B_image:r[idx.B_image]||'', B_weights:r[idx.B_weights]||'',
-    C_label:r[idx.C_label]||'', C_image:r[idx.C_image]||'', C_weights:r[idx.C_weights]||'',
-    D_label:r[idx.D_label]||'', D_image:r[idx.D_image]||'', D_weights:r[idx.D_weights]||'',
-    active:r[idx.active]||'TRUE'
+  const header = rows.shift()||[];
+  const H = Object.fromEntries(header.map((h,i)=>[h,i]));
+  QUESTIONS = rows.map((r,ri)=>({
+    _row:r, _rowNum:ri+2,
+    id:r[H.id], order:+(r[H.order]||0), prompt:r[H.prompt]||'',
+    A_label:r[H.A_label]||'', A_image:r[H.A_image]||'', A_weights:r[H.A_weights]||'',
+    B_label:r[H.B_label]||'', B_image:r[H.B_image]||'', B_weights:r[H.B_weights]||'',
+    C_label:r[H.C_label]||'', C_image:r[H.C_image]||'', C_weights:r[H.C_weights]||'',
+    D_label:r[H.D_label]||'', D_image:r[H.D_image]||'', D_weights:r[H.D_weights]||'',
+    active:r[H.active]||'TRUE'
   })).sort((a,b)=>a.order-b.order);
-  Q_IDX = Object.fromEntries(QUESTIONS.map(q=>[q.id,q]));
-  const sel = g('qsel'); sel.innerHTML='';
-  QUESTIONS.forEach(q => { const o=document.createElement('option'); o.value=q.id; o.textContent=`${q.order}. ${q.prompt}`; sel.appendChild(o); });
-  sel.onchange = () => fill(Q_IDX[sel.value]); fill(QUESTIONS[0]);
+  QIDX = Object.fromEntries(QUESTIONS.map(q=>[q.id,q]));
+  const sel=g('qsel'); sel.innerHTML='';
+  QUESTIONS.forEach(q=>{ const o=document.createElement('option'); o.value=q.id; o.textContent=`${q.order}. ${q.prompt}`; sel.appendChild(o); });
+  sel.onchange=()=>fill(QIDX[sel.value]); if(QUESTIONS[0]) fill(QUESTIONS[0]);
+  // store header map for save()
+  loadQuestions._H = H;
 }
 function fill(q){
-  ['prompt','A_label','A_image','A_weights','B_label','B_image','B_weights','C_label','C_image','C_weights','D_label','D_image','D_weights'].forEach(k=>{
-    g(k).value = q[k] || '';
-  });
+  ['prompt','A_label','A_image','A_weights','B_label','B_image','B_weights','C_label','C_image','C_weights','D_label','D_image','D_weights']
+   .forEach(k=> g(k).value = q[k] || '');
 }
 async function save(){
-  const id = g('qsel').value; const q = Q_IDX[id]; if(!q) return;
-  const header = (await readRange('Questions!A1:Q1'))[0];
-  const map = Object.fromEntries(header.map((h,i)=>[h,i])); const row = q._row.slice();
-  row[map['prompt']] = g('prompt').value;
+  const id = g('qsel').value; const q = QIDX[id]; if(!q) return;
+  const H = loadQuestions._H;
+  const row = q._row.slice();
+  row[H['prompt']] = g('prompt').value;
   ['A','B','C','D'].forEach(k=>{
-    row[map[`${k}_label`]] = g(`${k}_label`).value;
-    row[map[`${k}_image`]] = g(`${k}_image`).value;
-    row[map[`${k}_weights`]] = g(`${k}_weights`).value;
+    row[H[`${k}_label`]]   = g(`${k}_label`).value;
+    row[H[`${k}_image`]]   = g(`${k}_image`).value;
+    row[H[`${k}_weights`]] = g(`${k}_weights`).value;
   });
-  await writeRange(`Questions!A${q._rowNum}:Q${q._rowNum}`, [row]);
-  g('msg').textContent='저장 완료';
+  await writeRange(`Questions!A${q._rowNum}:P${q._rowNum}`, [row]);
+  g('msg').textContent='저장 완료'; setTimeout(()=>g('msg').textContent='',1500);
   await loadQuestions();
 }
+function reload(){ loadQuestions(); }
 </script>
 </body>
 </html>
