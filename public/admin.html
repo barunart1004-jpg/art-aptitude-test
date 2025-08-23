@@ -40,9 +40,26 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
 .section{display:none}.section.active{display:block}
 .center{text-align:center}
 label>span{display:block;font-size:12px;color:#6b7280;margin-top:4px}
+
+/* password gate */
+.gate{position:fixed; inset:0; display:grid; place-items:center; background:rgba(255,255,255,.8); backdrop-filter:blur(8px); z-index:9999}
+.gatebox{background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px; width:min(360px,90vw); box-shadow:var(--shadow)}
 </style>
 </head>
 <body>
+<!-- Password Gate -->
+<div id="gate" class="gate">
+  <div class="gatebox">
+    <h3 style="margin:0 0 10px">관리자 로그인</h3>
+    <p class="small muted" style="margin:0 0 8px">내부용 간편 비밀번호입니다. (보안 강함 아님)</p>
+    <input id="pw" type="password" placeholder="비밀번호 (기본 250824)" />
+    <div class="row" style="justify-content:flex-end;margin-top:8px">
+      <button class="btn" onclick="enterGate()">입장</button>
+    </div>
+    <div id="gateMsg" class="hint" style="margin-top:6px"></div>
+  </div>
+</div>
+
 <header class="header">
   <div class="wrap">
     <div class="brand"><div class="dot"></div><span>ArtTest Admin</span></div>
@@ -73,7 +90,7 @@ label>span{display:block;font-size:12px;color:#6b7280;margin-top:4px}
         <div class="row" style="justify-content:space-between">
           <input id="qsearch" placeholder="문항 검색 (질문/라벨)" />
           <div class="row">
-            <button class="btn-ghost" onclick="previewTest()">수험자 페이지 미리보기</button>
+            <button class="btn-ghost" onclick="previewTest()">수험자 미리보기</button>
             <button class="btn" onclick="addQuestion()">새 문항 추가</button>
           </div>
         </div>
@@ -91,44 +108,17 @@ label>span{display:block;font-size:12px;color:#6b7280;margin-top:4px}
         <textarea id="prompt" rows="2" placeholder="예: 전시 포스터를 만든다면 어디에 집중할까?"></textarea>
 
         <div class="grid" style="grid-template-columns:1fr 1fr; margin-top:8px">
-          <!-- A -->
+          ${['A','B','C','D'].map(k=>`
           <div style="border:1px solid var(--line); border-radius:12px; padding:10px">
-            <div class="row"><strong>A 보기</strong></div>
-            <label>라벨</label><input id="A_label"/>
+            <div class="row"><strong>${k} 보기</strong></div>
+            <label>라벨</label><input id="${k}_label"/>
             <label>이미지 URL <span>이미지 보기 ▼</span></label>
-            <input id="A_image" oninput="updateThumb('A')" placeholder="https://drive.google.com/uc?export=view&id=..."/>
-            <img id="A_thumb" class="thumb" alt="A 이미지" />
+            <input id="${k}_image" oninput="updateThumb('${k}')" placeholder="https://drive.google.com/uc?export=view&id=..."/>
+            <img id="${k}_thumb" class="thumb" alt="${k} 이미지" />
             <label>가중치(JSON)</label>
-            <input id="A_weights" placeholder='{"관찰력":1}' oninput="validateJSON(this)"/>
-            <div id="A_err" class="hint"></div>
-          </div>
-          <!-- B -->
-          <div style="border:1px solid var(--line); border-radius:12px; padding:10px">
-            <div class="row"><strong>B 보기</strong></div>
-            <label>라벨</label><input id="B_label"/>
-            <label>이미지 URL <span>이미지 보기 ▼</span></label>
-            <input id="B_image" oninput="updateThumb('B')"/><img id="B_thumb" class="thumb" alt="B 이미지"/>
-            <label>가중치(JSON)</label>
-            <input id="B_weights" oninput="validateJSON(this)"/><div id="B_err" class="hint"></div>
-          </div>
-          <!-- C -->
-          <div style="border:1px solid var(--line); border-radius:12px; padding:10px">
-            <div class="row"><strong>C 보기</strong></div>
-            <label>라벨</label><input id="C_label"/>
-            <label>이미지 URL <span>이미지 보기 ▼</span></label>
-            <input id="C_image" oninput="updateThumb('C')"/><img id="C_thumb" class="thumb" alt="C 이미지"/>
-            <label>가중치(JSON)</label>
-            <input id="C_weights" oninput="validateJSON(this)"/><div id="C_err" class="hint"></div>
-          </div>
-          <!-- D -->
-          <div style="border:1px solid var(--line); border-radius:12px; padding:10px">
-            <div class="row"><strong>D 보기</strong></div>
-            <label>라벨</label><input id="D_label"/>
-            <label>이미지 URL <span>이미지 보기 ▼</span></label>
-            <input id="D_image" oninput="updateThumb('D')"/><img id="D_thumb" class="thumb" alt="D 이미지"/>
-            <label>가중치(JSON)</label>
-            <input id="D_weights" oninput="validateJSON(this)"/><div id="D_err" class="hint"></div>
-          </div>
+            <input id="${k}_weights" placeholder='{"관찰력":1}' oninput="validateJSON(this)"/>
+            <div id="${k}_err" class="hint"></div>
+          </div>`).join('')}
         </div>
 
         <div class="row" style="margin-top:12px; justify-content:center">
@@ -145,22 +135,27 @@ label>span{display:block;font-size:12px;color:#6b7280;margin-top:4px}
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://apis.google.com/js/api.js" async defer></script>
 <script>
-/* ===== 변경할 값 ===== */
-const API_KEY   = 'YOUR_BROWSER_API_KEY'; // TODO: referrer + Sheets 제한 필수
-const CLIENT_ID = 'YOUR_OAUTH_CLIENT_ID.apps.googleusercontent.com'; // TODO
-const SHEET_ID  = '1n10E7zVRNxO4Zndc1eZmj0nRkUcblIj-qixL8evidDQ'; // 이미 반영
+/* ===== 필요한 값 ===== */
+const API_KEY   = 'YOUR_BROWSER_API_KEY'; // Google Sheets API + referrer 제한
+const CLIENT_ID = 'YOUR_OAUTH_CLIENT_ID.apps.googleusercontent.com';
+const SHEET_ID  = '1n10E7zVRNxO4Zndc1eZmj0nRkUcblIj-qixL8evidDQ';
 /* ==================== */
 
-const DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
-const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
-let tokenClient, gapiInited=false, gisInited=false;
-
+/* Password gate (UI 차단용) */
 function g(id){return document.getElementById(id);}
+function enterGate(){
+  const ok = g('pw').value === '250824';
+  if(ok){ g('gate').style.display='none'; }
+  else { g('gateMsg').textContent='비밀번호가 올바르지 않습니다.'; }
+}
 
 /* Tabs */
 document.addEventListener('click',(e)=>{ if(e.target.classList.contains('tab') && e.target.dataset.tab){ document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t===e.target)); document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active', s.id===e.target.dataset.tab)); } });
 
 /* Auth */
+const DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
+const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
+let tokenClient, gapiInited=false, gisInited=false;
 window.onload = () => {
   gapi.load('client', async () => { await gapi.client.init({ apiKey: API_KEY, discoveryDocs: DISCOVERY_DOCS }); gapiInited = true; maybeEnableSignIn(); });
   tokenClient = google.accounts.oauth2.initTokenClient({ client_id: CLIENT_ID, scope: SCOPES, callback: (resp)=>{ if(resp.access_token){ onSignedIn(); } } });
@@ -223,12 +218,10 @@ function fill(q){
   ['A','B','C','D'].forEach(k=>{
     g(`${k}_label`).value=q[`${k}_label`]||''; g(`${k}_image`).value=q[`${k}_image`]||''; g(`${k}_weights`).value=q[`${k}_weights`]||''; updateThumb(k);
   });
-  // 선택 강조
   document.querySelectorAll('.qitem').forEach(n=>n.style.outline=''); const sel=[...document.querySelectorAll('.qitem')].find(n=>n.innerText.includes(q.id)); if(sel) sel.style.outline='2px solid #ffd7b0';
 }
 async function save(){
   const id=g('qid').value; const q = QUESTIONS.find(x=>x.id===id); if(!q) return;
-  // JSON 유효성 체크
   for(const k of ['A','B','C','D']){ try{ if(g(`${k}_weights`).value) JSON.parse(g(`${k}_weights`).value); }catch(e){ alert(`${k} 가중치 JSON이 올바르지 않습니다.`); return; } }
   const row = q._row.slice();
   row[HDR['order']] = g('order').value;
@@ -244,12 +237,10 @@ async function save(){
   await loadQuestions();
 }
 async function addQuestion(){
-  // 가장 큰 order + 1, id는 qN 형식 자동
   const nextOrder = (QUESTIONS[QUESTIONS.length-1]?.order||0)+1;
   const newId = `q${nextOrder}`;
   const values = [newId, String(nextOrder), '새 문항을 입력하세요', '보기 A', '', '{"관찰력":1}', '보기 B', '', '{"색감각":1}', '보기 C', '', '{"구성력":1}', '보기 D', '', '{"서사력":1}', 'TRUE'];
-  // 빈 행 찾기: Questions!A1:P10000에서 길이+2 로 유추
-  const targetRow = QUESTIONS.length + 2; // 헤더 1행 + 기존행수
+  const targetRow = QUESTIONS.length + 2;
   await writeRange(`Questions!A${targetRow}:P${targetRow}`, [values]);
   g('msg').textContent='새 문항 추가됨'; setTimeout(()=>g('msg').textContent='',1500);
   await loadQuestions();
