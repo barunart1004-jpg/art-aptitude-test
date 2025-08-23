@@ -6,17 +6,18 @@
 <title>미술적성테스트 · Basic</title>
 <meta name="theme-color" content="#ff7a00" />
 <style>
-/* ====== Tokens (Orange & White, Rounded, Playful) ====== */
+/* ===== Design Tokens : Orange & White (Illustrative) ===== */
 :root{
-  --bg:#fff7ed;             /* warm cream */
+  --bg:#fff7ed;            /* 따뜻한 크림 */
   --surface:#ffffff;
-  --ink:#111827;
+  --ink:#1f2937;
   --muted:#6b7280;
-  --accent:#ff7a00;         /* vivid orange */
-  --accent-2:#ffae42;       /* softer orange */
-  --line:#f2f2f2;
+  --accent:#ff7a00;        /* 비비드 오렌지 */
+  --accent2:#ffb74a;       /* 소프트 오렌지 */
+  --line:#f1f5f9;
   --radius:18px;
-  --shadow:0 14px 40px rgba(17,24,39,.08);
+  --shadow:0 16px 44px rgba(17,24,39,.08);
+  --step-dim:#f9fafb;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -25,97 +26,148 @@ body{
   font-family: ui-sans-serif, system-ui, "Apple SD Gothic Neo", "Noto Sans KR", Segoe UI, Roboto, Arial, sans-serif;
   line-height:1.55;
 }
-.wrap{max-width:980px; margin:0 auto; padding:24px}
+
+/* ===== Decorative Header (Illustration vibe) ===== */
+.hero{
+  position:relative; overflow:hidden; background:linear-gradient(180deg,#fff 0%, #fff8f0 100%);
+  border-bottom:1px solid var(--line);
+}
+.hero .wrap{max-width:1080px; margin:0 auto; padding:24px 24px 10px 24px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900}
+.brand .dot{width:12px;height:12px;border-radius:50%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.brand span{letter-spacing:.2px}
+.hero-art{
+  position:absolute; right:-60px; top:-60px; width:320px; height:320px; pointer-events:none; opacity:.9;
+  background:
+    radial-gradient(closest-side at 35% 40%, #ffe6c4 0%, transparent 70%),
+    radial-gradient(closest-side at 65% 60%, #fff2e1 0%, transparent 70%);
+  border-radius:50%;
+  filter: saturate(1.15);
+}
+.hero-wave{
+  position:relative; width:100%; height:70px; margin-top:8px;
+  background:
+    radial-gradient(120px 70px at 15% 0, #ffd7b0 0, transparent 70%),
+    radial-gradient(160px 80px at 45% 0, #ffe6c4 0, transparent 70%),
+    radial-gradient(140px 70px at 75% 0, #fff2e1 0, transparent 70%);
+  mask: radial-gradient(200% 70px at 50% -10px, #0000 55%, #000 56%);
+}
+
+/* ===== Global wrapper ===== */
+.main{max-width:980px; margin:0 auto; padding:20px 24px 32px}
+
+/* ===== Card ===== */
 .card{
   background:var(--surface); border:1px solid var(--line);
-  border-radius:var(--radius); padding:28px; box-shadow:var(--shadow); position:relative; overflow:hidden;
+  border-radius:var(--radius); padding:22px; box-shadow:var(--shadow);
 }
-h1{font-size:40px; line-height:1.2; margin:0 0 4px}
+
+/* ===== Typography ===== */
+h1{font-size:38px; line-height:1.2; margin:0 0 6px}
 h2{font-size:26px; margin:0 0 12px}
 h3{font-size:18px; margin:18px 0 8px}
-p{margin:10px 0}
-.small{font-size:13px} .muted{color:var(--muted)}
+p{margin:10px 0} .small{font-size:13px} .muted{color:var(--muted)}
+
+/* ===== Layout ===== */
 .row{display:flex; align-items:center; justify-content:space-between; gap:12px}
 .grid{display:grid; gap:16px}
 .grid-2{grid-template-columns:1fr 1fr}
-@media (max-width:720px){ .grid-2{grid-template-columns:1fr} h1{font-size:32px} }
+@media (max-width:860px){ .grid-2{grid-template-columns:1fr} h1{font-size:32px} }
 
-.badge{display:inline-flex; align-items:center; gap:8px; font-size:13px;
-  color:#111; background:linear-gradient(90deg,var(--accent),var(--accent-2));
-  padding:6px 10px; border-radius:999px; font-weight:800}
-
+/* ===== Buttons ===== */
 .btn{
-  background:linear-gradient(90deg,var(--accent),var(--accent-2));
-  color:#111; border:none; padding:14px 18px; border-radius:12px; font-weight:800; cursor:pointer;
-  box-shadow:0 10px 30px rgba(255,122,0,.25); transition:transform .08s ease, filter .2s ease;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  color:#111; border:none; padding:14px 18px; border-radius:12px; font-weight:850; cursor:pointer;
+  box-shadow:0 10px 30px rgba(255,122,0,.28);
+  transition:transform .08s ease, filter .2s ease;
 }
 .btn:hover{transform:translateY(-1px)}
 .btn:disabled{opacity:.5; cursor:not-allowed}
 .btn-ghost{
   background:#fff; color:var(--ink); border:1px solid var(--line);
-  padding:12px 14px; border-radius:12px; font-weight:700; cursor:pointer;
+  padding:12px 14px; border-radius:12px; font-weight:750; cursor:pointer;
 }
 
+/* ===== Inputs ===== */
 input,select,textarea{
   width:100%; background:#fff; color:var(--ink);
   border:1px solid var(--line); border-radius:12px; padding:12px; outline:none;
 }
 input:focus,select:focus,textarea:focus{border-color:#ffd7b0; box-shadow:0 0 0 4px rgba(255,122,0,.15)}
+label{font-size:14px; color:#374151}
+.section{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
 
-.section{
-  background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px;
+/* ===== Step Navigation (Top) ===== */
+.navbar{
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  background:#fff; border:1px solid var(--line); border-radius:14px; padding:10px 12px; box-shadow:var(--shadow);
 }
+.step{
+  display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
+  background:var(--step-dim); color:#374151; font-weight:800; cursor:pointer; border:1px solid var(--line);
+}
+.step .num{width:22px;height:22px;border-radius:50%;display:inline-grid;place-items:center;background:#fff;border:1px solid var(--line);font-size:12px}
+.step.active{background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#111; border-color:transparent}
+.step.active .num{background:#fff}
+.step.done{background:#eafff2; border-color:#b6f3c9}
+.spacer{flex:1}
+.link-admin{font-weight:800; color:#111; background:linear-gradient(90deg,#ffd7b0,#ffe6c4); padding:8px 12px; border-radius:10px; border:1px solid var(--line); text-decoration:none}
 
-/* Progress */
+/* ===== Progress ===== */
 .progress{height:10px; background:#f3f4f6; border-radius:999px; overflow:hidden}
 .progress>div{height:100%; width:0; background:linear-gradient(90deg,#60a5fa,#22d3ee); transition:width .25s}
 
-/* Options */
+/* ===== Options ===== */
 .opt{border:2px solid var(--line); border-radius:14px; overflow:hidden; cursor:pointer; background:#fff}
 .opt img{width:100%; display:block; aspect-ratio:4/3; object-fit:cover}
-.opt .cap{padding:12px; color:#374151; font-weight:600}
+.opt .cap{padding:12px; color:#374151; font-weight:650}
 .opt.sel{border-color:#ffbf7a; box-shadow:0 0 0 4px rgba(255,122,0,.18)}
 
-/* Accordion (Consent details) */
+/* ===== Accordion (Consent) ===== */
 .acc{border-radius:14px; overflow:hidden; border:1px solid var(--line)}
 .acc-item{border-top:1px solid var(--line)}
 .acc-head{padding:14px 16px; background:#fff9f2; cursor:pointer; display:flex; justify-content:space-between; align-items:center}
 .acc-body{padding:14px 16px; display:none; background:#fff}
 .acc-item.open .acc-body{display:block}
 
-/* Print */
+/* ===== Print ===== */
 @media print{
   body{background:#fff}
-  .wrap{max-width:800px}
+  .hero, .navbar, .btn, .btn-ghost {display:none !important}
   .card{box-shadow:none; border:1px solid #ddd}
-  .btn,.btn-ghost{display:none !important}
-}
-.header-swoosh{
-  position:absolute; inset:auto -80px auto auto; top:-30px; width:260px; height:260px; border-radius:50%;
-  background:radial-gradient(closest-side at 40% 40%, #ffd7b0, transparent 60%), radial-gradient(closest-side at 65% 65%, #fff2e1, transparent 60%);
-  filter:saturate(1.2);
 }
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <div id="app" class="card">
-      <div class="header-swoosh" aria-hidden="true"></div>
+  <!-- Header (brand + illustration) -->
+  <header class="hero">
+    <div class="hero-art" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="brand"><div class="dot"></div><span>바른미술학원 · 미술적성테스트</span></div>
+      <div class="hero-wave" aria-hidden="true"></div>
     </div>
+  </header>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Step navigation -->
+    <nav class="navbar" id="topnav">
+      <!-- steps are injected by JS -->
+    </nav>
+
+    <!-- Page card -->
+    <section class="card" id="app"></section>
   </div>
 
 <script>
-/* ===================== 꼭 바꿔야 하는 값 (TODO) ===================== */
-// 1) 스프레드시트 ID
-const SHEET_ID = 'YOUR_SHEET_ID'; // ← TODO: ArtTest_DB 문서 ID
+/* ==================== 필수 값 (TODO) ==================== */
+// 1) 스프레드시트 문서 ID
+const SHEET_ID = 'YOUR_SHEET_ID'; // ← TODO
 
-// 2) 질문 시트 이름(보통 Questions)
-const GVIZ_SHEET_NAME = 'Questions'; // ← 필요 시 변경
-
-// 3) Google Form formResponse 주소 (Results 저장용)
+// 2) Google Form formResponse 주소 (Results 저장)
 const FORM_ACTION = 'https://docs.google.com/forms/d/e/【FORM_ID】/formResponse'; // ← TODO
 
-// 4) Google Form 항목 매핑 (entry.xxx는 폼에서 확인)
+// 3) Google Form 항목 매핑 (entry.xxx)
 const F = {
   child_name:'entry.111111', // ← TODO
   age:'entry.222222',        // ← TODO
@@ -127,18 +179,46 @@ const F = {
   scores:'entry.888888',     // ← TODO
   top3:'entry.999999',       // ← TODO
   resultId:'entry.123123',   // ← TODO
-  timestamp:'entry.321321'   // ← (선택) 폼 응답시간으로 대체 가능
+  timestamp:'entry.321321'   // ← (선택)
 };
-/* ================================================================ */
+/* ======================================================== */
 
-const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${encodeURIComponent(GVIZ_SHEET_NAME)}&tqx=out:json`;
+const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Questions&tqx=out:json`;
 const DOMAINS = ["관찰력","서사력","디테일","구성력","색감각","공간감","도전성","소통력"];
-const STATE = { step:'start', consent:false, consentMeta:null, profile:{}, questions:[], idx:0, answers:[], result:null };
+const STEPS = [
+  {key:'start',   label:'시작'},
+  {key:'consent', label:'동의'},
+  {key:'profile', label:'프로필'},
+  {key:'test',    label:'테스트'},
+  {key:'result',  label:'결과'}
+];
 
-const el = () => document.getElementById('app');
+const STATE = { step:'start', consent:false, consentMeta:null, profile:{}, questions:[], idx:0, answers:[], result:null };
 const $ = id => document.getElementById(id);
 const v = id => $(id)?.value?.trim() ?? '';
+const app = () => $('app');
 
+/* ---- Top step navigation ---- */
+function renderNav(){
+  const cur = STATE.step;
+  const items = STEPS.map((s,i)=>{
+    const active = s.key===cur ? 'active' : '';
+    const done = (STEPS.findIndex(x=>x.key===cur) > i) ? 'done' : '';
+    const disabled = (s.key==='result' && !STATE.result) ? 'style="pointer-events:none;opacity:.6"' : '';
+    return `<div class="step ${active} ${done}" ${disabled} onclick="navGo('${s.key}')">
+      <span class="num">${i+1}</span><span>${s.label}</span>
+    </div>`;
+  }).join('');
+  $('topnav').innerHTML = items + `<div class="spacer"></div><a class="link-admin" href="./admin.html" target="_blank" rel="noopener">관리자</a>`;
+}
+function navGo(step){
+  // 자유 이동 허용(결과만 예외: STATE.result 없으면 이동 불가)
+  if(step==='result' && !STATE.result){ alert('아직 결과가 없습니다. 테스트를 완료해 주세요.'); return; }
+  STATE.step = step;
+  if(step==='test' && (!STATE.questions || STATE.questions.length===0)) startTest(); else render();
+}
+
+/* ---- Helpers ---- */
 function parseGViz(text){
   const s=text.indexOf('{'), e=text.lastIndexOf('}'); if(s<0||e<0) return [];
   const obj=JSON.parse(text.slice(s,e+1));
@@ -152,30 +232,24 @@ async function loadQuestions(){
   STATE.questions=act.map(r=>({
     id:r.id, order:+r.order, prompt:r.prompt,
     options:['A','B','C','D'].map(k=>({
-      key:k,
-      label:r[`${k}_label`]||'',
-      imageUrl:r[`${k}_image`]||'',
-      alt:r[`${k}_label`]||'',
-      weights: safeJSON(r[`${k}_weights`])||{}
+      key:k, label:r[`${k}_label`]||'', imageUrl:r[`${k}_image`]||'', alt:r[`${k}_label`]||'',
+      weights: (function(){try{return JSON.parse(r[`${k}_weights`])||{}}catch{return{}}})()
     }))
   }));
 }
-function safeJSON(s){ try{return JSON.parse(s)}catch{return{}} }
-function nowKST(){ const d=new Date(), z=d; const pad=n=>String(n).padStart(2,'0'); return `${z.getFullYear()}-${pad(z.getMonth()+1)}-${pad(z.getDate())} ${pad(z.getHours())}:${pad(z.getMinutes())} KST`; }
+function nowKST(){ const d=new Date(), p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())} KST`; }
 
-/* ---------------- Views ---------------- */
+/* ---- Views ---- */
 function viewStart(){
-  el().innerHTML = `
-    <div class="row" style="gap:8px"><span class="badge">ART APTITUDE · BASIC</span><span class="muted small">6–8분 · 결과 즉시</span></div>
+  app().innerHTML = `
+    <div class="row" style="gap:8px"><span class="btn-ghost" style="font-weight:850;border-radius:999px;background:#fff9f2;border-color:#ffe4c7">ART APTITUDE · BASIC</span><span class="muted small">6–8분 · 결과 즉시</span></div>
     <h1>미술적성테스트</h1>
     <p class="muted">아이의 강점을 발견하고, 집에서 오늘 바로 할 수 있는 15분 미션을 추천합니다.</p>
     <div class="row" style="margin-top:16px">
       <button class="btn" onclick="go('consent')">시작하기</button>
-      <button class="btn-ghost" onclick="window.print()">소개 PDF 저장</button>
     </div>
   `;
 }
-
 function accItem(title, html){
   return `
   <div class="acc-item open">
@@ -186,9 +260,8 @@ function accItem(title, html){
   </div>`;
 }
 function toggleAll(open){ document.querySelectorAll('.acc-item').forEach(it=>it.classList.toggle('open', !!open)); }
-
 function viewConsent(){
-  el().innerHTML = `
+  app().innerHTML = `
     <h2>보호자 개인정보 및 이용 동의서</h2>
     <p class="muted small">본 테스트는 <b>교육 가이드</b> 목적이며 <b>의학·임상 진단이 아닙니다.</b> 만 14세 미만은 보호자 동의가 필요합니다.</p>
     <div class="acc" id="acc">
@@ -224,16 +297,13 @@ function viewConsent(){
       <div class="row" style="gap:8px">
         <button class="btn-ghost" onclick="toggleAll(true)">전문 펼치기</button>
         <button class="btn-ghost" onclick="toggleAll(false)">모두 접기</button>
-        <button class="btn-ghost" onclick="window.print()">PDF 저장</button>
       </div>
     </div>
     <p class="small muted" style="margin-top:8px">※ 본 결과는 교육 가이드 목적이며 <b>의학·임상 진단이 아닙니다.</b></p>
   `;
-
   $('consent_ts').value = nowKST();
   ['chk_required','chk_minor','consent_guardian','consent_phone'].forEach(id=>{
-    $(id).addEventListener('input', evalConsentBtn);
-    $(id).addEventListener('change', evalConsentBtn);
+    $(id).addEventListener('input', evalConsentBtn); $(id).addEventListener('change', evalConsentBtn);
   });
   function evalConsentBtn(){
     const okReq = $('chk_required').checked && $('chk_minor').checked;
@@ -245,13 +315,8 @@ function viewConsent(){
   $('btn_consent').onclick = ()=>{
     STATE.consent = $('chk_required').checked && $('chk_minor').checked;
     STATE.consentMeta = {
-      agreed: $('chk_required').checked,
-      minor_guardian: $('chk_minor').checked,
-      marketing: $('chk_marketing').checked,
-      guardian: v('consent_guardian'),
-      phone: v('consent_phone'),
-      relation: v('consent_relation'),
-      ts: $('consent_ts').value,
+      agreed: $('chk_required').checked, minor_guardian: $('chk_minor').checked, marketing: $('chk_marketing').checked,
+      guardian: v('consent_guardian'), phone: v('consent_phone'), relation: v('consent_relation'), ts: $('consent_ts').value,
       version: "v1.0 (2025-08-23)"
     };
     if(!STATE.consent) return alert('필수 항목 동의가 필요합니다.');
@@ -260,9 +325,8 @@ function viewConsent(){
   document.querySelectorAll('.acc-head').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
   toggleAll(false);
 }
-
 function viewProfile(){
-  el().innerHTML = `
+  app().innerHTML = `
     <h2>프로필 정보</h2>
     <div class="grid grid-2">
       <div><label>아동 이름</label><input id="cname" placeholder="예: 홍길동"></div>
@@ -274,7 +338,6 @@ function viewProfile(){
     </div>
     <div class="row" style="margin-top:16px">
       <button class="btn" onclick="startTest()">테스트 시작</button>
-      <button class="btn-ghost" onclick="go('consent')">이전</button>
     </div>
   `;
 }
@@ -286,11 +349,10 @@ async function startTest(){
   await loadQuestions(); STATE.idx=0; STATE.answers=[];
   go('test');
 }
-
 function viewTest(){
   const q=STATE.questions[STATE.idx];
   const pct=Math.round(STATE.idx/STATE.questions.length*100);
-  el().innerHTML = `
+  app().innerHTML = `
     <div class="row small muted"><div>Q${STATE.idx+1}/${STATE.questions.length}</div><div>${pct}%</div></div>
     <div class="progress"><div style="width:${pct}%"></div></div>
     <h2 style="margin-top:12px">${q.prompt}</h2>
@@ -323,7 +385,6 @@ function aggregateScores(ans){
   const qCount=ans.length||1, maxPerQ=1.0, max=qCount*maxPerQ;
   const scores={}; DOMAINS.forEach(d=>{ const v=(sum[d]||0)/max*4; scores[d]=Math.round(v*10)/10; }); return scores;
 }
-
 async function submitAll(){
   const scores=aggregateScores(STATE.answers);
   const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3);
@@ -346,7 +407,6 @@ async function submitAll(){
   fetch(FORM_ACTION, { method:'POST', mode:'no-cors', body:form }).catch(()=>{});
   STATE.result={ scores, top3, resultId }; go('result');
 }
-
 function bar(name,val){
   const pct=Math.max(0,Math.min(100,(val/4)*100));
   return `
@@ -356,30 +416,32 @@ function bar(name,val){
 }
 function viewResult(){
   const r=STATE.result, s=r.scores||{}; const keys=Object.keys(s);
-  el().innerHTML = `
+  app().innerHTML = `
     <div class="row" style="gap:8px">
       <h2 style="margin:0">미술적성 결과</h2>
-      <span class="badge">ID · ${r.resultId.slice(0,8)}</span>
+      <span class="btn-ghost" style="font-weight:850;border-radius:999px;background:#fff9f2;border-color:#ffe4c7">ID · ${r.resultId.slice(0,8)}</span>
     </div>
     <p><b>Top 3</b> : ${r.top3.join(', ')}</p>
     <h3>전체 영역 점수(0~4)</h3>
     ${keys.map(k=>bar(k,s[k])).join('')}
     <div class="row" style="margin-top:16px">
       <button class="btn" onclick="go('start')">처음으로</button>
+      <!-- PDF 저장 버튼: 결과 페이지에만 -->
       <button class="btn-ghost" onclick="window.print()">PDF 저장</button>
     </div>
     <p class="small muted" style="margin-top:8px">※ 본 결과는 교육 가이드 목적이며 <b>의학·임상 진단이 아닙니다.</b></p>
   `;
 }
 
-/* Router */
+/* ---- Router ---- */
 function go(step){ STATE.step=step; render(); }
 function render(){
-  if(STATE.step==='start') return viewStart();
+  renderNav();
+  if(STATE.step==='start')   return viewStart();
   if(STATE.step==='consent') return viewConsent();
   if(STATE.step==='profile') return viewProfile();
-  if(STATE.step==='test') return viewTest();
-  if(STATE.step==='result') return viewResult();
+  if(STATE.step==='test')    return viewTest();
+  if(STATE.step==='result')  return viewResult();
 }
 render();
 </script>
