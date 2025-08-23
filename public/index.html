@@ -6,160 +6,114 @@
 <title>미술적성테스트 · Basic</title>
 <meta name="theme-color" content="#ffc98b" />
 <style>
-/* ===== Design Tokens : Pastel Orange (centered, lively) ===== */
 :root{
-  --bg1:#fffaf5;            /* 배경 그라데이션 1 */
-  --bg2:#fff2e2;            /* 배경 그라데이션 2 */
-  --surface:#ffffff;        /* 카드 */
-  --ink:#24303f;            /* 본문 텍스트 */
-  --muted:#7b8794;          /* 보조 텍스트 */
-  --accent:#ffb26b;         /* 파스텔 오렌지 */
-  --accent2:#ffd9a8;        /* 라이트 오렌지 */
-  --mint:#bff4df;           /* 포인트 민트 */
-  --lav:#dcd6ff;            /* 포인트 라벤더 */
-  --line:#eef2f6;           /* 라인 */
-  --radius:20px;            /* 라운드 */
-  --shadow:0 18px 50px rgba(23,35,50,.12);
-  --shadow-soft:0 10px 30px rgba(23,35,50,.08);
+  --bg1:#fffaf5; --bg2:#fff2e2;
+  --surface:#ffffff; --ink:#24303f; --muted:#7b8794;
+  --accent:#ffb26b; --accent2:#ffd9a8; --mint:#bff4df; --lav:#dcd6ff;
+  --line:#eef2f6; --radius:20px;
+  --shadow:0 18px 50px rgba(23,35,50,.12); --shadow-soft:0 10px 30px rgba(23,35,50,.08);
 }
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
   margin:0; color:var(--ink);
-  font-family: ui-sans-serif, system-ui, "Apple SD Gothic Neo", "Noto Sans KR", Segoe UI, Roboto, Arial, sans-serif;
+  font-family:ui-sans-serif,system-ui,"Apple SD Gothic Neo","Noto Sans KR",Segoe UI,Roboto,Arial;
   line-height:1.58;
-  /* 부드러운 파스텔 그라데이션 + 애니메이션 */
   background: radial-gradient(1200px 900px at 50% -10%, var(--bg2), transparent 60%),
               radial-gradient(1200px 900px at 50% 110%, var(--bg2), transparent 60%),
-              linear-gradient(180deg, var(--bg1), var(--bg2));
-  background-attachment: fixed;
-  overflow-x:hidden;
+              linear-gradient(180deg,var(--bg1),var(--bg2));
+  background-attachment:fixed; overflow-x:hidden;
 }
-/* 전체 콘텐츠 중앙 정렬 레이아웃 */
-.container{
-  min-height:100dvh;
-  display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
-}
-.main{ width:100%; max-width:980px; padding:18px; display:flex; flex-direction:column; gap:16px; }
+.container{min-height:100dvh; display:flex; flex-direction:column; align-items:center}
+.main{width:100%; max-width:980px; padding:18px; display:flex; flex-direction:column; gap:16px}
 
-/* ===== Floating pastel blobs (장식) ===== */
-.blob{position:fixed; z-index:-1; filter:blur(30px); opacity:.5; pointer-events:none}
+/* blobs */
+.blob{position:fixed; z-index:-1; filter:blur(30px); opacity:.5; pointer-events:none; animation:drift 10s ease-in-out infinite}
 .blob.b1{width:340px;height:340px;left:-120px;top:80px;background:radial-gradient(circle at 30% 30%, var(--lav), transparent 60%)}
 .blob.b2{width:420px;height:420px;right:-160px;top:120px;background:radial-gradient(circle at 70% 40%, var(--mint), transparent 60%)}
 .blob.b3{width:380px;height:380px;left:50%;bottom:-160px;transform:translateX(-50%);background:radial-gradient(circle at 50% 50%, #ffe1c4, transparent 60%)}
-@keyframes drift{ 0%{transform:translateY(0)} 50%{transform:translateY(-12px)} 100%{transform:translateY(0)} }
-.blob{animation:drift 10s ease-in-out infinite}
+@keyframes drift{0%{transform:translateY(0)}50%{transform:translateY(-12px)}100%{transform:translateY(0)}}
 @media (prefers-reduced-motion:reduce){ .blob{animation:none} }
 
-/* ===== Header (brand) ===== */
-.header{
-  width:100%; display:flex; justify-content:center;
-}
+/* brand header */
+.header{width:100%; display:flex; justify-content:center}
 .brand{
   width:100%; max-width:980px; margin-top:8px;
   display:flex; align-items:center; gap:10px; padding:10px 14px;
   border-radius:999px; background:rgba(255,255,255,.65); backdrop-filter:blur(8px);
-  border:1px solid var(--line); box-shadow:var(--shadow-soft);
+  border:1px solid var(--line); box-shadow:var(--shadow-soft)
 }
-.brand .logo{
-  width:26px;height:26px;border-radius:50%; flex:0 0 26px;
-  background: conic-gradient(from 0deg, var(--accent), var(--accent2), var(--lav), var(--mint), var(--accent));
-  animation:spin 8s linear infinite paused;
-}
-.brand:hover .logo{ animation-play-state:running }
-@keyframes spin{ to{ transform:rotate(360deg) } }
-.brand span{font-weight:900; letter-spacing:.2px}
+.brand .logo{width:26px;height:26px;border-radius:50%;flex:0 0 26px;background:conic-gradient(from 0deg,var(--accent),var(--accent2),var(--lav),var(--mint),var(--accent));animation:spin 8s linear infinite paused}
+.brand:hover .logo{animation-play-state:running}
+@keyframes spin{to{transform:rotate(360deg)}} .brand span{font-weight:900; letter-spacing:.2px}
 
-/* ===== Step Navbar (centered) ===== */
-.navbar{
-  display:flex; align-items:center; gap:10px; justify-content:center; flex-wrap:wrap;
-  padding:10px 12px;
-}
+/* nav */
+.navbar{display:flex; align-items:center; gap:10px; justify-content:center; flex-wrap:wrap; padding:10px 12px}
 .step{
-  display:flex; align-items:center; gap:8px; padding:10px 14px; border-radius:999px;
-  background:#fff; color:#3b4756; font-weight:850; cursor:pointer; border:1px solid var(--line);
-  box-shadow:var(--shadow-soft); transform:translateY(0); transition:transform .12s ease, box-shadow .2s ease, background .2s ease;
+  display:flex; align-items:center; gap:8px; padding:10px 14px; border-radius:999px; cursor:pointer;
+  background:#fff; color:#3b4756; font-weight:850; border:1px solid var(--line); box-shadow:var(--shadow-soft); transition:transform .12s, box-shadow .2s, background .2s
 }
 .step .num{width:22px;height:22px;border-radius:50%;display:inline-grid;place-items:center;background:#fff;border:1px solid var(--line);font-size:12px}
 .step:hover{transform:translateY(-2px); box-shadow:0 14px 30px rgba(23,35,50,.12)}
-.step.active{background:linear-gradient(90deg, var(--accent), var(--accent2)); color:#222}
+.step.active{background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#222}
 .step.active .num{background:#fff}
 .step.done{background:#e7fbf1; border-color:#c8f1de}
 
-/* ===== Card (center) ===== */
+/* card */
 .card{
-  width:100%;
-  background:var(--surface); border:1px solid var(--line);
-  border-radius:var(--radius); padding:24px; box-shadow:var(--shadow);
-  margin:0 auto;
-  animation:fadeUp .4s ease both;
+  width:100%; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow);
+  margin:0 auto; animation:fadeUp .4s ease both
 }
-@keyframes fadeUp{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:translateY(0)} }
+@keyframes fadeUp{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:translateY(0)}}
 @media (max-width:720px){ .card{padding:18px} }
 
-/* ===== Typography ===== */
+/* type */
 h1{font-size:34px; line-height:1.25; margin:0 0 6px}
 h2{font-size:24px; margin:0 0 10px}
 h3{font-size:18px; margin:16px 0 8px}
-p{margin:8px 0} .small{font-size:13px} .muted{color:var(--muted)}
-.center{text-align:center}
+p{margin:8px 0} .small{font-size:13px} .muted{color:var(--muted)} .center{text-align:center}
 
-/* ===== Buttons ===== */
-.btn{
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  color:#222; border:none; padding:14px 18px; border-radius:14px; font-weight:900; cursor:pointer;
-  box-shadow:0 12px 34px rgba(255,178,107,.35);
-  transition:transform .08s ease, filter .2s ease, box-shadow .2s ease;
-}
+/* buttons */
+.btn{background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#222; border:none; padding:14px 18px; border-radius:14px; font-weight:900; cursor:pointer; box-shadow:0 12px 34px rgba(255,178,107,.35); transition:transform .08s, box-shadow .2s}
 .btn:hover{transform:translateY(-2px); box-shadow:0 18px 40px rgba(255,178,107,.45)}
-.btn:active{transform:translateY(0)}
 .btn:disabled{opacity:.5; cursor:not-allowed}
-.btn-ghost{
-  background:#fff; color:var(--ink); border:1px solid var(--line);
-  padding:12px 14px; border-radius:12px; font-weight:800; cursor:pointer;
-  transition:transform .08s ease; box-shadow:var(--shadow-soft);
-}
+.btn-ghost{background:#fff; color:var(--ink); border:1px solid var(--line); padding:12px 14px; border-radius:12px; font-weight:800; cursor:pointer; transition:transform .08s; box-shadow:var(--shadow-soft)}
 .btn-ghost:hover{transform:translateY(-1px)}
 
-/* ===== Inputs ===== */
-input,select,textarea{
-  width:100%; background:#fff; color:var(--ink);
-  border:1px solid var(--line); border-radius:12px; padding:12px; outline:none;
-  transition:border-color .2s ease, box-shadow .2s ease;
-}
+/* inputs */
+input,select,textarea{width:100%; background:#fff; color:var(--ink); border:1px solid var(--line); border-radius:12px; padding:12px; outline:none; transition:border-color .2s, box-shadow .2s}
 input:focus,select:focus,textarea:focus{border-color:#ffd7b0; box-shadow:0 0 0 6px rgba(255,178,107,.18)}
 label{font-size:14px; color:#3b4756}
 .section{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
 
-/* ===== Progress ===== */
+/* progress */
 .progress{height:12px; background:#f4f6f9; border-radius:999px; overflow:hidden}
-.progress>div{height:100%; width:0;
-  background:linear-gradient(90deg,#7aa7ff,#65e8da,#bff4df);
-  transition:width .35s ease}
+.progress>div{height:100%; width:0; background:linear-gradient(90deg,#7aa7ff,#65e8da,#bff4df); transition:width .35s ease}
 
-/* ===== Options (cards) ===== */
-.grid{display:grid; gap:14px}
-.grid-2{grid-template-columns:1fr 1fr}
-@media (max-width:760px){ .grid-2{grid-template-columns:1fr} }
-.opt{
-  border:2px solid var(--line); border-radius:16px; overflow:hidden; cursor:pointer; background:#fff;
-  box-shadow:var(--shadow-soft); transform:translateY(0) scale(1); transition:transform .12s ease, box-shadow .2s ease, border-color .2s ease;
-}
+/* grid/options */
+.grid{display:grid; gap:14px} .grid-2{grid-template-columns:1fr 1fr} @media (max-width:760px){ .grid-2{grid-template-columns:1fr} }
+.opt{border:2px solid var(--line); border-radius:16px; overflow:hidden; cursor:pointer; background:#fff; box-shadow:var(--shadow-soft); transition:transform .12s, box-shadow .2s, border-color .2s}
 .opt:hover{transform:translateY(-2px)}
 .opt img{width:100%; display:block; aspect-ratio:4/3; object-fit:cover}
 .opt .cap{padding:12px; color:#3b4756; font-weight:700}
 .opt.sel{border-color:#ffc98b; box-shadow:0 0 0 6px rgba(255,201,139,.25)}
 
-/* ===== Accordion (Consent) ===== */
+/* consent accordion */
 .acc{border-radius:14px; overflow:hidden; border:1px solid var(--line)}
 .acc-item{border-top:1px solid var(--line)}
 .acc-head{padding:14px 16px; background:#fff8ef; cursor:pointer; display:flex; justify-content:space-between; align-items:center}
 .acc-body{padding:14px 16px; display:none; background:#fff}
 .acc-item.open .acc-body{display:block}
 
-/* ===== Print ===== */
+/* skeleton */
+.skel{border-radius:12px; background:linear-gradient(90deg,#f3f4f6,#eaeef3,#f3f4f6); background-size:200% 100%; animation:sh 1.2s infinite} @keyframes sh{to{background-position:-200% 0}}
+.skel.box{height:16px} .skel.img{aspect-ratio:4/3}
+
+/* toast */
+.toast{position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#1e293b; color:#fff; padding:10px 14px; border-radius:10px; box-shadow:var(--shadow-soft); display:none; z-index:99}
+
+/* print: PDF only on result */
 @media print{
-  body{background:#fff}
   .header, .navbar, .btn:not(.btn-pdf), .btn-ghost, .blob {display:none !important}
   .card{box-shadow:none; border:1px solid #ddd}
 }
@@ -167,28 +121,26 @@ label{font-size:14px; color:#3b4756}
 </head>
 <body>
 <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <div class="container">
-  <!-- 상단 브랜드 (중앙) -->
   <div class="header"><div class="brand"><div class="logo"></div><span>바른미술학원 · 미술적성테스트</span></div></div>
 
   <main class="main">
-    <!-- 스텝 네비 (중앙) -->
     <nav class="navbar" id="topnav"></nav>
-    <!-- 중앙 카드 -->
     <section class="card" id="app"></section>
   </main>
 </div>
 
 <script>
 /* ==================== 필수 값 (TODO) ==================== */
-// 1) 스프레드시트 문서 ID
-const SHEET_ID = 'YOUR_SHEET_ID'; // ← TODO
+// 스프레드시트 문서 ID (반영 완료)
+const SHEET_ID = '1n10E7zVRNxO4Zndc1eZmj0nRkUcblIj-qixL8evidDQ';
 
-// 2) Google Form formResponse 주소 (Results 저장)
+// Google Form formResponse 주소 (Results 저장)
 const FORM_ACTION = 'https://docs.google.com/forms/d/e/【FORM_ID】/formResponse'; // ← TODO
 
-// 3) Google Form 항목 매핑 (entry.xxx)
+// Google Form 항목 매핑 (entry.xxx)
 const F = {
   child_name:'entry.111111', // ← TODO
   age:'entry.222222',        // ← TODO
@@ -219,12 +171,13 @@ const $ = id => document.getElementById(id);
 const v = id => $(id)?.value?.trim() ?? '';
 const app = () => $('app');
 
-/* ---- Step Nav (always available; Result: empty state 지원) ---- */
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.style.display='block'; setTimeout(()=>t.style.display='none', 2000); }
+
+/* ---- Step Nav ---- */
 function renderNav(){
-  const cur = STATE.step;
-  const curIndex = STEPS.findIndex(x=>x.key===cur);
+  const curIndex = STEPS.findIndex(x=>x.key===STATE.step);
   const items = STEPS.map((s,i)=>{
-    const active = s.key===cur ? 'active' : '';
+    const active = s.key===STATE.step ? 'active' : '';
     const done = (curIndex > i) ? 'done' : '';
     return `<div class="step ${active} ${done}" onclick="navGo('${s.key}')">
       <span class="num">${i+1}</span><span>${s.label}</span>
@@ -246,6 +199,13 @@ function parseGViz(text){
   return obj.table.rows.map(r=>r.c.map(c=>c?(c.f??c.v):'')).map(a=>Object.fromEntries(cols.map((k,i)=>[k,a[i]])));
 }
 async function loadQuestions(){
+  // skeleton
+  app().innerHTML = `
+    <h2 class="center">문항을 불러오는 중…</h2>
+    <div class="grid grid-2">
+      ${Array.from({length:4}).map(()=>`<div class="skel img"></div>`).join('')}
+    </div>
+  `;
   const txt=await (await fetch(GVIZ_URL)).text();
   const rows=parseGViz(txt);
   const act=rows.filter(r=>String(r.active).toUpperCase()==='TRUE').sort((a,b)=>(+a.order - +b.order));
@@ -270,6 +230,7 @@ function viewStart(){
       <button class="btn" onclick="go('consent')">시작하기</button>
     </div>
   `;
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 function accItem(title, html){
   return `
@@ -286,15 +247,15 @@ function viewConsent(){
     <h2 class="center">보호자 개인정보 및 이용 동의서</h2>
     <p class="muted small center">본 테스트는 <b>교육 가이드</b> 목적이며 <b>의학·임상 진단이 아닙니다.</b></p>
     <div class="acc" id="acc">
-      ${accItem('1. 수집·이용 목적', '미술적성테스트 제공, 결과 산출 및 맞춤 가이드 제공 / 상담·등록 안내 / 서비스 품질 개선(통계·분석)')}
-      ${accItem('2. 수집 항목', '<b>필수</b>: 아동 이름·나이·학년 / 보호자 이름·연락처 / 테스트 응답<br/><b>자동수집</b>: 접속 일시·브라우저·쿠키·로그')}
-      ${accItem('3. 보관·파기', '보관기간: 수집일로부터 <b>12개월</b> / 법령상 의무기간 종료 시까지<br/>파기방법: 전자파일 영구삭제, 출력물 분쇄')}
-      ${accItem('4. 제3자 제공·처리위탁', 'Google(시트/드라이브/분석), Netlify/GitHub Pages(호스팅), (선택) 문자·메일 발송사 / 필요한 범위 내 제공')}
-      ${accItem('5. 동의 거부권', '동의 거부 가능하나 동의 없을 경우 테스트 이용이 제한될 수 있습니다.')}
-      ${accItem('6. 이용자 권리', '열람·정정·삭제·처리정지·동의철회 / 고객센터 요청 시 지체없이 조치')}
-      ${accItem('7. 안전성 확보', '접근권한 최소화, HTTPS 암호화, 접근기록 보관, 정기 점검')}
-      ${accItem('8. 연락처', 'JBM SOFT · 이메일: <b>jaewon@jbmsoft.co.kr</b> · 평일 10:00–18:00')}
-      ${accItem('9. 고지', '본 동의서·처리방침은 변경될 수 있으며 변경 시 웹에 게시합니다.')}
+      ${accItem('1. 수집·이용 목적','미술적성테스트 제공, 결과 산출 및 맞춤 가이드 제공 / 상담·등록 안내 / 서비스 품질 개선(통계·분석)')}
+      ${accItem('2. 수집 항목','<b>필수</b>: 아동 이름·나이·학년 / 보호자 이름·연락처 / 테스트 응답<br/><b>자동수집</b>: 접속 일시·브라우저·쿠키·로그')}
+      ${accItem('3. 보관·파기','보관기간: 수집일로부터 <b>12개월</b> / 법령상 의무기간 종료 시까지<br/>파기방법: 전자파일 영구삭제, 출력물 분쇄')}
+      ${accItem('4. 제3자 제공·처리위탁','Google(시트/드라이브/분석), Netlify/GitHub Pages(호스팅), (선택) 문자·메일 발송사 / 필요한 범위 내 제공')}
+      ${accItem('5. 동의 거부권','동의 거부 가능하나 동의 없을 경우 테스트 이용이 제한될 수 있습니다.')}
+      ${accItem('6. 이용자 권리','열람·정정·삭제·처리정지·동의철회 / 고객센터 요청 시 지체없이 조치')}
+      ${accItem('7. 안전성 확보','접근권한 최소화, HTTPS 암호화, 접근기록 보관, 정기 점검')}
+      ${accItem('8. 연락처','JBM SOFT · 이메일: <b>jaewon@jbmsoft.co.kr</b> · 평일 10:00–18:00')}
+      ${accItem('9. 고지','본 동의서·처리방침은 변경될 수 있으며 변경 시 웹에 게시합니다.')}
     </div>
 
     <div class="section" style="margin-top:16px">
@@ -326,23 +287,21 @@ function viewConsent(){
   });
   function evalConsentBtn(){
     const okReq = $('chk_required').checked && $('chk_minor').checked;
-    const g = v('consent_guardian');
-    const p = v('consent_phone');
+    const g = v('consent_guardian'); const p = v('consent_phone');
     const phoneOK = /^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(p);
     $('btn_consent').disabled = !(okReq && g.length>=2 && phoneOK);
   }
   $('btn_consent').onclick = ()=>{
     STATE.consent = $('chk_required').checked && $('chk_minor').checked;
-    STATE.consentMeta = {
-      agreed: $('chk_required').checked, minor_guardian: $('chk_minor').checked, marketing: $('chk_marketing').checked,
-      guardian: v('consent_guardian'), phone: v('consent_phone'), relation: v('consent_relation'), ts: $('consent_ts').value,
-      version: "v1.0 (2025-08-23)"
-    };
-    if(!STATE.consent) return alert('필수 항목 동의가 필요합니다.');
+    STATE.consentMeta = { agreed:$('chk_required').checked, minor_guardian:$('chk_minor').checked,
+      marketing:$('chk_marketing').checked, guardian:v('consent_guardian'), phone:v('consent_phone'),
+      relation:v('consent_relation'), ts:$('consent_ts').value, version:"v1.0 (2025-08-24)" };
+    if(!STATE.consent) return toast('필수 항목 동의가 필요합니다.');
     go('profile');
   };
   document.querySelectorAll('.acc-head').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
   toggleAll(false);
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 function viewProfile(){
   app().innerHTML = `
@@ -355,38 +314,43 @@ function viewProfile(){
       <div><label>연락처</label><input id="phone" placeholder="010-0000-0000"></div>
       <div><label>관심 캠퍼스(선택)</label><input id="campus" placeholder="예: 분당점"></div>
     </div>
-    <div class="center" style="margin-top:16px">
-      <button class="btn" onclick="startTest()">테스트 시작</button>
-    </div>
+    <div class="center" style="margin-top:16px"><button class="btn" onclick="startTest()">테스트 시작</button></div>
   `;
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 async function startTest(){
   STATE.profile = { child_name:v('cname'), age:v('age'), grade:v('grade'), guardian:v('gname'), phone:v('phone'), campus:v('campus') };
-  if(!STATE.profile.child_name || !/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(STATE.profile.phone||'')){
-    alert('이름/연락처를 확인해 주세요.'); return;
-  }
+  if(!STATE.profile.child_name || !/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(STATE.profile.phone||'')){ toast('이름/연락처를 확인해 주세요.'); return; }
   await loadQuestions(); STATE.idx=0; STATE.answers=[];
   go('test');
 }
 function viewTest(){
-  const q=STATE.questions[STATE.idx] || {prompt:'문항을 불러오는 중입니다', options:[]};
-  const pct = STATE.questions.length ? Math.round(STATE.idx/STATE.questions.length*100) : 0;
+  const hasQ = STATE.questions.length>0;
+  const q = STATE.questions[STATE.idx] || {prompt:'문항을 불러오는 중입니다', options:[]};
+  const pct = hasQ ? Math.round(STATE.idx/STATE.questions.length*100) : 0;
   app().innerHTML = `
-    <div class="center small muted">Q${STATE.idx+1}/${STATE.questions.length || '?'} · 진행률</div>
-    <div class="progress" aria-hidden="true"><div style="width:${pct}%"></div></div>
+    <div class="center small muted">Q${hasQ?STATE.idx+1:'-'} / ${hasQ?STATE.questions.length:'-'} · 진행률</div>
+    <div class="progress"><div style="width:${pct}%"></div></div>
     <h2 class="center" style="margin-top:12px">${q.prompt}</h2>
     <div class="grid grid-2" style="margin-top:12px">
-      ${q.options.map(o=>`
-        <div class="opt" id="opt_${o.key}" onclick="choose('${o.key}')">
-          <img src="${o.imageUrl}" alt="${o.alt}">
+      ${q.options.length ? q.options.map(o=>`
+        <div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label}" onclick="choose('${o.key}')" onkeydown="if(event.key==='Enter' || event.key===' '){choose('${o.key}')}">
+          <img src="${o.imageUrl}" alt="${o.alt}" onerror="this.style.opacity=.2" loading="lazy">
           <div class="cap center">${o.label}</div>
-        </div>`).join('')}
+        </div>`).join('') : Array.from({length:2}).map(()=>`<div class="skel img"></div>`).join('')}
     </div>
     <div class="center" style="margin-top:18px; display:flex; gap:8px; justify-content:center">
       <button class="btn-ghost" onclick="prev()" ${STATE.idx===0?'disabled':''}>이전</button>
-      <button class="btn" onclick="next()">다음</button>
+      <button class="btn" id="nextBtn" onclick="next()" disabled>다음</button>
     </div>
   `;
+  document.addEventListener('keydown', keyNavOnce, {once:true});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function keyNavOnce(e){
+  if(e.key==='ArrowRight') next();
+  if(e.key==='ArrowLeft') prev();
+  if(e.key==='Enter'){ if(!$('nextBtn').disabled) next(); }
 }
 function choose(key){
   const q=STATE.questions[STATE.idx];
@@ -394,19 +358,19 @@ function choose(key){
   const node = $(`opt_${key}`); if(node){ node.classList.add('sel'); node.animate([{transform:'scale(1)'},{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:180}); }
   const opt=q.options.find(o=>o.key===key);
   STATE.answers[STATE.idx]={ qid:q.id, key, weights:opt.weights };
+  $('nextBtn').disabled=false;
 }
-function next(){ if(!STATE.answers[STATE.idx]) return alert('하나를 선택해 주세요.'); if(STATE.idx<STATE.questions.length-1){ STATE.idx++; viewTest(); } else submitAll(); }
+function next(){ if(!STATE.answers[STATE.idx]) return toast('하나를 선택해 주세요.');
+  if(STATE.idx<STATE.questions.length-1){ STATE.idx++; viewTest(); } else submitAll(); }
 function prev(){ if(STATE.idx>0){ STATE.idx--; viewTest(); } }
 
-/* ---- Scoring ---- */
+/* ---- Score & Submit ---- */
 function aggregateScores(ans){
   const sum={}; DOMAINS.forEach(d=>sum[d]=0);
   ans.forEach(a=>Object.entries(a.weights||{}).forEach(([k,v])=>sum[k]=(sum[k]||0)+Number(v||0)));
   const qCount=ans.length||1, maxPerQ=1.0, max=qCount*maxPerQ;
   const scores={}; DOMAINS.forEach(d=>{ const v=(sum[d]||0)/max*4; scores[d]=Math.round(v*10)/10; }); return scores;
 }
-
-/* ---- Submit to Google Form ---- */
 async function submitAll(){
   const scores=aggregateScores(STATE.answers);
   const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3);
@@ -453,9 +417,7 @@ function viewResult(){
     </div>
 
     ${has ? `<h3>전체 영역 점수(0~4)</h3>${keys.map(k=>bar(k,s[k])).join('')}` : `
-      <div class="center" style="margin-top:10px">
-        <button class="btn" onclick="go('test')">테스트 하러 가기</button>
-      </div>
+      <div class="center" style="margin-top:10px"><button class="btn" onclick="go('test')">테스트 하러 가기</button></div>
     `}
 
     <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center">
@@ -466,39 +428,21 @@ function viewResult(){
     <p class="small muted center" style="margin-top:8px">※ 본 결과는 교육 가이드 목적이며 <b>의학·임상 진단이 아닙니다.</b></p>
   `;
 
-  // 작게 축하 애니메이션 (결과 생성 시)
-  if(has){
-    try{
-      const conf = document.createElement('canvas');
-      conf.width = app().clientWidth; conf.height = 160; conf.style.width='100%'; conf.style.height='160px';
-      conf.style.display='block'; conf.style.margin='10px 0'; conf.style.filter='saturate(1.2)';
-      app().insertBefore(conf, app().children[2]);
-      miniConfetti(conf);
-      setTimeout(()=>conf.remove(), 1500);
-    }catch(e){}
-  }
+  if(has){ try{
+    const conf = document.createElement('canvas');
+    conf.width = app().clientWidth; conf.height = 160; conf.style.width='100%'; conf.style.height='160px';
+    conf.style.display='block'; conf.style.margin='10px 0'; conf.style.filter='saturate(1.2)';
+    app().insertBefore(conf, app().children[2]); miniConfetti(conf); setTimeout(()=>conf.remove(), 1500);
+  }catch(e){} }
+  window.scrollTo({top:0,behavior:'smooth'});
 }
-
-/* 간단한 컨페티 */
 function miniConfetti(canvas){
-  const ctx=canvas.getContext('2d');
-  const W=canvas.width, H=canvas.height;
-  const parts = Array.from({length:80}).map(()=>({
-    x:Math.random()*W, y:Math.random()*-H*0.3, v:2+Math.random()*3, s:4+Math.random()*6,
-    c: ['#ffd9a8','#ffc98b','#bff4df','#dcd6ff'][Math.floor(Math.random()*4)]
-  }));
-  let t=0, rid;
-  function step(){
-    ctx.clearRect(0,0,W,H);
-    parts.forEach(p=>{
-      p.y += p.v; p.x += Math.sin((t+p.y)*0.05);
-      ctx.fillStyle=p.c; ctx.fillRect(p.x, p.y, p.s, p.s);
-    });
-    t+=1; if(t<120) rid=requestAnimationFrame(step);
-  }
-  step();
+  const ctx=canvas.getContext('2d'), W=canvas.width, H=canvas.height;
+  const parts = Array.from({length:80}).map(()=>({ x:Math.random()*W, y:Math.random()*-H*0.3, v:2+Math.random()*3, s:4+Math.random()*6, c:['#ffd9a8','#ffc98b','#bff4df','#dcd6ff'][Math.floor(Math.random()*4)] }));
+  let t=0, rid; (function step(){ ctx.clearRect(0,0,W,H); parts.forEach(p=>{ p.y+=p.v; p.x+=Math.sin((t+p.y)*0.05); ctx.fillStyle=p.c; ctx.fillRect(p.x,p.y,p.s,p.s); }); t+=1; if(t<120) rid=requestAnimationFrame(step); })();
 }
 
+/* router */
 function go(step){ STATE.step=step; render(); }
 function render(){
   renderNav();
