@@ -6,27 +6,18 @@
 <title>ArtTest Admin</title>
 <style>
 :root{
-  --bg1:#fffaf5; --bg2:#fff2e2;
-  --surface:#ffffff; --ink:#24303f; --muted:#7b8794;
-  --accent:#ffb26b; --accent2:#ffd9a8; --line:#eef2f6;
-  --radius:18px; --shadow:0 14px 40px rgba(23,35,50,.08);
+  --bg1:#fffaf5; --bg2:#fff2e2; --surface:#ffffff; --ink:#24303f; --muted:#7b8794;
+  --accent:#ffb26b; --accent2:#ffd9a8; --line:#eef2f6; --radius:18px; --shadow:0 14px 40px rgba(23,35,50,.08);
 }
 *{box-sizing:border-box}
-body{
-  margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--ink);
-  font-family:ui-sans-serif,system-ui,"Noto Sans KR",Segoe UI,Roboto,Arial;
-}
-.header{
-  position:sticky; top:0; z-index:10;
-  backdrop-filter:blur(8px); background:rgba(255,255,255,.6);
-  border-bottom:1px solid var(--line);
-}
+body{margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--ink);font-family:ui-sans-serif,system-ui,"Noto Sans KR",Segoe UI,Roboto,Arial}
+.header{position:sticky; top:0; z-index:10; backdrop-filter:blur(8px); background:rgba(255,255,255,.6); border-bottom:1px solid var(--line)}
 .header .wrap{max-width:1080px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:10px}
 .brand{display:flex;align-items:center;gap:10px;font-weight:900}
 .brand .dot{width:22px;height:22px;border-radius:50%;background:conic-gradient(from 0deg, var(--accent), var(--accent2), #bff4df, #dcd6ff, var(--accent))}
 .brand span{letter-spacing:.2px}
 .header .links{margin-left:auto;display:flex;gap:8px}
-.link{color:#222;text-decoration:none;font-weight:850;border:1px solid var(--line);padding:8px 12px;border-radius:12px;background:#fff;box-shadow:0 10px 24px rgba(23,35,50,.06)}
+.link{color:#222;text-decoration:none;font-weight:900;border:1px solid var(--line);padding:8px 12px;border-radius:12px;background:#fff;box-shadow:0 10px 24px rgba(23,35,50,.06)}
 .wrap-main{max-width:1080px;margin:0 auto;padding:18px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:12px;animation:fade .3s ease both}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
@@ -38,7 +29,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
 @media(max-width:900px){.grid-2{grid-template-columns:1fr}}
 table{border-collapse:collapse;width:100%} th,td{border:1px solid var(--line);padding:8px;font-size:12px}
 
-/* Tabs */
+/* tabs */
 .tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .tab{padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:#fff;font-weight:900;cursor:pointer;box-shadow:0 10px 24px rgba(23,35,50,.06)}
 .tab.active{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#222;border-color:transparent}
@@ -50,9 +41,7 @@ table{border-collapse:collapse;width:100%} th,td{border:1px solid var(--line);pa
 <header class="header">
   <div class="wrap">
     <div class="brand"><div class="dot"></div><span>ArtTest Admin</span></div>
-    <div class="links">
-      <a class="link" href="./index.html" target="_blank" rel="noopener">수험자 페이지</a>
-    </div>
+    <div class="links"><a class="link" href="./index.html" target="_blank" rel="noopener">수험자 페이지</a></div>
   </div>
 </header>
 
@@ -64,21 +53,18 @@ table{border-collapse:collapse;width:100%} th,td{border:1px solid var(--line);pa
     <div class="tab" id="signout" style="display:none">로그아웃</div>
   </div>
 
-  <!-- Results -->
   <section id="t1" class="section active card">
     <h2>Results</h2>
     <div id="results" class="small muted center">로그인 후 조회됩니다.</div>
   </section>
 
-  <!-- Questions -->
   <section id="t2" class="section card">
     <h2>Questions · 문항/이미지 교체</h2>
     <div class="grid grid-2" style="margin-top:12px">
       <div>
         <label>문항 선택</label>
         <select id="qsel"></select>
-        <label style="margin-top:8px">질문</label>
-        <textarea id="prompt" rows="2"></textarea>
+        <label style="margin-top:8px">질문</label><textarea id="prompt" rows="2"></textarea>
 
         <label style="margin-top:8px">A label</label><input id="A_label"/>
         <label>A image URL</label><input id="A_image" placeholder="https://drive.google.com/uc?export=view&id=..."/>
@@ -105,17 +91,13 @@ table{border-collapse:collapse;width:100%} th,td{border:1px solid var(--line);pa
   </section>
 </main>
 
-<!-- GIS & GAPI -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://apis.google.com/js/api.js" async defer></script>
 <script>
 /* ==================== 필수 값 (TODO) ==================== */
-// 1) 브라우저 API 키 (HTTP referrer 제한 + Sheets API 제한)
-const API_KEY   = 'YOUR_BROWSER_API_KEY'; // ← TODO
-// 2) OAuth 클라이언트 ID (Web)
+const API_KEY   = 'YOUR_BROWSER_API_KEY'; // ← TODO: referrer 제한 + Sheets API 제한
 const CLIENT_ID = 'YOUR_OAUTH_CLIENT_ID.apps.googleusercontent.com'; // ← TODO
-// 3) 스프레드시트 문서 ID
-const SHEET_ID  = 'YOUR_SHEET_ID'; // ← TODO
+const SHEET_ID  = '1n10E7zVRNxO4Zndc1eZmj0nRkUcblIj-qixL8evidDQ'; // 반영 완료
 /* ======================================================= */
 
 const DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
@@ -124,97 +106,54 @@ const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
 let tokenClient, gapiInited=false, gisInited=false;
 function g(id){return document.getElementById(id);}
 
-/* Tabs */
-document.addEventListener('click', (e)=>{
-  if(e.target.classList.contains('tab') && e.target.dataset.tab){
-    document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t===e.target));
-    document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active', s.id===e.target.dataset.tab));
-  }
-});
+/* tabs */
+document.addEventListener('click',(e)=>{ if(e.target.classList.contains('tab') && e.target.dataset.tab){ document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t===e.target)); document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active', s.id===e.target.dataset.tab)); }});
 
 window.onload = () => {
-  gapi.load('client', async () => {
-    await gapi.client.init({ apiKey: API_KEY, discoveryDocs: DISCOVERY_DOCS });
-    gapiInited = true; maybeEnableSignIn();
-  });
-  tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID, scope: SCOPES, callback: (resp)=>{ if(resp.access_token){ onSignedIn(); } }
-  });
+  gapi.load('client', async () => { await gapi.client.init({ apiKey: API_KEY, discoveryDocs: DISCOVERY_DOCS }); gapiInited = true; maybeEnableSignIn(); });
+  tokenClient = google.accounts.oauth2.initTokenClient({ client_id: CLIENT_ID, scope: SCOPES, callback: (resp)=>{ if(resp.access_token){ onSignedIn(); } } });
   gisInited = true; maybeEnableSignIn();
-
   g('signin').onclick = ()=> tokenClient.requestAccessToken({ prompt:'' });
   g('signout').onclick = ()=>{ const t=gapi.client.getToken(); if(t){ google.accounts.oauth2.revoke(t.access_token); gapi.client.setToken(''); } onSignedOut(); };
 };
 
 function maybeEnableSignIn(){ if(gapiInited && gisInited){ g('signin').style.pointerEvents='auto'; } }
 function onSignedIn(){ g('signin').style.display='none'; g('signout').style.display='inline-block'; loadResults(); loadQuestions(); }
-function onSignedOut(){
-  g('signin').style.display='inline-block'; g('signout').style.display='none';
-  g('results').innerHTML='-'; g('qsel').innerHTML=''; g('msg').textContent='';
-}
+function onSignedOut(){ g('signin').style.display='inline-block'; g('signout').style.display='none'; g('results').innerHTML='-'; g('qsel').innerHTML=''; g('msg').textContent=''; }
 
-/* Sheets helpers */
-async function readRange(range){
-  const r = await gapi.client.sheets.spreadsheets.values.get({ spreadsheetId:SHEET_ID, range });
-  return r.result.values || [];
-}
-async function writeRange(range, values){
-  return gapi.client.sheets.spreadsheets.values.update({
-    spreadsheetId:SHEET_ID, range, valueInputOption:'RAW', resource:{ values }
-  });
-}
+/* sheets helpers */
+async function readRange(range){ const r = await gapi.client.sheets.spreadsheets.values.get({ spreadsheetId:SHEET_ID, range }); return r.result.values || []; }
+async function writeRange(range, values){ return gapi.client.sheets.spreadsheets.values.update({ spreadsheetId:SHEET_ID, range, valueInputOption:'RAW', resource:{ values } }); }
 
-/* Results */
+/* results */
 async function loadResults(){
-  const rows = await readRange('Results!A1:K10000');
-  const header = rows.shift()||[];
-  const idx = Object.fromEntries(header.map((h,i)=>[h,i]));
+  const rows = await readRange('Results!A1:K10000'); const header = rows.shift()||[]; const idx = Object.fromEntries(header.map((h,i)=>[h,i]));
   const html = ['<table><tr><th>time</th><th>child</th><th>phone</th><th>top3</th></tr>'];
-  (rows||[]).slice(-200).reverse().forEach(r=>{
-    html.push(`<tr><td>${r[idx['timestamp']]||''}</td><td>${r[idx['child_name']]||''}</td><td>${r[idx['phone']]||''}</td><td>${r[idx['top3(csv)']]||''}</td></tr>`);
-  });
-  html.push('</table>');
-  g('results').innerHTML = html.join('');
+  (rows||[]).slice(-200).reverse().forEach(r=>{ html.push(`<tr><td>${r[idx['timestamp']]||''}</td><td>${r[idx['child_name']]||''}</td><td>${r[idx['phone']]||''}</td><td>${r[idx['top3(csv)']]||''}</td></tr>`); });
+  html.push('</table>'); g('results').innerHTML = html.join('');
 }
 
-/* Questions */
+/* questions */
 let QUESTIONS=[], QIDX={};
 async function loadQuestions(){
-  const rows = await readRange('Questions!A1:P1000');
-  const header = rows.shift()||[];
-  const H = Object.fromEntries(header.map((h,i)=>[h,i]));
-  QUESTIONS = rows.map((r,ri)=>({
-    _row:r, _rowNum:ri+2,
-    id:r[H.id], order:+(r[H.order]||0), prompt:r[H.prompt]||'',
+  const rows = await readRange('Questions!A1:P1000'); const header = rows.shift()||[]; const H = Object.fromEntries(header.map((h,i)=>[h,i]));
+  QUESTIONS = rows.map((r,ri)=>({ _row:r,_rowNum:ri+2, id:r[H.id], order:+(r[H.order]||0), prompt:r[H.prompt]||'',
     A_label:r[H.A_label]||'', A_image:r[H.A_image]||'', A_weights:r[H.A_weights]||'',
     B_label:r[H.B_label]||'', B_image:r[H.B_image]||'', B_weights:r[H.B_weights]||'',
     C_label:r[H.C_label]||'', C_image:r[H.C_image]||'', C_weights:r[H.C_weights]||'',
     D_label:r[H.D_label]||'', D_image:r[H.D_image]||'', D_weights:r[H.D_weights]||'',
-    active:r[H.active]||'TRUE'
-  })).sort((a,b)=>a.order-b.order);
+    active:r[H.active]||'TRUE' })).sort((a,b)=>a.order-b.order);
   QIDX = Object.fromEntries(QUESTIONS.map(q=>[q.id,q]));
-  const sel=g('qsel'); sel.innerHTML='';
-  QUESTIONS.forEach(q=>{ const o=document.createElement('option'); o.value=q.id; o.textContent=`${q.order}. ${q.prompt}`; sel.appendChild(o); });
-  sel.onchange=()=>fill(QIDX[sel.value]); if(QUESTIONS[0]) fill(QUESTIONS[0]);
-  loadQuestions._H = H;
+  const sel=g('qsel'); sel.innerHTML=''; QUESTIONS.forEach(q=>{ const o=document.createElement('option'); o.value=q.id; o.textContent=`${q.order}. ${q.prompt}`; sel.appendChild(o); });
+  sel.onchange=()=>fill(QIDX[sel.value]); if(QUESTIONS[0]) fill(QUESTIONS[0]); loadQuestions._H = H;
 }
-function fill(q){
-  ['prompt','A_label','A_image','A_weights','B_label','B_image','B_weights','C_label','C_image','C_weights','D_label','D_image','D_weights']
-   .forEach(k=> g(k).value = q[k] || '');
-}
+function fill(q){ ['prompt','A_label','A_image','A_weights','B_label','B_image','B_weights','C_label','C_image','C_weights','D_label','D_image','D_weights'].forEach(k=> g(k).value = q[k] || ''); }
 async function save(){
-  const id = g('qsel').value; const q = QIDX[id]; if(!q) return;
-  const H = loadQuestions._H;
-  const row = q._row.slice();
+  const id = g('qsel').value; const q = QIDX[id]; if(!q) return; const H = loadQuestions._H; const row = q._row.slice();
   row[H['prompt']] = g('prompt').value;
-  ['A','B','C','D'].forEach(k=>{
-    row[H[`${k}_label`]]   = g(`${k}_label`).value;
-    row[H[`${k}_image`]]   = g(`${k}_image`).value;
-    row[H[`${k}_weights`]] = g(`${k}_weights`).value;
-  });
+  ['A','B','C','D'].forEach(k=>{ row[H[`${k}_label`]] = g(`${k}_label`).value; row[H[`${k}_image`]] = g(`${k}_image`).value; row[H[`${k}_weights`]] = g(`${k}_weights`).value; });
   await writeRange(`Questions!A${q._rowNum}:P${q._rowNum}`, [row]);
-  g('msg').textContent='저장 완료'; setTimeout(()=>g('msg').textContent='',1500);
-  await loadQuestions();
+  g('msg').textContent='저장 완료'; setTimeout(()=>g('msg').textContent='',1500); await loadQuestions();
 }
 function reload(){ loadQuestions(); }
 </script>
