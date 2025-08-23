@@ -12,29 +12,34 @@
 *{box-sizing:border-box}
 body{margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--ink);font-family:ui-sans-serif,system-ui,"Noto Sans KR",Segoe UI,Roboto,Arial}
 .header{position:sticky; top:0; z-index:10; backdrop-filter:blur(8px); background:rgba(255,255,255,.6); border-bottom:1px solid var(--line)}
-.header .wrap{max-width:1080px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:10px}
+.header .wrap{max-width:1100px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:10px}
 .brand{display:flex;align-items:center;gap:10px;font-weight:900}
 .brand .dot{width:22px;height:22px;border-radius:50%;background:conic-gradient(from 0deg, var(--accent), var(--accent2), #bff4df, #dcd6ff, var(--accent))}
 .brand span{letter-spacing:.2px}
 .header .links{margin-left:auto;display:flex;gap:8px}
 .link{color:#222;text-decoration:none;font-weight:900;border:1px solid var(--line);padding:8px 12px;border-radius:12px;background:#fff;box-shadow:0 10px 24px rgba(23,35,50,.06)}
-.wrap-main{max-width:1080px;margin:0 auto;padding:18px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:12px;animation:fade .3s ease both}
+.wrap-main{max-width:1100px;margin:0 auto;padding:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:14px;animation:fade .3s ease both}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 h2{margin:0 0 10px} .muted{color:var(--muted)} .small{font-size:13px}
 .btn{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#222;border:none;padding:10px 14px;border-radius:12px;font-weight:900;cursor:pointer;box-shadow:0 12px 34px rgba(255,178,107,.35)}
 .btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line);padding:10px 12px;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:0 10px 24px rgba(23,35,50,.06)}
 input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:12px}
-.grid{display:grid;gap:14px} .grid-2{grid-template-columns:1fr 1fr}
-@media(max-width:900px){.grid-2{grid-template-columns:1fr}}
-table{border-collapse:collapse;width:100%} th,td{border:1px solid var(--line);padding:8px;font-size:12px}
-
-/* tabs */
+.grid{display:grid;gap:14px} .grid-2{grid-template-columns:1fr 2fr} @media(max-width:1000px){.grid-2{grid-template-columns:1fr}}
+.list{display:flex;flex-direction:column;gap:10px;max-height:520px;overflow:auto}
+.qitem{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:8px;background:#fff;cursor:pointer}
+.qitem:hover{box-shadow:0 10px 24px rgba(23,35,50,.06)}
+.thumb{width:56px;height:42px;border-radius:8px;background:#f3f4f6;object-fit:cover;border:1px solid var(--line)}
+.row{display:flex;gap:8px;align-items:center}
+.bad{border-color:#ef4444 !important}
+.hint{font-size:12px;color:#6b7280}
+.table{border-collapse:collapse;width:100%} .table th,.table td{border:1px solid var(--line);padding:8px;font-size:12px}
 .tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .tab{padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:#fff;font-weight:900;cursor:pointer;box-shadow:0 10px 24px rgba(23,35,50,.06)}
 .tab.active{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#222;border-color:transparent}
 .section{display:none}.section.active{display:block}
 .center{text-align:center}
+label>span{display:block;font-size:12px;color:#6b7280;margin-top:4px}
 </style>
 </head>
 <body>
@@ -48,67 +53,114 @@ table{border-collapse:collapse;width:100%} th,td{border:1px solid var(--line);pa
 <main class="wrap-main">
   <div class="tabs">
     <div class="tab active" data-tab="t1">결과 보기</div>
-    <div class="tab" data-tab="t2">문항/이미지 교체</div>
+    <div class="tab" data-tab="t2">문항 관리 (문제·보기·이미지)</div>
     <div class="tab" id="signin">Google 로그인</div>
     <div class="tab" id="signout" style="display:none">로그아웃</div>
   </div>
 
+  <!-- Results -->
   <section id="t1" class="section active card">
     <h2>Results</h2>
     <div id="results" class="small muted center">로그인 후 조회됩니다.</div>
   </section>
 
+  <!-- Questions -->
   <section id="t2" class="section card">
-    <h2>Questions · 문항/이미지 교체</h2>
+    <h2>문항 관리</h2>
     <div class="grid grid-2" style="margin-top:12px">
+      <!-- left: list -->
       <div>
-        <label>문항 선택</label>
-        <select id="qsel"></select>
-        <label style="margin-top:8px">질문</label><textarea id="prompt" rows="2"></textarea>
-
-        <label style="margin-top:8px">A label</label><input id="A_label"/>
-        <label>A image URL</label><input id="A_image" placeholder="https://drive.google.com/uc?export=view&id=..."/>
-        <label>A weights(JSON)</label><input id="A_weights" placeholder='{"관찰력":1}'/>
-
-        <label style="margin-top:8px">B label</label><input id="B_label"/>
-        <label>B image URL</label><input id="B_image"/><label>B weights(JSON)</label><input id="B_weights"/>
+        <div class="row" style="justify-content:space-between">
+          <input id="qsearch" placeholder="문항 검색 (질문/라벨)" />
+          <div class="row">
+            <button class="btn-ghost" onclick="previewTest()">수험자 페이지 미리보기</button>
+            <button class="btn" onclick="addQuestion()">새 문항 추가</button>
+          </div>
+        </div>
+        <div id="qlist" class="list" style="margin-top:10px"></div>
       </div>
+      <!-- right: editor -->
       <div>
-        <label>C label</label><input id="C_label"/>
-        <label>C image URL</label><input id="C_image"/><label>C weights(JSON)</label><input id="C_weights"/>
+        <div class="row" style="justify-content:flex-start;gap:12px">
+          <label style="min-width:120px">문항 ID <span>(자동)</span></label><input id="qid" readonly style="max-width:240px" />
+          <label style="min-width:80px">순서(order)</label><input id="order" style="max-width:100px" />
+          <label class="row" style="gap:6px"><input type="checkbox" id="active"/><span>활성화</span></label>
+        </div>
 
-        <label style="margin-top:8px">D label</label><input id="D_label"/>
-        <label>D image URL</label><input id="D_image"/><label>D weights(JSON)</label><input id="D_weights"/>
+        <label style="margin-top:8px">문제(질문)</label>
+        <textarea id="prompt" rows="2" placeholder="예: 전시 포스터를 만든다면 어디에 집중할까?"></textarea>
 
-        <div style="display:flex;gap:8px;margin-top:10px;justify-content:center">
+        <div class="grid" style="grid-template-columns:1fr 1fr; margin-top:8px">
+          <!-- A -->
+          <div style="border:1px solid var(--line); border-radius:12px; padding:10px">
+            <div class="row"><strong>A 보기</strong></div>
+            <label>라벨</label><input id="A_label"/>
+            <label>이미지 URL <span>이미지 보기 ▼</span></label>
+            <input id="A_image" oninput="updateThumb('A')" placeholder="https://drive.google.com/uc?export=view&id=..."/>
+            <img id="A_thumb" class="thumb" alt="A 이미지" />
+            <label>가중치(JSON)</label>
+            <input id="A_weights" placeholder='{"관찰력":1}' oninput="validateJSON(this)"/>
+            <div id="A_err" class="hint"></div>
+          </div>
+          <!-- B -->
+          <div style="border:1px solid var(--line); border-radius:12px; padding:10px">
+            <div class="row"><strong>B 보기</strong></div>
+            <label>라벨</label><input id="B_label"/>
+            <label>이미지 URL <span>이미지 보기 ▼</span></label>
+            <input id="B_image" oninput="updateThumb('B')"/><img id="B_thumb" class="thumb" alt="B 이미지"/>
+            <label>가중치(JSON)</label>
+            <input id="B_weights" oninput="validateJSON(this)"/><div id="B_err" class="hint"></div>
+          </div>
+          <!-- C -->
+          <div style="border:1px solid var(--line); border-radius:12px; padding:10px">
+            <div class="row"><strong>C 보기</strong></div>
+            <label>라벨</label><input id="C_label"/>
+            <label>이미지 URL <span>이미지 보기 ▼</span></label>
+            <input id="C_image" oninput="updateThumb('C')"/><img id="C_thumb" class="thumb" alt="C 이미지"/>
+            <label>가중치(JSON)</label>
+            <input id="C_weights" oninput="validateJSON(this)"/><div id="C_err" class="hint"></div>
+          </div>
+          <!-- D -->
+          <div style="border:1px solid var(--line); border-radius:12px; padding:10px">
+            <div class="row"><strong>D 보기</strong></div>
+            <label>라벨</label><input id="D_label"/>
+            <label>이미지 URL <span>이미지 보기 ▼</span></label>
+            <input id="D_image" oninput="updateThumb('D')"/><img id="D_thumb" class="thumb" alt="D 이미지"/>
+            <label>가중치(JSON)</label>
+            <input id="D_weights" oninput="validateJSON(this)"/><div id="D_err" class="hint"></div>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:12px; justify-content:center">
           <button class="btn" onclick="save()">저장</button>
           <button class="btn-ghost" onclick="reload()">다시 불러오기</button>
         </div>
         <div id="msg" class="small muted center" style="margin-top:6px"></div>
       </div>
     </div>
-    <p class="small muted center" style="margin-top:10px">※ 시트의 해당 계정에 <b>편집권한</b>이 있어야 저장됩니다.</p>
+    <p class="small muted center" style="margin-top:10px">※ 시트 편집권한이 있어야 저장됩니다.</p>
   </section>
 </main>
 
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://apis.google.com/js/api.js" async defer></script>
 <script>
-/* ==================== 필수 값 (TODO) ==================== */
-const API_KEY   = 'YOUR_BROWSER_API_KEY'; // ← TODO: referrer 제한 + Sheets API 제한
-const CLIENT_ID = 'YOUR_OAUTH_CLIENT_ID.apps.googleusercontent.com'; // ← TODO
-const SHEET_ID  = '1n10E7zVRNxO4Zndc1eZmj0nRkUcblIj-qixL8evidDQ'; // 반영 완료
-/* ======================================================= */
+/* ===== 변경할 값 ===== */
+const API_KEY   = 'YOUR_BROWSER_API_KEY'; // TODO: referrer + Sheets 제한 필수
+const CLIENT_ID = 'YOUR_OAUTH_CLIENT_ID.apps.googleusercontent.com'; // TODO
+const SHEET_ID  = '1n10E7zVRNxO4Zndc1eZmj0nRkUcblIj-qixL8evidDQ'; // 이미 반영
+/* ==================== */
 
 const DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
 const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
-
 let tokenClient, gapiInited=false, gisInited=false;
+
 function g(id){return document.getElementById(id);}
 
-/* tabs */
-document.addEventListener('click',(e)=>{ if(e.target.classList.contains('tab') && e.target.dataset.tab){ document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t===e.target)); document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active', s.id===e.target.dataset.tab)); }});
+/* Tabs */
+document.addEventListener('click',(e)=>{ if(e.target.classList.contains('tab') && e.target.dataset.tab){ document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t===e.target)); document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active', s.id===e.target.dataset.tab)); } });
 
+/* Auth */
 window.onload = () => {
   gapi.load('client', async () => { await gapi.client.init({ apiKey: API_KEY, discoveryDocs: DISCOVERY_DOCS }); gapiInited = true; maybeEnableSignIn(); });
   tokenClient = google.accounts.oauth2.initTokenClient({ client_id: CLIENT_ID, scope: SCOPES, callback: (resp)=>{ if(resp.access_token){ onSignedIn(); } } });
@@ -116,46 +168,94 @@ window.onload = () => {
   g('signin').onclick = ()=> tokenClient.requestAccessToken({ prompt:'' });
   g('signout').onclick = ()=>{ const t=gapi.client.getToken(); if(t){ google.accounts.oauth2.revoke(t.access_token); gapi.client.setToken(''); } onSignedOut(); };
 };
-
 function maybeEnableSignIn(){ if(gapiInited && gisInited){ g('signin').style.pointerEvents='auto'; } }
 function onSignedIn(){ g('signin').style.display='none'; g('signout').style.display='inline-block'; loadResults(); loadQuestions(); }
-function onSignedOut(){ g('signin').style.display='inline-block'; g('signout').style.display='none'; g('results').innerHTML='-'; g('qsel').innerHTML=''; g('msg').textContent=''; }
+function onSignedOut(){ g('signin').style.display='inline-block'; g('signout').style.display='none'; g('results').innerHTML='-'; g('qlist').innerHTML=''; g('msg').textContent=''; }
 
-/* sheets helpers */
+/* Sheets helpers */
 async function readRange(range){ const r = await gapi.client.sheets.spreadsheets.values.get({ spreadsheetId:SHEET_ID, range }); return r.result.values || []; }
 async function writeRange(range, values){ return gapi.client.sheets.spreadsheets.values.update({ spreadsheetId:SHEET_ID, range, valueInputOption:'RAW', resource:{ values } }); }
 
-/* results */
+/* Results */
 async function loadResults(){
   const rows = await readRange('Results!A1:K10000'); const header = rows.shift()||[]; const idx = Object.fromEntries(header.map((h,i)=>[h,i]));
-  const html = ['<table><tr><th>time</th><th>child</th><th>phone</th><th>top3</th></tr>'];
+  if(!header.length){ g('results').innerHTML = '<div class="muted">Results 시트가 비어 있습니다.</div>'; return; }
+  const html = ['<table class="table"><tr><th>time</th><th>child</th><th>phone</th><th>top3</th></tr>'];
   (rows||[]).slice(-200).reverse().forEach(r=>{ html.push(`<tr><td>${r[idx['timestamp']]||''}</td><td>${r[idx['child_name']]||''}</td><td>${r[idx['phone']]||''}</td><td>${r[idx['top3(csv)']]||''}</td></tr>`); });
   html.push('</table>'); g('results').innerHTML = html.join('');
 }
 
-/* questions */
-let QUESTIONS=[], QIDX={};
+/* Questions */
+let QUESTIONS=[], QIDX={}, HDR={};
 async function loadQuestions(){
-  const rows = await readRange('Questions!A1:P1000'); const header = rows.shift()||[]; const H = Object.fromEntries(header.map((h,i)=>[h,i]));
-  QUESTIONS = rows.map((r,ri)=>({ _row:r,_rowNum:ri+2, id:r[H.id], order:+(r[H.order]||0), prompt:r[H.prompt]||'',
-    A_label:r[H.A_label]||'', A_image:r[H.A_image]||'', A_weights:r[H.A_weights]||'',
-    B_label:r[H.B_label]||'', B_image:r[H.B_image]||'', B_weights:r[H.B_weights]||'',
-    C_label:r[H.C_label]||'', C_image:r[H.C_image]||'', C_weights:r[H.C_weights]||'',
-    D_label:r[H.D_label]||'', D_image:r[H.D_image]||'', D_weights:r[H.D_weights]||'',
-    active:r[H.active]||'TRUE' })).sort((a,b)=>a.order-b.order);
+  const rows = await readRange('Questions!A1:P10000'); const header = rows.shift()||[]; HDR = Object.fromEntries(header.map((h,i)=>[h,i]));
+  QUESTIONS = rows.map((r,ri)=>({
+    _row:r, _rowNum:ri+2,
+    id:r[HDR.id], order:+(r[HDR.order]||0), prompt:r[HDR.prompt]||'',
+    A_label:r[HDR.A_label]||'', A_image:r[HDR.A_image]||'', A_weights:r[HDR.A_weights]||'',
+    B_label:r[HDR.B_label]||'', B_image:r[HDR.B_image]||'', B_weights:r[HDR.B_weights]||'',
+    C_label:r[HDR.C_label]||'', C_image:r[HDR.C_image]||'', C_weights:r[HDR.C_weights]||'',
+    D_label:r[HDR.D_label]||'', D_image:r[HDR.D_image]||'', D_weights:r[HDR.D_weights]||'',
+    active:String(r[HDR.active]||'TRUE').toUpperCase()==='TRUE'
+  })).sort((a,b)=>a.order-b.order);
   QIDX = Object.fromEntries(QUESTIONS.map(q=>[q.id,q]));
-  const sel=g('qsel'); sel.innerHTML=''; QUESTIONS.forEach(q=>{ const o=document.createElement('option'); o.value=q.id; o.textContent=`${q.order}. ${q.prompt}`; sel.appendChild(o); });
-  sel.onchange=()=>fill(QIDX[sel.value]); if(QUESTIONS[0]) fill(QUESTIONS[0]); loadQuestions._H = H;
+  renderList(QUESTIONS);
+  bindSearch();
+  if(QUESTIONS[0]) fill(QUESTIONS[0]);
 }
-function fill(q){ ['prompt','A_label','A_image','A_weights','B_label','B_image','B_weights','C_label','C_image','C_weights','D_label','D_image','D_weights'].forEach(k=> g(k).value = q[k] || ''); }
+function bindSearch(){ g('qsearch').oninput = (e)=>{ const q=e.target.value.toLowerCase(); const f=QUESTIONS.filter(x=>(x.prompt||'').toLowerCase().includes(q) || [x.A_label,x.B_label,x.C_label,x.D_label].some(t=>(t||'').toLowerCase().includes(q))); renderList(f); }; }
+function renderList(arr){
+  const el=g('qlist'); el.innerHTML='';
+  arr.forEach(q=>{
+    const it=document.createElement('div'); it.className='qitem'; it.onclick=()=>fill(q);
+    const img=q.A_image||q.B_image||q.C_image||q.D_image||''; it.innerHTML = `<img class="thumb" src="${img}" alt="" onerror="this.style.opacity=.2"><div><div><b>${q.order}.</b> ${q.prompt||'(제목 없음)'}</div><div class="hint">${q.id||''}</div></div>`;
+    el.appendChild(it);
+  });
+}
+function updateThumb(k){ g(k+'_thumb').src = g(k+'_image').value; }
+function validateJSON(inp){
+  const id = inp.id.replace('_weights',''); const err = g(id+'_err');
+  try{ JSON.parse(inp.value); inp.classList.remove('bad'); err.textContent=''; }
+  catch(e){ inp.classList.add('bad'); err.textContent='유효한 JSON이 아닙니다. 예: {"관찰력":1,"색감각":0.5}'; }
+}
+function fill(q){
+  g('qid').value=q.id||''; g('order').value=q.order||''; g('active').checked=!!q.active; g('prompt').value=q.prompt||'';
+  ['A','B','C','D'].forEach(k=>{
+    g(`${k}_label`).value=q[`${k}_label`]||''; g(`${k}_image`).value=q[`${k}_image`]||''; g(`${k}_weights`).value=q[`${k}_weights`]||''; updateThumb(k);
+  });
+  // 선택 강조
+  document.querySelectorAll('.qitem').forEach(n=>n.style.outline=''); const sel=[...document.querySelectorAll('.qitem')].find(n=>n.innerText.includes(q.id)); if(sel) sel.style.outline='2px solid #ffd7b0';
+}
 async function save(){
-  const id = g('qsel').value; const q = QIDX[id]; if(!q) return; const H = loadQuestions._H; const row = q._row.slice();
-  row[H['prompt']] = g('prompt').value;
-  ['A','B','C','D'].forEach(k=>{ row[H[`${k}_label`]] = g(`${k}_label`).value; row[H[`${k}_image`]] = g(`${k}_image`).value; row[H[`${k}_weights`]] = g(`${k}_weights`).value; });
+  const id=g('qid').value; const q = QUESTIONS.find(x=>x.id===id); if(!q) return;
+  // JSON 유효성 체크
+  for(const k of ['A','B','C','D']){ try{ if(g(`${k}_weights`).value) JSON.parse(g(`${k}_weights`).value); }catch(e){ alert(`${k} 가중치 JSON이 올바르지 않습니다.`); return; } }
+  const row = q._row.slice();
+  row[HDR['order']] = g('order').value;
+  row[HDR['prompt']] = g('prompt').value;
+  row[HDR['active']] = g('active').checked ? 'TRUE':'FALSE';
+  ['A','B','C','D'].forEach(k=>{
+    row[HDR[`${k}_label`]]   = g(`${k}_label`).value;
+    row[HDR[`${k}_image`]]   = g(`${k}_image`).value;
+    row[HDR[`${k}_weights`]] = g(`${k}_weights`).value;
+  });
   await writeRange(`Questions!A${q._rowNum}:P${q._rowNum}`, [row]);
-  g('msg').textContent='저장 완료'; setTimeout(()=>g('msg').textContent='',1500); await loadQuestions();
+  g('msg').textContent='저장 완료'; setTimeout(()=>g('msg').textContent='',1500);
+  await loadQuestions();
 }
-function reload(){ loadQuestions(); }
+async function addQuestion(){
+  // 가장 큰 order + 1, id는 qN 형식 자동
+  const nextOrder = (QUESTIONS[QUESTIONS.length-1]?.order||0)+1;
+  const newId = `q${nextOrder}`;
+  const values = [newId, String(nextOrder), '새 문항을 입력하세요', '보기 A', '', '{"관찰력":1}', '보기 B', '', '{"색감각":1}', '보기 C', '', '{"구성력":1}', '보기 D', '', '{"서사력":1}', 'TRUE'];
+  // 빈 행 찾기: Questions!A1:P10000에서 길이+2 로 유추
+  const targetRow = QUESTIONS.length + 2; // 헤더 1행 + 기존행수
+  await writeRange(`Questions!A${targetRow}:P${targetRow}`, [values]);
+  g('msg').textContent='새 문항 추가됨'; setTimeout(()=>g('msg').textContent='',1500);
+  await loadQuestions();
+  const q = QUESTIONS.find(x=>x.id===newId); if(q) fill(q);
+}
+function previewTest(){ window.open('./index.html#test','_blank'); }
 </script>
 </body>
 </html>
