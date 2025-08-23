@@ -16,16 +16,14 @@
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
-  margin:0; color:var(--ink);
-  font-family:ui-sans-serif,system-ui,"Apple SD Gothic Neo","Noto Sans KR",Segoe UI,Roboto,Arial;
-  line-height:1.58;
+  margin:0; color:var(--ink); font-family:ui-sans-serif,system-ui,"Apple SD Gothic Neo","Noto Sans KR",Segoe UI,Roboto,Arial; line-height:1.58;
   background: radial-gradient(1200px 900px at 50% -10%, var(--bg2), transparent 60%),
               radial-gradient(1200px 900px at 50% 110%, var(--bg2), transparent 60%),
               linear-gradient(180deg,var(--bg1),var(--bg2));
   background-attachment:fixed; overflow-x:hidden;
 }
 .container{min-height:100dvh; display:flex; flex-direction:column; align-items:center}
-.main{width:100%; max-width:980px; padding:18px; display:flex; flex-direction:column; gap:16px}
+.main{width:100%; max-width:1000px; padding:18px; display:flex; flex-direction:column; gap:16px; margin:0 auto}
 
 /* blobs */
 .blob{position:fixed; z-index:-1; filter:blur(30px); opacity:.5; pointer-events:none; animation:drift 10s ease-in-out infinite}
@@ -38,8 +36,7 @@ body{
 /* brand header */
 .header{width:100%; display:flex; justify-content:center}
 .brand{
-  width:100%; max-width:980px; margin-top:8px;
-  display:flex; align-items:center; gap:10px; padding:10px 14px;
+  width:100%; max-width:1000px; margin-top:8px; display:flex; align-items:center; gap:10px; padding:10px 14px;
   border-radius:999px; background:rgba(255,255,255,.65); backdrop-filter:blur(8px);
   border:1px solid var(--line); box-shadow:var(--shadow-soft)
 }
@@ -49,10 +46,7 @@ body{
 
 /* nav */
 .navbar{display:flex; align-items:center; gap:10px; justify-content:center; flex-wrap:wrap; padding:10px 12px}
-.step{
-  display:flex; align-items:center; gap:8px; padding:10px 14px; border-radius:999px; cursor:pointer;
-  background:#fff; color:#3b4756; font-weight:850; border:1px solid var(--line); box-shadow:var(--shadow-soft); transition:transform .12s, box-shadow .2s, background .2s
-}
+.step{display:flex; align-items:center; gap:8px; padding:10px 14px; border-radius:999px; cursor:pointer; background:#fff; color:#3b4756; font-weight:850; border:1px solid var(--line); box-shadow:var(--shadow-soft); transition:transform .12s, box-shadow .2s, background .2s}
 .step .num{width:22px;height:22px;border-radius:50%;display:inline-grid;place-items:center;background:#fff;border:1px solid var(--line);font-size:12px}
 .step:hover{transform:translateY(-2px); box-shadow:0 14px 30px rgba(23,35,50,.12)}
 .step.active{background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#222}
@@ -60,10 +54,7 @@ body{
 .step.done{background:#e7fbf1; border-color:#c8f1de}
 
 /* card */
-.card{
-  width:100%; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow);
-  margin:0 auto; animation:fadeUp .4s ease both
-}
+.card{width:100%; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); margin:0 auto; animation:fadeUp .4s ease both}
 @keyframes fadeUp{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:translateY(0)}}
 @media (max-width:720px){ .card{padding:18px} }
 
@@ -77,11 +68,11 @@ p{margin:8px 0} .small{font-size:13px} .muted{color:var(--muted)} .center{text-a
 .btn{background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#222; border:none; padding:14px 18px; border-radius:14px; font-weight:900; cursor:pointer; box-shadow:0 12px 34px rgba(255,178,107,.35); transition:transform .08s, box-shadow .2s}
 .btn:hover{transform:translateY(-2px); box-shadow:0 18px 40px rgba(255,178,107,.45)}
 .btn:disabled{opacity:.5; cursor:not-allowed}
-.btn-ghost{background:#fff; color:var(--ink); border:1px solid var(--line); padding:12px 14px; border-radius:12px; font-weight:800; cursor:pointer; transition:transform .08s; box-shadow:var(--shadow-soft)}
+.btn-ghost{background:#fff; color:#111; border:1px solid var(--line); padding:12px 14px; border-radius:12px; font-weight:800; cursor:pointer; transition:transform .08s; box-shadow:var(--shadow-soft)}
 .btn-ghost:hover{transform:translateY(-1px)}
 
 /* inputs */
-input,select,textarea{width:100%; background:#fff; color:var(--ink); border:1px solid var(--line); border-radius:12px; padding:12px; outline:none; transition:border-color .2s, box-shadow .2s}
+input,select,textarea{width:100%; background:#fff; color:#111; border:1px solid var(--line); border-radius:12px; padding:12px; outline:none; transition:border-color .2s, box-shadow .2s}
 input:focus,select:focus,textarea:focus{border-color:#ffd7b0; box-shadow:0 0 0 6px rgba(255,178,107,.18)}
 label{font-size:14px; color:#3b4756}
 .section{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
@@ -105,18 +96,13 @@ label{font-size:14px; color:#3b4756}
 .acc-body{padding:14px 16px; display:none; background:#fff}
 .acc-item.open .acc-body{display:block}
 
-/* skeleton */
+/* skeleton & toast */
 .skel{border-radius:12px; background:linear-gradient(90deg,#f3f4f6,#eaeef3,#f3f4f6); background-size:200% 100%; animation:sh 1.2s infinite} @keyframes sh{to{background-position:-200% 0}}
 .skel.box{height:16px} .skel.img{aspect-ratio:4/3}
-
-/* toast */
 .toast{position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#1e293b; color:#fff; padding:10px 14px; border-radius:10px; box-shadow:var(--shadow-soft); display:none; z-index:99}
 
 /* print: PDF only on result */
-@media print{
-  .header, .navbar, .btn:not(.btn-pdf), .btn-ghost, .blob {display:none !important}
-  .card{box-shadow:none; border:1px solid #ddd}
-}
+@media print{ .header, .navbar, .btn:not(.btn-pdf), .btn-ghost, .blob {display:none !important} .card{box-shadow:none; border:1px solid #ddd} }
 </style>
 </head>
 <body>
@@ -125,7 +111,6 @@ label{font-size:14px; color:#3b4756}
 
 <div class="container">
   <div class="header"><div class="brand"><div class="logo"></div><span>바른미술학원 · 미술적성테스트</span></div></div>
-
   <main class="main">
     <nav class="navbar" id="topnav"></nav>
     <section class="card" id="app"></section>
@@ -133,115 +118,52 @@ label{font-size:14px; color:#3b4756}
 </div>
 
 <script>
-/* ==================== 필수 값 (TODO) ==================== */
-// 스프레드시트 문서 ID (반영 완료)
+/* ============ 꼭 바꿀 값 ============ */
+// 네 시트 ID는 반영 완료
 const SHEET_ID = '1n10E7zVRNxO4Zndc1eZmj0nRkUcblIj-qixL8evidDQ';
-
-// Google Form formResponse 주소 (Results 저장)
+// Google Form formResponse (결과 저장)
 const FORM_ACTION = 'https://docs.google.com/forms/d/e/【FORM_ID】/formResponse'; // ← TODO
-
-// Google Form 항목 매핑 (entry.xxx)
+// Google Form 항목 매핑
 const F = {
-  child_name:'entry.111111', // ← TODO
-  age:'entry.222222',        // ← TODO
-  grade:'entry.333333',      // ← TODO
-  guardian:'entry.444444',   // ← TODO
-  phone:'entry.555555',      // ← TODO
-  campus:'entry.666666',     // ← TODO
-  answers:'entry.777777',    // ← TODO
-  scores:'entry.888888',     // ← TODO
-  top3:'entry.999999',       // ← TODO
-  resultId:'entry.123123',   // ← TODO
-  timestamp:'entry.321321'   // ← (선택)
+  child_name:'entry.111111', age:'entry.222222', grade:'entry.333333',
+  guardian:'entry.444444', phone:'entry.555555', campus:'entry.666666',
+  answers:'entry.777777', scores:'entry.888888', top3:'entry.999999',
+  resultId:'entry.123123', timestamp:'entry.321321' // (선택)
 };
-/* ======================================================== */
+/* =================================== */
 
 const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Questions&tqx=out:json`;
 const DOMAINS = ["관찰력","서사력","디테일","구성력","색감각","공간감","도전성","소통력"];
-const STEPS = [
-  {key:'start',   label:'시작'},
-  {key:'consent', label:'동의'},
-  {key:'profile', label:'프로필'},
-  {key:'test',    label:'테스트'},
-  {key:'result',  label:'결과'}
-];
-
+const STEPS = [{key:'start',label:'시작'},{key:'consent',label:'동의'},{key:'profile',label:'프로필'},{key:'test',label:'테스트'},{key:'result',label:'결과'}];
 const STATE = { step:'start', consent:false, consentMeta:null, profile:{}, questions:[], idx:0, answers:[], result:null };
-const $ = id => document.getElementById(id);
-const v = id => $(id)?.value?.trim() ?? '';
-const app = () => $('app');
+const $ = id => document.getElementById(id); const v = id => $(id)?.value?.trim() ?? ''; const app = () => $('app');
+function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',2000);}
 
-function toast(msg){ const t=$('toast'); t.textContent=msg; t.style.display='block'; setTimeout(()=>t.style.display='none', 2000); }
-
-/* ---- Step Nav ---- */
+/* Nav */
 function renderNav(){
-  const curIndex = STEPS.findIndex(x=>x.key===STATE.step);
-  const items = STEPS.map((s,i)=>{
-    const active = s.key===STATE.step ? 'active' : '';
-    const done = (curIndex > i) ? 'done' : '';
-    return `<div class="step ${active} ${done}" onclick="navGo('${s.key}')">
-      <span class="num">${i+1}</span><span>${s.label}</span>
-    </div>`;
-  }).join('');
-  $('topnav').innerHTML = items + `<a class="step" style="text-decoration:none" href="./admin.html" target="_blank" rel="noopener"><span class="num">A</span><span>관리자</span></a>`;
+  const curIdx = STEPS.findIndex(s=>s.key===STATE.step);
+  $('topnav').innerHTML = STEPS.map((s,i)=>`<div class="step ${s.key===STATE.step?'active':''} ${curIdx>i?'done':''}" onclick="navGo('${s.key}')"><span class="num">${i+1}</span><span>${s.label}</span></div>`).join('')
+    + `<a class="step" style="text-decoration:none" href="./admin.html" target="_blank" rel="noopener"><span class="num">A</span><span>관리자</span></a>`;
 }
-function navGo(step){
-  STATE.step = step;
-  if(step==='test' && (!STATE.questions || STATE.questions.length===0)) { startTest(); return; }
-  render();
-}
+function navGo(step){ STATE.step=step; if(step==='test' && STATE.questions.length===0) { startTest(); return; } render(); }
 
-/* ---- Helpers ---- */
-function parseGViz(text){
-  const s=text.indexOf('{'), e=text.lastIndexOf('}'); if(s<0||e<0) return [];
-  const obj=JSON.parse(text.slice(s,e+1));
-  const cols=obj.table.cols.map(c=>c.label);
-  return obj.table.rows.map(r=>r.c.map(c=>c?(c.f??c.v):'')).map(a=>Object.fromEntries(cols.map((k,i)=>[k,a[i]])));
-}
+/* Helpers */
+function parseGViz(text){ const s=text.indexOf('{'), e=text.lastIndexOf('}'); if(s<0||e<0) return []; const obj=JSON.parse(text.slice(s,e+1)); const cols=obj.table.cols.map(c=>c.label); return obj.table.rows.map(r=>r.c.map(c=>c?(c.f??c.v):'')).map(a=>Object.fromEntries(cols.map((k,i)=>[k,a[i]]))); }
 async function loadQuestions(){
-  // skeleton
-  app().innerHTML = `
-    <h2 class="center">문항을 불러오는 중…</h2>
-    <div class="grid grid-2">
-      ${Array.from({length:4}).map(()=>`<div class="skel img"></div>`).join('')}
-    </div>
-  `;
-  const txt=await (await fetch(GVIZ_URL)).text();
-  const rows=parseGViz(txt);
+  app().innerHTML = `<h2 class="center">문항을 불러오는 중…</h2><div class="grid grid-2">${Array.from({length:4}).map(()=>`<div class="skel img"></div>`).join('')}</div>`;
+  const txt=await (await fetch(GVIZ_URL)).text(); const rows=parseGViz(txt);
+  if(!rows || !rows.length){ app().innerHTML = `<h2>문항을 불러오지 못했습니다</h2><p class="muted">• Questions 시트를 <b>웹에 게시</b>했는지<br/>• 시트 이름이 정확히 <b>Questions</b>인지<br/>• 헤더/active 값이 올바른지 확인하세요.</p><div class="center" style="margin-top:12px"><a class="btn-ghost" href="https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit" target="_blank" rel="noopener">시트 열기</a></div>`; return; }
   const act=rows.filter(r=>String(r.active).toUpperCase()==='TRUE').sort((a,b)=>(+a.order - +b.order));
-  STATE.questions=act.map(r=>({
-    id:r.id, order:+r.order, prompt:r.prompt,
-    options:['A','B','C','D'].map(k=>({
-      key:k, label:r[`${k}_label`]||'', imageUrl:r[`${k}_image`]||'', alt:r[`${k}_label`]||'',
-      weights: (function(){try{return JSON.parse(r[`${k}_weights`])||{}}catch{return{}}})()
-    }))
-  }));
+  STATE.questions=act.map(r=>({ id:r.id, order:+r.order, prompt:r.prompt,
+    options:['A','B','C','D'].map(k=>({ key:k, label:r[`${k}_label`]||'', imageUrl:r[`${k}_image`]||'', alt:r[`${k}_label`]||'',
+      weights:(()=>{try{return JSON.parse(r[`${k}_weights`])||{}}catch{return{}}})() })) }));
 }
 function nowKST(){ const d=new Date(), p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())} KST`; }
 
-/* ---- Views ---- */
-function viewStart(){
-  app().innerHTML = `
-    <div class="center">
-      <div class="btn-ghost" style="display:inline-block;border-radius:999px;background:#fff7ee;border-color:#ffe3c6;font-weight:900">ART APTITUDE · BASIC</div>
-      <h1>미술적성테스트</h1>
-      <p class="muted">아이의 강점을 발견하고, 오늘 바로 할 수 있는 15분 미션을 추천합니다.</p>
-      <div style="height:8px"></div>
-      <button class="btn" onclick="go('consent')">시작하기</button>
-    </div>
-  `;
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function accItem(title, html){
-  return `
-  <div class="acc-item open">
-    <div class="acc-head"><span>${title}</span>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
-    <div class="acc-body small">${html}</div>
-  </div>`;
-}
-function toggleAll(open){ document.querySelectorAll('.acc-item').forEach(it=>it.classList.toggle('open', !!open)); }
+/* Views */
+function viewStart(){ app().innerHTML = `<div class="center"><div class="btn-ghost" style="display:inline-block;border-radius:999px;background:#fff7ee;border-color:#ffe3c6;font-weight:900">ART APTITUDE · BASIC</div><h1>미술적성테스트</h1><p class="muted">아이의 강점을 발견하고, 오늘 바로 할 수 있는 15분 미션을 추천합니다.</p><div style="height:8px"></div><button class="btn" onclick="go('consent')">시작하기</button></div>`; window.scrollTo({top:0,behavior:'smooth'}); }
+function accItem(t,html){ return `<div class="acc-item open"><div class="acc-head"><span>${t}</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="acc-body small">${html}</div></div>`;}
+function toggleAll(open){ document.querySelectorAll('.acc-item').forEach(it=>it.classList.toggle('open',!!open)); }
 function viewConsent(){
   app().innerHTML = `
     <h2 class="center">보호자 개인정보 및 이용 동의서</h2>
@@ -250,58 +172,38 @@ function viewConsent(){
       ${accItem('1. 수집·이용 목적','미술적성테스트 제공, 결과 산출 및 맞춤 가이드 제공 / 상담·등록 안내 / 서비스 품질 개선(통계·분석)')}
       ${accItem('2. 수집 항목','<b>필수</b>: 아동 이름·나이·학년 / 보호자 이름·연락처 / 테스트 응답<br/><b>자동수집</b>: 접속 일시·브라우저·쿠키·로그')}
       ${accItem('3. 보관·파기','보관기간: 수집일로부터 <b>12개월</b> / 법령상 의무기간 종료 시까지<br/>파기방법: 전자파일 영구삭제, 출력물 분쇄')}
-      ${accItem('4. 제3자 제공·처리위탁','Google(시트/드라이브/분석), Netlify/GitHub Pages(호스팅), (선택) 문자·메일 발송사 / 필요한 범위 내 제공')}
+      ${accItem('4. 제3자 제공·처리위탁','Google(시트/드라이브/분석), Netlify(호스팅) 등 필요한 범위 내 제공')}
       ${accItem('5. 동의 거부권','동의 거부 가능하나 동의 없을 경우 테스트 이용이 제한될 수 있습니다.')}
       ${accItem('6. 이용자 권리','열람·정정·삭제·처리정지·동의철회 / 고객센터 요청 시 지체없이 조치')}
       ${accItem('7. 안전성 확보','접근권한 최소화, HTTPS 암호화, 접근기록 보관, 정기 점검')}
       ${accItem('8. 연락처','JBM SOFT · 이메일: <b>jaewon@jbmsoft.co.kr</b> · 평일 10:00–18:00')}
       ${accItem('9. 고지','본 동의서·처리방침은 변경될 수 있으며 변경 시 웹에 게시합니다.')}
     </div>
-
     <div class="section" style="margin-top:16px">
       <div class="grid grid-2">
         <div><label>보호자 성명(서명)</label><input id="consent_guardian" placeholder="예: 홍길동(서명)"></div>
         <div><label>연락처</label><input id="consent_phone" placeholder="010-0000-0000"></div>
         <div><label>동의일시</label><input id="consent_ts" readonly></div>
-        <div><label>아동과의 관계</label>
-          <select id="consent_relation"><option>부모</option><option>법정대리인</option><option>기타</option></select>
-        </div>
+        <div><label>아동과의 관계</label><select id="consent_relation"><option>부모</option><option>법정대리인</option><option>기타</option></select></div>
       </div>
       <div style="margin-top:12px">
-        <label><input type="checkbox" id="chk_required"> (필수) 개인정보 수집·이용에 동의합니다.</label><br/>
-        <label><input type="checkbox" id="chk_minor"> (필수) 만 14세 미만 아동의 보호자로서 동의합니다.</label><br/>
-        <label><input type="checkbox" id="chk_marketing"> (선택) 교육 소식 수신 동의(문자/이메일)</label>
+        <label><input type="checkbox" id="chk_required"> (필수) 개인정보 수집·이용 동의</label><br/>
+        <label><input type="checkbox" id="chk_minor"> (필수) 만 14세 미만 아동 보호자 동의</label><br/>
+        <label><input type="checkbox" id="chk_marketing"> (선택) 교육 소식 수신 동의</label>
       </div>
     </div>
-
     <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center">
       <button class="btn" id="btn_consent" disabled>동의하고 진행</button>
       <button class="btn-ghost" onclick="toggleAll(true)">전문 펼치기</button>
       <button class="btn-ghost" onclick="toggleAll(false)">모두 접기</button>
     </div>
-    <p class="small muted center" style="margin-top:8px">※ 본 결과는 교육 가이드 목적이며 <b>의학·임상 진단이 아닙니다.</b></p>
+    <p class="small muted center" style="margin-top:8px">※ 교육 가이드 목적이며 <b>의학·임상 진단이 아닙니다.</b></p>
   `;
   $('consent_ts').value = nowKST();
-  ['chk_required','chk_minor','consent_guardian','consent_phone'].forEach(id=>{
-    $(id).addEventListener('input', evalConsentBtn); $(id).addEventListener('change', evalConsentBtn);
-  });
-  function evalConsentBtn(){
-    const okReq = $('chk_required').checked && $('chk_minor').checked;
-    const g = v('consent_guardian'); const p = v('consent_phone');
-    const phoneOK = /^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(p);
-    $('btn_consent').disabled = !(okReq && g.length>=2 && phoneOK);
-  }
-  $('btn_consent').onclick = ()=>{
-    STATE.consent = $('chk_required').checked && $('chk_minor').checked;
-    STATE.consentMeta = { agreed:$('chk_required').checked, minor_guardian:$('chk_minor').checked,
-      marketing:$('chk_marketing').checked, guardian:v('consent_guardian'), phone:v('consent_phone'),
-      relation:v('consent_relation'), ts:$('consent_ts').value, version:"v1.0 (2025-08-24)" };
-    if(!STATE.consent) return toast('필수 항목 동의가 필요합니다.');
-    go('profile');
-  };
-  document.querySelectorAll('.acc-head').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
-  toggleAll(false);
-  window.scrollTo({top:0,behavior:'smooth'});
+  ['chk_required','chk_minor','consent_guardian','consent_phone'].forEach(id=>{ $(id).addEventListener('input',evalConsentBtn); $(id).addEventListener('change',evalConsentBtn); });
+  function evalConsentBtn(){ const ok=$('chk_required').checked&&$('chk_minor').checked; const g=v('consent_guardian'); const p=v('consent_phone'); const okp=/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(p); $('btn_consent').disabled=!(ok&&g.length>=2&&okp); }
+  $('btn_consent').onclick=()=>{ STATE.consent=$('chk_required').checked&&$('chk_minor').checked; STATE.consentMeta={agreed:$('chk_required').checked,minor_guardian:$('chk_minor').checked,marketing:$('chk_marketing').checked,guardian:v('consent_guardian'),phone:v('consent_phone'),relation:v('consent_relation'),ts:$('consent_ts').value,version:"v1.0 (2025-08-24)"}; if(!STATE.consent) return toast('필수 항목 동의 필요'); go('profile'); };
+  document.querySelectorAll('.acc-head').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open'))); window.scrollTo({top:0,behavior:'smooth'});
 }
 function viewProfile(){
   app().innerHTML = `
@@ -315,143 +217,63 @@ function viewProfile(){
       <div><label>관심 캠퍼스(선택)</label><input id="campus" placeholder="예: 분당점"></div>
     </div>
     <div class="center" style="margin-top:16px"><button class="btn" onclick="startTest()">테스트 시작</button></div>
-  `;
-  window.scrollTo({top:0,behavior:'smooth'});
+  `; window.scrollTo({top:0,behavior:'smooth'});
 }
-async function startTest(){
-  STATE.profile = { child_name:v('cname'), age:v('age'), grade:v('grade'), guardian:v('gname'), phone:v('phone'), campus:v('campus') };
-  if(!STATE.profile.child_name || !/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(STATE.profile.phone||'')){ toast('이름/연락처를 확인해 주세요.'); return; }
-  await loadQuestions(); STATE.idx=0; STATE.answers=[];
-  go('test');
-}
+async function startTest(){ STATE.profile={child_name:v('cname'),age:v('age'),grade:v('grade'),guardian:v('gname'),phone:v('phone'),campus:v('campus')}; if(!STATE.profile.child_name||!/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(STATE.profile.phone||'')){ toast('이름/연락처를 확인해 주세요'); return; } await loadQuestions(); STATE.idx=0; STATE.answers=[]; go('test'); }
 function viewTest(){
-  const hasQ = STATE.questions.length>0;
-  const q = STATE.questions[STATE.idx] || {prompt:'문항을 불러오는 중입니다', options:[]};
-  const pct = hasQ ? Math.round(STATE.idx/STATE.questions.length*100) : 0;
+  const hasQ=STATE.questions.length>0; const q=STATE.questions[STATE.idx]||{prompt:'문항을 불러오는 중입니다',options:[]}; const pct=hasQ?Math.round(STATE.idx/STATE.questions.length*100):0;
   app().innerHTML = `
     <div class="center small muted">Q${hasQ?STATE.idx+1:'-'} / ${hasQ?STATE.questions.length:'-'} · 진행률</div>
     <div class="progress"><div style="width:${pct}%"></div></div>
     <h2 class="center" style="margin-top:12px">${q.prompt}</h2>
     <div class="grid grid-2" style="margin-top:12px">
-      ${q.options.length ? q.options.map(o=>`
-        <div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label}" onclick="choose('${o.key}')" onkeydown="if(event.key==='Enter' || event.key===' '){choose('${o.key}')}">
-          <img src="${o.imageUrl}" alt="${o.alt}" onerror="this.style.opacity=.2" loading="lazy">
-          <div class="cap center">${o.label}</div>
-        </div>`).join('') : Array.from({length:2}).map(()=>`<div class="skel img"></div>`).join('')}
+      ${q.options.length?q.options.map(o=>`<div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label}" onclick="choose('${o.key}')" onkeydown="if(event.key==='Enter'||event.key===' '){choose('${o.key}')}"><img src="${o.imageUrl}" alt="${o.alt}" onerror="this.style.opacity=.2" loading="lazy"><div class="cap center">${o.label}</div></div>`).join(''):Array.from({length:2}).map(()=>`<div class="skel img"></div>`).join('')}
     </div>
     <div class="center" style="margin-top:18px; display:flex; gap:8px; justify-content:center">
       <button class="btn-ghost" onclick="prev()" ${STATE.idx===0?'disabled':''}>이전</button>
       <button class="btn" id="nextBtn" onclick="next()" disabled>다음</button>
     </div>
-  `;
-  document.addEventListener('keydown', keyNavOnce, {once:true});
-  window.scrollTo({top:0,behavior:'smooth'});
+  `; document.addEventListener('keydown',keyNavOnce,{once:true}); window.scrollTo({top:0,behavior:'smooth'});
 }
-function keyNavOnce(e){
-  if(e.key==='ArrowRight') next();
-  if(e.key==='ArrowLeft') prev();
-  if(e.key==='Enter'){ if(!$('nextBtn').disabled) next(); }
-}
-function choose(key){
-  const q=STATE.questions[STATE.idx];
-  ['A','B','C','D'].forEach(k=>{ const n=$(`opt_${k}`); if(n) n.classList.remove('sel'); });
-  const node = $(`opt_${key}`); if(node){ node.classList.add('sel'); node.animate([{transform:'scale(1)'},{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:180}); }
-  const opt=q.options.find(o=>o.key===key);
-  STATE.answers[STATE.idx]={ qid:q.id, key, weights:opt.weights };
-  $('nextBtn').disabled=false;
-}
-function next(){ if(!STATE.answers[STATE.idx]) return toast('하나를 선택해 주세요.');
-  if(STATE.idx<STATE.questions.length-1){ STATE.idx++; viewTest(); } else submitAll(); }
+function keyNavOnce(e){ if(e.key==='ArrowRight') next(); if(e.key==='ArrowLeft') prev(); if(e.key==='Enter'){ if(!$('nextBtn').disabled) next(); } }
+function choose(key){ const q=STATE.questions[STATE.idx]; ['A','B','C','D'].forEach(k=>{const n=$(`opt_${k}`); if(n) n.classList.remove('sel');}); const node=$(`opt_${key}`); if(node){ node.classList.add('sel'); node.animate([{transform:'scale(1)'},{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:180}); } const opt=q.options.find(o=>o.key===key); STATE.answers[STATE.idx]={ qid:q.id, key, weights:opt.weights }; $('nextBtn').disabled=false; }
+function next(){ if(!STATE.answers[STATE.idx]) return toast('하나를 선택해 주세요'); if(STATE.idx<STATE.questions.length-1){ STATE.idx++; viewTest(); } else submitAll(); }
 function prev(){ if(STATE.idx>0){ STATE.idx--; viewTest(); } }
 
-/* ---- Score & Submit ---- */
-function aggregateScores(ans){
-  const sum={}; DOMAINS.forEach(d=>sum[d]=0);
-  ans.forEach(a=>Object.entries(a.weights||{}).forEach(([k,v])=>sum[k]=(sum[k]||0)+Number(v||0)));
-  const qCount=ans.length||1, maxPerQ=1.0, max=qCount*maxPerQ;
-  const scores={}; DOMAINS.forEach(d=>{ const v=(sum[d]||0)/max*4; scores[d]=Math.round(v*10)/10; }); return scores;
-}
+/* Score & Submit */
+function aggregateScores(ans){ const sum={}; DOMAINS.forEach(d=>sum[d]=0); ans.forEach(a=>Object.entries(a.weights||{}).forEach(([k,v])=>sum[k]=(sum[k]||0)+Number(v||0))); const qCount=ans.length||1, max=qCount*1.0; const scores={}; DOMAINS.forEach(d=>{ const v=(sum[d]||0)/max*4; scores[d]=Math.round(v*10)/10; }); return scores; }
 async function submitAll(){
-  const scores=aggregateScores(STATE.answers);
-  const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3);
-  const resultId=crypto.randomUUID();
-  const answersWithMeta = { consent: STATE.consentMeta, profile: STATE.profile, questions: STATE.answers };
-
-  const form=new FormData();
-  form.append(F.child_name, STATE.profile.child_name);
-  form.append(F.age, STATE.profile.age);
-  form.append(F.grade, STATE.profile.grade);
-  form.append(F.guardian, STATE.profile.guardian);
-  form.append(F.phone, STATE.profile.phone);
-  form.append(F.campus, STATE.profile.campus||'');
-  form.append(F.answers, JSON.stringify(answersWithMeta));
-  form.append(F.scores, JSON.stringify(scores));
-  form.append(F.top3, top3.join(','));
-  form.append(F.resultId, resultId);
-  form.append(F.timestamp, nowKST());
-
-  fetch(FORM_ACTION, { method:'POST', mode:'no-cors', body:form }).catch(()=>{});
-  STATE.result={ scores, top3, resultId };
-  go('result');
+  const scores=aggregateScores(STATE.answers); const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3); const resultId=crypto.randomUUID(); const answersWithMeta={consent:STATE.consentMeta,profile:STATE.profile,questions:STATE.answers};
+  const form=new FormData(); form.append(F.child_name,STATE.profile.child_name); form.append(F.age,STATE.profile.age); form.append(F.grade,STATE.profile.grade); form.append(F.guardian,STATE.profile.guardian); form.append(F.phone,STATE.profile.phone); form.append(F.campus,STATE.profile.campus||''); form.append(F.answers,JSON.stringify(answersWithMeta)); form.append(F.scores,JSON.stringify(scores)); form.append(F.top3,top3.join(',')); form.append(F.resultId,resultId); form.append(F.timestamp,nowKST());
+  fetch(FORM_ACTION,{method:'POST',mode:'no-cors',body:form}).catch(()=>{}); STATE.result={scores,top3,resultId}; go('result');
 }
 
-/* ---- Result ---- */
-function bar(name,val){
-  const pct=Math.max(0,Math.min(100,(val/4)*100));
-  return `
-    <div style="display:flex;justify-content:space-between;gap:10px"><div>${name}</div><div class="muted">${val}</div></div>
-    <div class="progress"><div style="width:${pct}%"></div></div>
-    <div style="height:8px"></div>`;
-}
+/* Result */
+function bar(name,val){ const pct=Math.max(0,Math.min(100,(val/4)*100)); return `<div style="display:flex;justify-content:space-between;gap:10px"><div>${name}</div><div class="muted">${val}</div></div><div class="progress"><div style="width:${pct}%"></div></div><div style="height:8px"></div>`; }
 function viewResult(){
-  const has = !!STATE.result;
-  const r = STATE.result || { top3:[], scores:{} };
-  const s = r.scores || {}; const keys=Object.keys(s);
-
+  const has=!!STATE.result; const r=STATE.result||{top3:[],scores:{}}; const s=r.scores||{}; const keys=Object.keys(s);
   app().innerHTML = `
     <div class="center">
       <h2>미술적성 결과</h2>
-      ${has ? `<div class="btn-ghost" style="display:inline-block;border-radius:999px;background:#fff7ee;border-color:#ffe3c6;font-weight:900">ID · ${r.resultId.slice(0,8)}</div>` : ''}
+      ${has?`<div class="btn-ghost" style="display:inline-block;border-radius:999px;background:#fff7ee;border-color:#ffe3c6;font-weight:900">ID · ${r.resultId.slice(0,8)}</div>`:''}
       <div style="height:8px"></div>
-      ${has ? `<p><b>Top 3</b> : ${r.top3.join(', ')||'-'}</p>` : `<p class="muted">아직 결과가 없습니다. <b>테스트를 완료</b>하면 결과를 확인할 수 있어요.</p>`}
+      ${has?`<p><b>Top 3</b> : ${r.top3.join(', ')||'-'}</p>`:`<p class="muted">아직 결과가 없습니다. <b>테스트를 완료</b>하면 결과를 확인할 수 있어요.</p>`}
     </div>
-
-    ${has ? `<h3>전체 영역 점수(0~4)</h3>${keys.map(k=>bar(k,s[k])).join('')}` : `
-      <div class="center" style="margin-top:10px"><button class="btn" onclick="go('test')">테스트 하러 가기</button></div>
-    `}
-
+    ${has?`<h3>전체 영역 점수(0~4)</h3>${keys.map(k=>bar(k,s[k])).join('')}`:`<div class="center" style="margin-top:10px"><button class="btn" onclick="go('test')">테스트 하러 가기</button></div>`}
     <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center">
       <button class="btn-ghost" onclick="go('start')">처음으로</button>
-      ${has ? `<button class="btn btn-pdf" onclick="window.print()">PDF 저장</button>` : ``}
+      ${has?`<button class="btn btn-pdf" onclick="window.print()">PDF 저장</button>`:''}
     </div>
-
-    <p class="small muted center" style="margin-top:8px">※ 본 결과는 교육 가이드 목적이며 <b>의학·임상 진단이 아닙니다.</b></p>
+    <p class="small muted center" style="margin-top:8px">※ 교육 가이드 목적이며 <b>의학·임상 진단이 아닙니다.</b></p>
   `;
-
-  if(has){ try{
-    const conf = document.createElement('canvas');
-    conf.width = app().clientWidth; conf.height = 160; conf.style.width='100%'; conf.style.height='160px';
-    conf.style.display='block'; conf.style.margin='10px 0'; conf.style.filter='saturate(1.2)';
-    app().insertBefore(conf, app().children[2]); miniConfetti(conf); setTimeout(()=>conf.remove(), 1500);
-  }catch(e){} }
+  if(has){ try{ const c=document.createElement('canvas'); c.width=app().clientWidth; c.height=160; c.style.width='100%'; c.style.height='160px'; c.style.display='block'; c.style.margin='10px 0'; c.style.filter='saturate(1.2)'; app().insertBefore(c,app().children[2]); miniConfetti(c); setTimeout(()=>c.remove(),1500);}catch(e){} }
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function miniConfetti(canvas){
-  const ctx=canvas.getContext('2d'), W=canvas.width, H=canvas.height;
-  const parts = Array.from({length:80}).map(()=>({ x:Math.random()*W, y:Math.random()*-H*0.3, v:2+Math.random()*3, s:4+Math.random()*6, c:['#ffd9a8','#ffc98b','#bff4df','#dcd6ff'][Math.floor(Math.random()*4)] }));
-  let t=0, rid; (function step(){ ctx.clearRect(0,0,W,H); parts.forEach(p=>{ p.y+=p.v; p.x+=Math.sin((t+p.y)*0.05); ctx.fillStyle=p.c; ctx.fillRect(p.x,p.y,p.s,p.s); }); t+=1; if(t<120) rid=requestAnimationFrame(step); })();
-}
+function miniConfetti(cv){ const ctx=cv.getContext('2d'),W=cv.width,H=cv.height; const parts=Array.from({length:80}).map(()=>({x:Math.random()*W,y:Math.random()*-H*0.3,v:2+Math.random()*3,s:4+Math.random()*6,c:['#ffd9a8','#ffc98b','#bff4df','#dcd6ff'][Math.floor(Math.random()*4)]})); let t=0; (function step(){ctx.clearRect(0,0,W,H); parts.forEach(p=>{p.y+=p.v;p.x+=Math.sin((t+p.y)*0.05);ctx.fillStyle=p.c;ctx.fillRect(p.x,p.y,p.s,p.s);}); t+=1; if(t<120) requestAnimationFrame(step); })(); }
 
 /* router */
 function go(step){ STATE.step=step; render(); }
-function render(){
-  renderNav();
-  if(STATE.step==='start')   return viewStart();
-  if(STATE.step==='consent') return viewConsent();
-  if(STATE.step==='profile') return viewProfile();
-  if(STATE.step==='test')    return viewTest();
-  if(STATE.step==='result')  return viewResult();
-}
+function render(){ renderNav(); if(STATE.step==='start')return viewStart(); if(STATE.step==='consent')return viewConsent(); if(STATE.step==='profile')return viewProfile(); if(STATE.step==='test')return viewTest(); if(STATE.step==='result')return viewResult(); }
 render();
 </script>
 </body>
