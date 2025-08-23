@@ -5,10 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>미술적성테스트 · Basic</title>
 <meta name="theme-color" content="#ffc98b" />
+<!-- Charts & PDF utils -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <style>
 :root{
-  --bg1:#fffaf5; --bg2:#fff2e2;
-  --surface:#ffffff; --ink:#24303f; --muted:#7b8794;
+  --bg1:#fffaf5; --bg2:#fff2e2; --surface:#ffffff; --ink:#24303f; --muted:#7b8794;
   --accent:#ffb26b; --accent2:#ffd9a8; --mint:#bff4df; --lav:#dcd6ff;
   --line:#eef2f6; --radius:20px;
   --shadow:0 18px 50px rgba(23,35,50,.12); --shadow-soft:0 10px 30px rgba(23,35,50,.08);
@@ -25,15 +28,15 @@ body{
 .container{min-height:100dvh; display:flex; flex-direction:column; align-items:center}
 .main{width:100%; max-width:1000px; padding:18px; display:flex; flex-direction:column; gap:16px; margin:0 auto}
 
-/* blobs */
+/* floating blobs */
 .blob{position:fixed; z-index:-1; filter:blur(30px); opacity:.5; pointer-events:none; animation:drift 10s ease-in-out infinite}
 .blob.b1{width:340px;height:340px;left:-120px;top:80px;background:radial-gradient(circle at 30% 30%, var(--lav), transparent 60%)}
 .blob.b2{width:420px;height:420px;right:-160px;top:120px;background:radial-gradient(circle at 70% 40%, var(--mint), transparent 60%)}
 .blob.b3{width:380px;height:380px;left:50%;bottom:-160px;transform:translateX(-50%);background:radial-gradient(circle at 50% 50%, #ffe1c4, transparent 60%)}
 @keyframes drift{0%{transform:translateY(0)}50%{transform:translateY(-12px)}100%{transform:translateY(0)}}
-@media (prefers-reduced-motion:reduce){ .blob{animation:none} }
+@media (prefers-reduced-motion:reduce){ .blob{animation:none } }
 
-/* brand header */
+/* brand */
 .header{width:100%; display:flex; justify-content:center}
 .brand{
   width:100%; max-width:1000px; margin-top:8px; display:flex; align-items:center; gap:10px; padding:10px 14px;
@@ -42,16 +45,24 @@ body{
 }
 .brand .logo{width:26px;height:26px;border-radius:50%;flex:0 0 26px;background:conic-gradient(from 0deg,var(--accent),var(--accent2),var(--lav),var(--mint),var(--accent));animation:spin 8s linear infinite paused}
 .brand:hover .logo{animation-play-state:running}
-@keyframes spin{to{transform:rotate(360deg)}} .brand span{font-weight:900; letter-spacing:.2px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.brand span{font-weight:900; letter-spacing:.2px}
 
-/* nav */
-.navbar{display:flex; align-items:center; gap:10px; justify-content:center; flex-wrap:wrap; padding:10px 12px}
-.step{display:flex; align-items:center; gap:8px; padding:10px 14px; border-radius:999px; cursor:pointer; background:#fff; color:#3b4756; font-weight:850; border:1px solid var(--line); box-shadow:var(--shadow-soft); transition:transform .12s, box-shadow .2s, background .2s}
-.step .num{width:22px;height:22px;border-radius:50%;display:inline-grid;place-items:center;background:#fff;border:1px solid var(--line);font-size:12px}
+/* sticky step + progress */
+.sticky{ position:sticky; top:0; z-index:10; backdrop-filter:blur(8px);
+  background:rgba(255,255,255,.6); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow-soft);
+  padding:8px 10px; display:flex; flex-direction:column; gap:10px; }
+.navbar{display:flex; align-items:center; gap:10px; justify-content:center; flex-wrap:wrap}
+.step{display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; cursor:pointer;
+  background:#fff; color:#3b4756; font-weight:850; border:1px solid var(--line); box-shadow:var(--shadow-soft); transition:transform .12s, box-shadow .2s, background .2s}
+.step .num{width:20px;height:20px;border-radius:50%;display:inline-grid;place-items:center;background:#fff;border:1px solid var(--line);font-size:12px}
 .step:hover{transform:translateY(-2px); box-shadow:0 14px 30px rgba(23,35,50,.12)}
 .step.active{background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#222}
 .step.active .num{background:#fff}
 .step.done{background:#e7fbf1; border-color:#c8f1de}
+.topprogress{height:10px; background:#f4f6f9; border-radius:999px; overflow:hidden}
+.topprogress>div{height:100%; width:0; background:linear-gradient(90deg,#7aa7ff,#65e8da,#bff4df); transition:width .35s ease}
+.statusline{font-size:12px; color:#6b7280; text-align:center}
 
 /* card */
 .card{width:100%; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); margin:0 auto; animation:fadeUp .4s ease both}
@@ -65,7 +76,7 @@ h3{font-size:18px; margin:16px 0 8px}
 p{margin:8px 0} .small{font-size:13px} .muted{color:var(--muted)} .center{text-align:center}
 
 /* buttons */
-.btn{background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#222; border:none; padding:14px 18px; border-radius:14px; font-weight:900; cursor:pointer; box-shadow:0 12px 34px rgba(255,178,107,.35); transition:transform .08s, box-shadow .2s}
+.btn{background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#222; border:none; padding:12px 16px; border-radius:14px; font-weight:900; cursor:pointer; box-shadow:0 12px 34px rgba(255,178,107,.35); transition:transform .08s, box-shadow .2s}
 .btn:hover{transform:translateY(-2px); box-shadow:0 18px 40px rgba(255,178,107,.45)}
 .btn:disabled{opacity:.5; cursor:not-allowed}
 .btn-ghost{background:#fff; color:#111; border:1px solid var(--line); padding:12px 14px; border-radius:12px; font-weight:800; cursor:pointer; transition:transform .08s; box-shadow:var(--shadow-soft)}
@@ -76,10 +87,6 @@ input,select,textarea{width:100%; background:#fff; color:#111; border:1px solid 
 input:focus,select:focus,textarea:focus{border-color:#ffd7b0; box-shadow:0 0 0 6px rgba(255,178,107,.18)}
 label{font-size:14px; color:#3b4756}
 .section{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
-
-/* progress */
-.progress{height:12px; background:#f4f6f9; border-radius:999px; overflow:hidden}
-.progress>div{height:100%; width:0; background:linear-gradient(90deg,#7aa7ff,#65e8da,#bff4df); transition:width .35s ease}
 
 /* grid/options */
 .grid{display:grid; gap:14px} .grid-2{grid-template-columns:1fr 1fr} @media (max-width:760px){ .grid-2{grid-template-columns:1fr} }
@@ -101,8 +108,8 @@ label{font-size:14px; color:#3b4756}
 .skel.box{height:16px} .skel.img{aspect-ratio:4/3}
 .toast{position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#1e293b; color:#fff; padding:10px 14px; border-radius:10px; box-shadow:var(--shadow-soft); display:none; z-index:99}
 
-/* print: PDF only on result */
-@media print{ .header, .navbar, .btn:not(.btn-pdf), .btn-ghost, .blob {display:none !important} .card{box-shadow:none; border:1px solid #ddd} }
+/* print */
+@media print{ .header, .sticky, .btn:not(.btn-pdf), .btn-ghost, .blob {display:none !important} .card{box-shadow:none; border:1px solid #ddd} }
 </style>
 </head>
 <body>
@@ -111,48 +118,65 @@ label{font-size:14px; color:#3b4756}
 
 <div class="container">
   <div class="header"><div class="brand"><div class="logo"></div><span>바른미술학원 · 미술적성테스트</span></div></div>
+
   <main class="main">
-    <nav class="navbar" id="topnav"></nav>
+    <!-- Sticky step + progress -->
+    <div class="sticky">
+      <nav class="navbar" id="topnav"></nav>
+      <div class="topprogress" aria-hidden="true"><div id="topbar"></div></div>
+      <div class="statusline" id="statusline">진행률 0%</div>
+    </div>
+    <!-- Page -->
     <section class="card" id="app"></section>
   </main>
 </div>
 
 <script>
-/* ============ 꼭 바꿀 값 ============ */
-// 네 시트 ID는 반영 완료
+/* ================ 교체할 값 2가지 ================ */
 const SHEET_ID = '1n10E7zVRNxO4Zndc1eZmj0nRkUcblIj-qixL8evidDQ';
-// Google Form formResponse (결과 저장)
 const FORM_ACTION = 'https://docs.google.com/forms/d/e/【FORM_ID】/formResponse'; // ← TODO
-// Google Form 항목 매핑
 const F = {
   child_name:'entry.111111', age:'entry.222222', grade:'entry.333333',
   guardian:'entry.444444', phone:'entry.555555', campus:'entry.666666',
   answers:'entry.777777', scores:'entry.888888', top3:'entry.999999',
-  resultId:'entry.123123', timestamp:'entry.321321' // (선택)
+  resultId:'entry.123123', timestamp:'entry.321321'
 };
-/* =================================== */
+/* ================================================ */
 
 const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Questions&tqx=out:json`;
 const DOMAINS = ["관찰력","서사력","디테일","구성력","색감각","공간감","도전성","소통력"];
 const STEPS = [{key:'start',label:'시작'},{key:'consent',label:'동의'},{key:'profile',label:'프로필'},{key:'test',label:'테스트'},{key:'result',label:'결과'}];
+
 const STATE = { step:'start', consent:false, consentMeta:null, profile:{}, questions:[], idx:0, answers:[], result:null };
 const $ = id => document.getElementById(id); const v = id => $(id)?.value?.trim() ?? ''; const app = () => $('app');
 function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',2000);}
+function maskPhone(p){ const d=(p||'').replace(/\D/g,''); if(d.length<7) return p||''; return `${d.slice(0,3)}-${d.slice(3,7)}-${d.slice(7)}`.replace(/\d(?=\d{2,4}\D*$)/g,'*'); }
 
-/* Nav */
+/* Step nav + progress */
 function renderNav(){
   const curIdx = STEPS.findIndex(s=>s.key===STATE.step);
   $('topnav').innerHTML = STEPS.map((s,i)=>`<div class="step ${s.key===STATE.step?'active':''} ${curIdx>i?'done':''}" onclick="navGo('${s.key}')"><span class="num">${i+1}</span><span>${s.label}</span></div>`).join('')
-    + `<a class="step" style="text-decoration:none" href="./admin.html" target="_blank" rel="noopener"><span class="num">A</span><span>관리자</span></a>`;
+   + `<a class="step" style="text-decoration:none" href="./admin.html" target="_blank" rel="noopener"><span class="num">A</span><span>관리자</span></a>`;
 }
-function navGo(step){ STATE.step=step; if(step==='test' && STATE.questions.length===0) { startTest(); return; } render(); }
+function updateTopProgress(){
+  let pctByStep = (STEPS.findIndex(s=>s.key===STATE.step)) / (STEPS.length-1) * 100;
+  if(STATE.step==='test' && STATE.questions.length){
+    const pct = Math.round(STATE.idx/STATE.questions.length*100);
+    $('topbar').style.width = pct + '%';
+    $('statusline').textContent = `테스트 진행 ${STATE.idx+1}/${STATE.questions.length} (${pct}%)`;
+    return;
+  }
+  $('topbar').style.width = Math.round(pctByStep) + '%';
+  $('statusline').textContent = `진행률 ${Math.round(pctByStep)}%`;
+}
+function navGo(step){ STATE.step=step; if(step==='test' && STATE.questions.length===0){ startTest(); return; } render(); }
 
 /* Helpers */
 function parseGViz(text){ const s=text.indexOf('{'), e=text.lastIndexOf('}'); if(s<0||e<0) return []; const obj=JSON.parse(text.slice(s,e+1)); const cols=obj.table.cols.map(c=>c.label); return obj.table.rows.map(r=>r.c.map(c=>c?(c.f??c.v):'')).map(a=>Object.fromEntries(cols.map((k,i)=>[k,a[i]]))); }
 async function loadQuestions(){
   app().innerHTML = `<h2 class="center">문항을 불러오는 중…</h2><div class="grid grid-2">${Array.from({length:4}).map(()=>`<div class="skel img"></div>`).join('')}</div>`;
   const txt=await (await fetch(GVIZ_URL)).text(); const rows=parseGViz(txt);
-  if(!rows || !rows.length){ app().innerHTML = `<h2>문항을 불러오지 못했습니다</h2><p class="muted">• Questions 시트를 <b>웹에 게시</b>했는지<br/>• 시트 이름이 정확히 <b>Questions</b>인지<br/>• 헤더/active 값이 올바른지 확인하세요.</p><div class="center" style="margin-top:12px"><a class="btn-ghost" href="https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit" target="_blank" rel="noopener">시트 열기</a></div>`; return; }
+  if(!rows || !rows.length){ app().innerHTML = `<h2>문항을 불러오지 못했습니다</h2><p class="muted">Questions 시트를 <b>웹에 게시</b>했는지 / 이름이 <b>Questions</b>인지 / 헤더·active 값을 확인하세요.</p>`; return; }
   const act=rows.filter(r=>String(r.active).toUpperCase()==='TRUE').sort((a,b)=>(+a.order - +b.order));
   STATE.questions=act.map(r=>({ id:r.id, order:+r.order, prompt:r.prompt,
     options:['A','B','C','D'].map(k=>({ key:k, label:r[`${k}_label`]||'', imageUrl:r[`${k}_image`]||'', alt:r[`${k}_label`]||'',
@@ -169,15 +193,11 @@ function viewConsent(){
     <h2 class="center">보호자 개인정보 및 이용 동의서</h2>
     <p class="muted small center">본 테스트는 <b>교육 가이드</b> 목적이며 <b>의학·임상 진단이 아닙니다.</b></p>
     <div class="acc" id="acc">
-      ${accItem('1. 수집·이용 목적','미술적성테스트 제공, 결과 산출 및 맞춤 가이드 제공 / 상담·등록 안내 / 서비스 품질 개선(통계·분석)')}
-      ${accItem('2. 수집 항목','<b>필수</b>: 아동 이름·나이·학년 / 보호자 이름·연락처 / 테스트 응답<br/><b>자동수집</b>: 접속 일시·브라우저·쿠키·로그')}
+      ${accItem('1. 수집·이용 목적','미술적성테스트 제공, 결과 산출 및 맞춤 가이드 제공 / 상담·등록 안내 / 서비스 품질 개선(통계·분석) / 결과지 이메일 발송(선택)')}
+      ${accItem('2. 수집 항목','<b>필수</b>: 아동 이름·나이·학년 / 보호자 이름·연락처 / 테스트 응답<br/><b>선택</b>: 이메일(결과지 발송)<br/><b>자동수집</b>: 접속 일시·브라우저·쿠키·로그')}
       ${accItem('3. 보관·파기','보관기간: 수집일로부터 <b>12개월</b> / 법령상 의무기간 종료 시까지<br/>파기방법: 전자파일 영구삭제, 출력물 분쇄')}
-      ${accItem('4. 제3자 제공·처리위탁','Google(시트/드라이브/분석), Netlify(호스팅) 등 필요한 범위 내 제공')}
+      ${accItem('4. 제3자 제공·처리위탁','Google(시트/드라이브/분석), Netlify(호스팅), Resend(이메일)')}
       ${accItem('5. 동의 거부권','동의 거부 가능하나 동의 없을 경우 테스트 이용이 제한될 수 있습니다.')}
-      ${accItem('6. 이용자 권리','열람·정정·삭제·처리정지·동의철회 / 고객센터 요청 시 지체없이 조치')}
-      ${accItem('7. 안전성 확보','접근권한 최소화, HTTPS 암호화, 접근기록 보관, 정기 점검')}
-      ${accItem('8. 연락처','JBM SOFT · 이메일: <b>jaewon@jbmsoft.co.kr</b> · 평일 10:00–18:00')}
-      ${accItem('9. 고지','본 동의서·처리방침은 변경될 수 있으며 변경 시 웹에 게시합니다.')}
     </div>
     <div class="section" style="margin-top:16px">
       <div class="grid grid-2">
@@ -197,12 +217,11 @@ function viewConsent(){
       <button class="btn-ghost" onclick="toggleAll(true)">전문 펼치기</button>
       <button class="btn-ghost" onclick="toggleAll(false)">모두 접기</button>
     </div>
-    <p class="small muted center" style="margin-top:8px">※ 교육 가이드 목적이며 <b>의학·임상 진단이 아닙니다.</b></p>
   `;
   $('consent_ts').value = nowKST();
   ['chk_required','chk_minor','consent_guardian','consent_phone'].forEach(id=>{ $(id).addEventListener('input',evalConsentBtn); $(id).addEventListener('change',evalConsentBtn); });
   function evalConsentBtn(){ const ok=$('chk_required').checked&&$('chk_minor').checked; const g=v('consent_guardian'); const p=v('consent_phone'); const okp=/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(p); $('btn_consent').disabled=!(ok&&g.length>=2&&okp); }
-  $('btn_consent').onclick=()=>{ STATE.consent=$('chk_required').checked&&$('chk_minor').checked; STATE.consentMeta={agreed:$('chk_required').checked,minor_guardian:$('chk_minor').checked,marketing:$('chk_marketing').checked,guardian:v('consent_guardian'),phone:v('consent_phone'),relation:v('consent_relation'),ts:$('consent_ts').value,version:"v1.0 (2025-08-24)"}; if(!STATE.consent) return toast('필수 항목 동의 필요'); go('profile'); };
+  $('btn_consent').onclick=()=>{ STATE.consent=$('chk_required').checked&&$('chk_minor').checked; STATE.consentMeta={agreed:$('chk_required').checked,minor_guardian:$('chk_minor').checked,marketing:$('chk_marketing').checked,guardian:v('consent_guardian'),phone:v('consent_phone'),relation:v('consent_relation'),ts:$('consent_ts').value,version:"v1.2"}; go('profile'); };
   document.querySelectorAll('.acc-head').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open'))); window.scrollTo({top:0,behavior:'smooth'});
 }
 function viewProfile(){
@@ -210,22 +229,29 @@ function viewProfile(){
     <h2 class="center">프로필 정보</h2>
     <div class="grid grid-2" style="margin-top:8px">
       <div><label>아동 이름</label><input id="cname" placeholder="예: 홍길동"></div>
-      <div><label>나이</label><select id="age"><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div>
-      <div><label>학년</label><select id="grade"><option>1학년</option><option>2학년</option><option>3학년</option><option>4학년</option></select></div>
+      <div><label>나이</label>
+        <select id="age"><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select>
+      </div>
+      <div><label>학년</label>
+        <select id="grade"><option>1학년</option><option>2학년</option><option>3학년</option><option>4학년</option><option>5학년</option><option>6학년</option></select>
+      </div>
       <div><label>보호자 이름</label><input id="gname" placeholder="예: 김보호자"></div>
       <div><label>연락처</label><input id="phone" placeholder="010-0000-0000"></div>
+      <div><label>이메일(선택, 결과지 전송)</label><input id="email" placeholder="example@email.com"></div>
       <div><label>관심 캠퍼스(선택)</label><input id="campus" placeholder="예: 분당점"></div>
     </div>
     <div class="center" style="margin-top:16px"><button class="btn" onclick="startTest()">테스트 시작</button></div>
   `; window.scrollTo({top:0,behavior:'smooth'});
 }
-async function startTest(){ STATE.profile={child_name:v('cname'),age:v('age'),grade:v('grade'),guardian:v('gname'),phone:v('phone'),campus:v('campus')}; if(!STATE.profile.child_name||!/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(STATE.profile.phone||'')){ toast('이름/연락처를 확인해 주세요'); return; } await loadQuestions(); STATE.idx=0; STATE.answers=[]; go('test'); }
+async function startTest(){
+  STATE.profile={child_name:v('cname'),age:v('age'),grade:v('grade'),guardian:v('gname'),phone:v('phone'),email:v('email'),campus:v('campus')};
+  if(!STATE.profile.child_name || !/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(STATE.profile.phone||'')){ toast('이름/연락처를 확인해 주세요'); return; }
+  await loadQuestions(); STATE.idx=0; STATE.answers=[]; go('test');
+}
 function viewTest(){
-  const hasQ=STATE.questions.length>0; const q=STATE.questions[STATE.idx]||{prompt:'문항을 불러오는 중입니다',options:[]}; const pct=hasQ?Math.round(STATE.idx/STATE.questions.length*100):0;
+  const hasQ=STATE.questions.length>0; const q=STATE.questions[STATE.idx]||{prompt:'문항을 불러오는 중입니다',options:[]};
   app().innerHTML = `
-    <div class="center small muted">Q${hasQ?STATE.idx+1:'-'} / ${hasQ?STATE.questions.length:'-'} · 진행률</div>
-    <div class="progress"><div style="width:${pct}%"></div></div>
-    <h2 class="center" style="margin-top:12px">${q.prompt}</h2>
+    <div class="center small muted">Q${hasQ?STATE.idx+1:'-'} / ${hasQ?STATE.questions.length:'-'}</div>
     <div class="grid grid-2" style="margin-top:12px">
       ${q.options.length?q.options.map(o=>`<div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label}" onclick="choose('${o.key}')" onkeydown="if(event.key==='Enter'||event.key===' '){choose('${o.key}')}"><img src="${o.imageUrl}" alt="${o.alt}" onerror="this.style.opacity=.2" loading="lazy"><div class="cap center">${o.label}</div></div>`).join(''):Array.from({length:2}).map(()=>`<div class="skel img"></div>`).join('')}
     </div>
@@ -233,47 +259,150 @@ function viewTest(){
       <button class="btn-ghost" onclick="prev()" ${STATE.idx===0?'disabled':''}>이전</button>
       <button class="btn" id="nextBtn" onclick="next()" disabled>다음</button>
     </div>
-  `; document.addEventListener('keydown',keyNavOnce,{once:true}); window.scrollTo({top:0,behavior:'smooth'});
+  `; document.addEventListener('keydown',keyNavOnce,{once:true}); window.scrollTo({top:0,behavior:'smooth'}); updateTopProgress();
 }
 function keyNavOnce(e){ if(e.key==='ArrowRight') next(); if(e.key==='ArrowLeft') prev(); if(e.key==='Enter'){ if(!$('nextBtn').disabled) next(); } }
 function choose(key){ const q=STATE.questions[STATE.idx]; ['A','B','C','D'].forEach(k=>{const n=$(`opt_${k}`); if(n) n.classList.remove('sel');}); const node=$(`opt_${key}`); if(node){ node.classList.add('sel'); node.animate([{transform:'scale(1)'},{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:180}); } const opt=q.options.find(o=>o.key===key); STATE.answers[STATE.idx]={ qid:q.id, key, weights:opt.weights }; $('nextBtn').disabled=false; }
 function next(){ if(!STATE.answers[STATE.idx]) return toast('하나를 선택해 주세요'); if(STATE.idx<STATE.questions.length-1){ STATE.idx++; viewTest(); } else submitAll(); }
 function prev(){ if(STATE.idx>0){ STATE.idx--; viewTest(); } }
 
-/* Score & Submit */
+/* Scoring & narrative */
 function aggregateScores(ans){ const sum={}; DOMAINS.forEach(d=>sum[d]=0); ans.forEach(a=>Object.entries(a.weights||{}).forEach(([k,v])=>sum[k]=(sum[k]||0)+Number(v||0))); const qCount=ans.length||1, max=qCount*1.0; const scores={}; DOMAINS.forEach(d=>{ const v=(sum[d]||0)/max*4; scores[d]=Math.round(v*10)/10; }); return scores; }
+function tier(v){ if(v>=3.2) return 'A'; if(v>=2.4) return 'B'; if(v>=1.6) return 'C'; return 'D'; }
+const MENT = {
+  A: (k)=>`${k}이(가) 매우 뛰어나요. 스스로 기획해보는 심화 프로젝트를 추천해요.`,
+  B: (k)=>`${k}이(가) 안정적입니다. 난이도를 한 단계 올려 꾸준히 확장해요.`,
+  C: (k)=>`${k}을(를) 키우는 중이에요. 작은 목표를 정해 반복 연습을 권해요.`,
+  D: (k)=>`${k} 기초 감각부터 차근차근. 쉬운 과제부터 성공 경험을 쌓아요.`
+};
+const MISSIONS = {
+  관찰력:{A:'평소 사물 3개 디테일 스케치',B:'빛/그림자 10분 스터디',C:'실루엣 찾기 놀이',D:'사물 윤곽선 따라그리기'},
+  서사력:{A:'3컷 만화로 하루 기록',B:'그림에 말풍선 추가',C:'그림 전후 이야기 말하기',D:'좋아하는 장면 한 컷 묘사'},
+  디테일:{A:'재질 3종 표현 챌린지',B:'마감 클린업 10분',C:'선 굵기 2단계로 정리',D:'도형 안 번짐 없이 색칠'},
+  구성력:{A:'포스터 레이아웃 2안',B:'3분 썸네일 4장',C:'중심-보조 배치 훈련',D:'격자 3×3 배치 연습'},
+  색감각:{A:'보색 포인트 실험',B:'2색 팔레트 변주',C:'따뜻/차가운 색 나누기',D:'색연필 3색만 사용'},
+  공간감:{A:'투시 1·2점 빠르게',B:'겹침/원근 강조 스케치',C:'앞·중·뒤 레이어 나누기',D:'바닥선/수평선 표시하기'},
+  도전성:{A:'매일 다른 도구로 1장',B:'새 소재 1개 시도',C:'실패작 리터치',D:'초간단 3분 드로잉'},
+  소통력:{A:'작품 의도 1문장 작성',B:'친구 피드백 교환',C:'좋았던 점 1가지 말하기',D:'그림 제목 붙이기'}
+};
+
+/* Submit */
 async function submitAll(){
-  const scores=aggregateScores(STATE.answers); const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3); const resultId=crypto.randomUUID(); const answersWithMeta={consent:STATE.consentMeta,profile:STATE.profile,questions:STATE.answers};
+  const scores=aggregateScores(STATE.answers); const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3); const resultId=crypto.randomUUID();
+  const answersWithMeta={consent:STATE.consentMeta,profile:STATE.profile,questions:STATE.answers};
   const form=new FormData(); form.append(F.child_name,STATE.profile.child_name); form.append(F.age,STATE.profile.age); form.append(F.grade,STATE.profile.grade); form.append(F.guardian,STATE.profile.guardian); form.append(F.phone,STATE.profile.phone); form.append(F.campus,STATE.profile.campus||''); form.append(F.answers,JSON.stringify(answersWithMeta)); form.append(F.scores,JSON.stringify(scores)); form.append(F.top3,top3.join(',')); form.append(F.resultId,resultId); form.append(F.timestamp,nowKST());
-  fetch(FORM_ACTION,{method:'POST',mode:'no-cors',body:form}).catch(()=>{}); STATE.result={scores,top3,resultId}; go('result');
+  try{ fetch(FORM_ACTION,{method:'POST',mode:'no-cors',body:form}); }catch(e){}
+  STATE.result={ scores, top3, resultId };
+  go('result');
 }
 
-/* Result */
-function bar(name,val){ const pct=Math.max(0,Math.min(100,(val/4)*100)); return `<div style="display:flex;justify-content:space-between;gap:10px"><div>${name}</div><div class="muted">${val}</div></div><div class="progress"><div style="width:${pct}%"></div></div><div style="height:8px"></div>`; }
-function viewResult(){
-  const has=!!STATE.result; const r=STATE.result||{top3:[],scores:{}}; const s=r.scores||{}; const keys=Object.keys(s);
+/* Result view */
+let CHARTS=[];
+function destroyCharts(){ CHARTS.forEach(c=>c.destroy?.()); CHARTS=[]; }
+async function viewResult(){
+  const has=!!STATE.result; const r=STATE.result||{top3:[],scores:{}}; const s=r.scores||{}; const keys=Object.keys(s); const top3=(r.top3||[]).map(k=>({k,v:s[k]}));
   app().innerHTML = `
-    <div class="center">
-      <h2>미술적성 결과</h2>
-      ${has?`<div class="btn-ghost" style="display:inline-block;border-radius:999px;background:#fff7ee;border-color:#ffe3c6;font-weight:900">ID · ${r.resultId.slice(0,8)}</div>`:''}
-      <div style="height:8px"></div>
-      ${has?`<p><b>Top 3</b> : ${r.top3.join(', ')||'-'}</p>`:`<p class="muted">아직 결과가 없습니다. <b>테스트를 완료</b>하면 결과를 확인할 수 있어요.</p>`}
+    <div id="resultCard">
+      <div class="center">
+        <h2>미술적성 결과</h2>
+        ${has?`<div class="btn-ghost" style="display:inline-block;border-radius:999px;background:#fff7ee;border-color:#ffe3c6;font-weight:900">ID · ${r.resultId.slice(0,8)}</div>`:''}
+        <div style="height:6px"></div>
+        ${has?`<p class="muted small">수험자: <b>${STATE.profile.child_name||'-'}</b> · 나이 ${STATE.profile.age||'-'} · ${STATE.profile.grade||'-'} · 연락처 ${maskPhone(STATE.profile.phone)} ${STATE.profile.campus?`· ${STATE.profile.campus}`:''}</p>`:''}
+        <div style="height:4px"></div>
+        ${has?`<p><b>Top 3</b> : ${r.top3.join(', ')||'-'}</p>`:`<p class="muted">아직 결과가 없습니다. 테스트를 완료해 주세요.</p>`}
+      </div>
+
+      ${has?`
+      <div class="grid grid-2" style="margin-top:12px">
+        <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px">
+          <h3 class="center">영역별 레이다</h3><canvas id="radar" height="300"></canvas>
+        </div>
+        <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px">
+          <h3 class="center">상위 3개 막대</h3><canvas id="bars" height="300"></canvas>
+        </div>
+      </div>
+
+      <div class="section" style="margin-top:12px">
+        <h3>항목별 해석 & 15분 미션</h3>
+        <div class="grid" style="grid-template-columns:1fr 1fr">
+          ${DOMAINS.map(k=>{
+            const v=s[k]??0; const t=tier(v);
+            return `<div style="border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff">
+              <div style="display:flex;justify-content:space-between"><b>${k}</b><span class="muted">${v}</span></div>
+              <div class="topprogress" style="height:8px;margin:6px 0 8px"><div style="width:${(v/4)*100}%;height:100%;background:linear-gradient(90deg,#7aa7ff,#65e8da,#bff4df)"></div></div>
+              <div class="small" style="color:#334155">${MENT[t](k)}</div>
+              <div class="hint small" style="margin-top:6px">오늘의 15분 미션: <b>${MISSIONS[k][t]}</b></div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+      `:``}
     </div>
-    ${has?`<h3>전체 영역 점수(0~4)</h3>${keys.map(k=>bar(k,s[k])).join('')}`:`<div class="center" style="margin-top:10px"><button class="btn" onclick="go('test')">테스트 하러 가기</button></div>`}
-    <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center">
+
+    <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap">
       <button class="btn-ghost" onclick="go('start')">처음으로</button>
       ${has?`<button class="btn btn-pdf" onclick="window.print()">PDF 저장</button>`:''}
+      ${has?`<div style="display:flex; gap:6px; align-items:center">
+                <input id="send_email" placeholder="이메일 주소" style="width:260px" value="${STATE.profile.email||''}"/>
+                <button class="btn" onclick="emailPDF()">결과지 이메일 전송</button>
+              </div>`:''}
     </div>
     <p class="small muted center" style="margin-top:8px">※ 교육 가이드 목적이며 <b>의학·임상 진단이 아닙니다.</b></p>
   `;
-  if(has){ try{ const c=document.createElement('canvas'); c.width=app().clientWidth; c.height=160; c.style.width='100%'; c.style.height='160px'; c.style.display='block'; c.style.margin='10px 0'; c.style.filter='saturate(1.2)'; app().insertBefore(c,app().children[2]); miniConfetti(c); setTimeout(()=>c.remove(),1500);}catch(e){} }
+  destroyCharts();
+  if(has){
+    const rctx=$('radar').getContext('2d');
+    CHARTS.push(new Chart(rctx,{ type:'radar',
+      data:{ labels:DOMAINS, datasets:[{ label:'점수(0~4)', data:DOMAINS.map(k=>s[k]||0), fill:true }] },
+      options:{ scales:{ r:{ suggestedMin:0, suggestedMax:4, ticks:{stepSize:1} }}, plugins:{legend:{display:false}} }
+    }));
+    const bctx=$('bars').getContext('2d');
+    CHARTS.push(new Chart(bctx,{ type:'bar',
+      data:{ labels:top3.map(t=>t.k), datasets:[{ label:'점수', data:top3.map(t=>t.v) }] },
+      options:{ scales:{ y:{ suggestedMin:0, suggestedMax:4, ticks:{stepSize:1}}}, plugins:{legend:{display:false}} }
+    }));
+    // confetti
+    try{ const c=document.createElement('canvas'); c.width=app().clientWidth; c.height=120; c.style.width='100%'; c.style.height='120px'; c.style.display='block'; c.style.margin='10px 0'; app().insertBefore(c,app().children[1]); miniConfetti(c); setTimeout(()=>c.remove(),1500);}catch(e){}
+  }
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function miniConfetti(cv){ const ctx=cv.getContext('2d'),W=cv.width,H=cv.height; const parts=Array.from({length:80}).map(()=>({x:Math.random()*W,y:Math.random()*-H*0.3,v:2+Math.random()*3,s:4+Math.random()*6,c:['#ffd9a8','#ffc98b','#bff4df','#dcd6ff'][Math.floor(Math.random()*4)]})); let t=0; (function step(){ctx.clearRect(0,0,W,H); parts.forEach(p=>{p.y+=p.v;p.x+=Math.sin((t+p.y)*0.05);ctx.fillStyle=p.c;ctx.fillRect(p.x,p.y,p.s,p.s);}); t+=1; if(t<120) requestAnimationFrame(step); })(); }
 
+/* Email PDF */
+async function emailPDF(){
+  const email = v('send_email') || STATE.profile.email || '';
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ toast('이메일 형식을 확인해 주세요'); return; }
+  try{
+    toast('PDF 생성 중…');
+    const pdfBase64 = await captureResultPDF();
+    const res = await fetch('/.netlify/functions/send-result',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({
+      to: email,
+      subject: `미술적성 결과지 - ${STATE.profile.child_name||''}`,
+      pdfBase64,
+      meta: { child: STATE.profile.child_name||'', resultId: STATE.result?.resultId||'' }
+    })});
+    if(res.ok){ toast('이메일을 보냈어요!'); } else { toast('메일 전송 설정을 확인해 주세요'); }
+  }catch(e){ console.error(e); toast('메일 전송 중 오류가 발생했습니다'); }
+}
+async function captureResultPDF(){
+  const node = document.getElementById('resultCard');
+  const canvas = await html2canvas(node, { scale: 2, useCORS: true });
+  const imgData = canvas.toDataURL('image/png');
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF('p','mm','a4');
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  const imgWidth = pageWidth - 20;
+  const imgHeight = canvas.height * imgWidth / canvas.width;
+  pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, Math.min(imgHeight, pageHeight-20), '', 'FAST');
+  const base64 = pdf.output('datauristring').split(',')[1];
+  return base64;
+}
+
 /* router */
 function go(step){ STATE.step=step; render(); }
-function render(){ renderNav(); if(STATE.step==='start')return viewStart(); if(STATE.step==='consent')return viewConsent(); if(STATE.step==='profile')return viewProfile(); if(STATE.step==='test')return viewTest(); if(STATE.step==='result')return viewResult(); }
+function render(){ renderNav(); updateTopProgress(); if(STATE.step==='start')return viewStart(); if(STATE.step==='consent')return viewConsent(); if(STATE.step==='profile')return viewProfile(); if(STATE.step==='test')return viewTest(); if(STATE.step==='result')return viewResult(); }
+window.addEventListener('hashchange',()=>{ const s=location.hash.replace('#',''); if(STEPS.some(x=>x.key===s)){ navGo(s); }});
 render();
 </script>
 </body>
