@@ -6,7 +6,7 @@
 <title>ArtTest Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{ --bg1:#fff7f1; --bg2:#f7f3ff; --card:#fff; --ink:#1f2937; --muted:#6b7280; --line:#eef2f7; --accent:#ffd6b0; --accent2:#d5d8ff; --shadow:0 18px 60px rgba(16,24,40,.10);}
+:root{ --bg1:#fff7f1; --bg2:#f7f3ff; --card:#fff; --ink:#0f172a; --muted:#6b7280; --line:#eef2f7; --accent:#ffd6b0; --accent2:#d5d8ff; --shadow:0 18px 60px rgba(16,24,40,.10); }
 *{box-sizing:border-box}
 body{margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--ink);font-family:"Pretendard",ui-sans-serif,system-ui,"Noto Sans KR",Segoe UI,Roboto,Arial}
 .header{position:sticky; top:0; z-index:10; backdrop-filter:blur(8px); background:rgba(255,255,255,.6); border-bottom:1px solid var(--line)}
@@ -36,8 +36,6 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
 .section{display:none}.section.active{display:block}
 .center{text-align:center}
 label>span{display:block;font-size:12px;color:#6b7280;margin-top:4px}
-
-/* password gate */
 .gate{position:fixed; inset:0; display:grid; place-items:center; background:rgba(255,255,255,.85); backdrop-filter:blur(8px); z-index:9999}
 .gatebox{background:#fff; border:1px solid var(--line); border-radius:16px; padding:18px; width:min(360px,90vw); box-shadow:0 18px 44px rgba(16,24,40,.12)}
 </style>
@@ -94,19 +92,54 @@ label>span{display:block;font-size:12px;color:#6b7280;margin-top:4px}
         </div>
         <label style="margin-top:8px">문제(질문)</label>
         <textarea id="prompt" rows="2" placeholder="예: 전시 포스터를 만든다면 어디에 집중할까?"></textarea>
+
         <div class="grid" style="grid-template-columns:1fr 1fr; margin-top:8px">
-          ${['A','B','C','D'].map(k=>`
+          <!-- A -->
           <div style="border:1px solid var(--line); border-radius:12px; padding:10px">
-            <div class="row"><strong>${k} 보기</strong></div>
-            <label>라벨</label><input id="${k}_label"/>
+            <div class="row"><strong>A 보기</strong></div>
+            <label>라벨</label><input id="A_label"/>
             <label>이미지 URL <span>이미지 미리보기 ▼</span></label>
-            <input id="${k}_image" oninput="updateThumb('${k}')" placeholder="https://drive.google.com/uc?export=view&id=..."/>
-            <img id="${k}_thumb" class="thumb" alt="${k} 이미지" />
-            <label>가중치(JSON)</label>
-            <input id="${k}_weights" placeholder='{"관찰력":1}' oninput="validateJSON(this)"/>
-            <div id="${k}_err" class="hint"></div>
-          </div>`).join('')}
+            <input id="A_image" oninput="updateThumb('A')" placeholder="https://drive.google.com/uc?export=view&id=..."/>
+            <img id="A_thumb" class="thumb" alt="A 이미지" />
+            <label>A 이미지 가중치(JSON)</label>
+            <input id="A_weights" placeholder='{"관찰력":1}' oninput="validateJSON(this)"/>
+            <div id="A_err" class="hint"></div>
+          </div>
+          <!-- B -->
+          <div style="border:1px solid var(--line); border-radius:12px; padding:10px">
+            <div class="row"><strong>B 보기</strong></div>
+            <label>라벨</label><input id="B_label"/>
+            <label>이미지 URL <span>이미지 미리보기 ▼</span></label>
+            <input id="B_image" oninput="updateThumb('B')" placeholder="https://drive.google.com/uc?export=view&id=..."/>
+            <img id="B_thumb" class="thumb" alt="B 이미지" />
+            <label>B 이미지 가중치(JSON)</label>
+            <input id="B_weights" placeholder='{"색감각":1}' oninput="validateJSON(this)"/>
+            <div id="B_err" class="hint"></div>
+          </div>
+          <!-- C -->
+          <div style="border:1px solid var(--line); border-radius:12px; padding:10px">
+            <div class="row"><strong>C 보기</strong></div>
+            <label>라벨</label><input id="C_label"/>
+            <label>이미지 URL <span>이미지 미리보기 ▼</span></label>
+            <input id="C_image" oninput="updateThumb('C')" placeholder="https://drive.google.com/uc?export=view&id=..."/>
+            <img id="C_thumb" class="thumb" alt="C 이미지" />
+            <label>C 이미지 가중치(JSON)</label>
+            <input id="C_weights" placeholder='{"구성력":1}' oninput="validateJSON(this)"/>
+            <div id="C_err" class="hint"></div>
+          </div>
+          <!-- D -->
+          <div style="border:1px solid var(--line); border-radius:12px; padding:10px">
+            <div class="row"><strong>D 보기</strong></div>
+            <label>라벨</label><input id="D_label"/>
+            <label>이미지 URL <span>이미지 미리보기 ▼</span></label>
+            <input id="D_image" oninput="updateThumb('D')" placeholder="https://drive.google.com/uc?export=view&id=..."/>
+            <img id="D_thumb" class="thumb" alt="D 이미지" />
+            <label>D 이미지 가중치(JSON)</label>
+            <input id="D_weights" placeholder='{"서사력":1}' oninput="validateJSON(this)"/>
+            <div id="D_err" class="hint"></div>
+          </div>
         </div>
+
         <div class="row" style="margin-top:12px; justify-content:center">
           <button class="btn" onclick="save()">저장</button>
           <button class="btn-ghost" onclick="reload()">다시 불러오기</button>
@@ -134,11 +167,10 @@ function enterGate(){ const ok = g('pw').value === '250824'; if(ok){ g('gate').s
 /* Tabs */
 document.addEventListener('click',(e)=>{ if(e.target.classList.contains('tab') && e.target.dataset.tab){ document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t===e.target)); document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active', s.id===e.target.dataset.tab)); } });
 
-/* Auth (GIS 토큰 클라이언트: redirect URI 불필요, "Authorized JavaScript origins"만 필요) */
+/* Auth (GIS 토큰 클라이언트) */
 const DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
 const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
 let tokenClient, gapiInited=false, gisInited=false;
-
 window.onload = () => {
   gapi.load('client', async () => { try{ await gapi.client.init({ apiKey: API_KEY, discoveryDocs: DISCOVERY_DOCS }); }catch(e){} gapiInited = true; maybeEnable(); });
   tokenClient = google.accounts.oauth2.initTokenClient({ client_id: CLIENT_ID, scope: SCOPES, callback: (resp)=>{ if(resp && resp.access_token){ onSignedIn(); } } });
