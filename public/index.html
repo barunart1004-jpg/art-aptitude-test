@@ -3,88 +3,107 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>미술적성테스트 · Basic</title>
-<meta name="theme-color" content="#ffc98b" />
+<title>바른미술학원 · 미술적성테스트</title>
+<meta name="theme-color" content="#ffd6b0" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <style>
 :root{
-  --bg1:#fffaf5; --bg2:#fff2e2; --surface:#ffffff; --ink:#24303f; --muted:#7b8794;
-  --accent:#ffb26b; --accent2:#ffd9a8; --mint:#bff4df; --lav:#dcd6ff;
-  --line:#eef2f6; --radius:20px;
-  --shadow:0 18px 50px rgba(23,35,50,.12); --shadow-soft:0 10px 30px rgba(23,35,50,.08);
+  --ink:#1f2937; --muted:#6b7280;
+  --bg1:#fff7f1; --bg2:#f7f3ff;
+  --card:#ffffff; --line:#eef2f7;
+  --accentA:#ffd6b0; --accentB:#d5d8ff; --accentC:#c7f5e9;
+  --pill:#111827; --radius:22px;
+  --shadow:0 18px 60px rgba(16,24,40,.12);
+  --soft:0 12px 30px rgba(16,24,40,.08);
 }
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
-  margin:0; color:var(--ink); font-family:ui-sans-serif,system-ui,"Apple SD Gothic Neo","Noto Sans KR",Segoe UI,Roboto,Arial; line-height:1.58;
-  background: radial-gradient(1200px 900px at 50% -10%, var(--bg2), transparent 60%),
-              radial-gradient(1200px 900px at 50% 110%, var(--bg2), transparent 60%),
-              linear-gradient(180deg,var(--bg1),var(--bg2));
-  background-attachment:fixed; overflow-x:hidden;
+  margin:0; color:var(--ink);
+  font-family:"Pretendard",ui-sans-serif,system-ui,"Noto Sans KR",Segoe UI,Roboto,Arial;
+  background:
+   radial-gradient(900px 600px at 10% -10%, var(--accentB), transparent 55%),
+   radial-gradient(900px 600px at 90% 110%, var(--accentC), transparent 55%),
+   linear-gradient(180deg,var(--bg1),var(--bg2));
+  background-attachment:fixed;
+}
+body.test-bg::before{
+  content:""; position:fixed; inset:0; z-index:-2; pointer-events:none;
+  background:
+    linear-gradient(rgba(255,255,255,.78), rgba(255,255,255,.78)),
+    url("/bg.png") center/cover no-repeat fixed;
+  filter:saturate(1.02);
 }
 .container{min-height:100dvh; display:flex; flex-direction:column; align-items:center}
 .main{width:100%; max-width:1000px; padding:18px; display:flex; flex-direction:column; gap:16px; margin:0 auto}
-.blob{position:fixed; z-index:-1; filter:blur(30px); opacity:.5; pointer-events:none; animation:drift 10s ease-in-out infinite}
-.blob.b1{width:340px;height:340px;left:-120px;top:80px;background:radial-gradient(circle at 30% 30%, var(--lav), transparent 60%)}
-.blob.b2{width:420px;height:420px;right:-160px;top:120px;background:radial-gradient(circle at 70% 40%, var(--mint), transparent 60%)}
-.blob.b3{width:380px;height:380px;left:50%;bottom:-160px;transform:translateX(-50%);background:radial-gradient(circle at 50% 50%, #ffe1c4, transparent 60%)}
-@keyframes drift{0%{transform:translateY(0)}50%{transform:translateY(-12px)}100%{transform:translateY(0)}}
-@media (prefers-reduced-motion:reduce){ .blob{animation:none} }
 
+/* top brand */
 .header{width:100%; display:flex; justify-content:center}
 .brand{
-  width:100%; max-width:1000px; margin-top:8px; display:flex; align-items:center; gap:10px; padding:10px 14px;
+  width:100%; max-width:1000px; margin-top:10px;
+  display:flex; align-items:center; gap:12px; padding:12px 16px;
   border-radius:999px; background:rgba(255,255,255,.65); backdrop-filter:blur(8px);
-  border:1px solid var(--line); box-shadow:var(--shadow-soft)
+  border:1px solid var(--line); box-shadow:var(--soft)
 }
-.brand .logo{width:26px;height:26px;border-radius:50%;flex:0 0 26px;background:conic-gradient(from 0deg,var(--accent),var(--accent2),var(--lav),var(--mint),var(--accent));animation:spin 8s linear infinite paused}
+.logo{width:28px;height:28px;border-radius:50%;
+  background:conic-gradient(from 0deg, #ffb385, #ffd6b0, #d5d8ff, #c7f5e9, #ffb385);
+  animation:spin 9s linear infinite paused}
 .brand:hover .logo{animation-play-state:running}
-@keyframes spin{to{transform:rotate(360deg)}}
 .brand span{font-weight:900; letter-spacing:.2px}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-.sticky{ position:sticky; top:0; z-index:10; backdrop-filter:blur(8px);
-  background:rgba(255,255,255,.6); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow-soft);
-  padding:8px 10px; display:flex; flex-direction:column; gap:10px; }
-.navbar{display:flex; align-items:center; gap:10px; justify-content:center; flex-wrap:wrap}
+/* sticky steps */
+.sticky{position:sticky; top:0; z-index:10; backdrop-filter:blur(8px);
+  background:rgba(255,255,255,.6); border:1px solid var(--line); border-radius:16px; box-shadow:var(--soft);
+  padding:8px 10px; display:flex; flex-direction:column; gap:10px;}
+.navbar{display:flex; flex-wrap:wrap; gap:10px; justify-content:center}
 .step{display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; cursor:pointer;
-  background:#fff; color:#3b4756; font-weight:850; border:1px solid var(--line); box-shadow:var(--shadow-soft); transition:transform .12s, box-shadow .2s, background .2s}
+  background:#fff; color:#374151; font-weight:850; border:1px solid var(--line); box-shadow:var(--soft); transition:transform .12s, box-shadow .2s}
+.step:hover{transform:translateY(-1px)}
 .step .num{width:20px;height:20px;border-radius:50%;display:inline-grid;place-items:center;background:#fff;border:1px solid var(--line);font-size:12px}
-.step:hover{transform:translateY(-2px); box-shadow:0 14px 30px rgba(23,35,50,.12)}
-.step.active{background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#222}
-.step.active .num{background:#fff}
-.step.done{background:#e7fbf1; border-color:#c8f1de}
-.topprogress{height:10px; background:#f4f6f9; border-radius:999px; overflow:hidden}
-.topprogress>div{height:100%; width:0; background:linear-gradient(90deg,#7aa7ff,#65e8da,#bff4df); transition:width .35s ease}
+.step.active{background:linear-gradient(90deg,#ffd6b0,#e6e2ff); color:#111827; box-shadow:0 12px 30px rgba(255, 214, 176,.35)}
+.step.done{background:#edfff8; border-color:#dff7ef}
+.topprogress{height:10px; background:#f4f6fa; border-radius:999px; overflow:hidden}
+.topprogress>div{height:100%; width:0; background:linear-gradient(90deg,#9db2ff,#79ead9,#ffd6b0); transition:width .35s ease}
 .statusline{font-size:12px; color:#6b7280; text-align:center}
 
-.card{width:100%; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); margin:0 auto; animation:fadeUp .4s ease both}
-@keyframes fadeUp{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:translateY(0)}}
-@media (max-width:720px){ .card{padding:18px} }
+/* card */
+.card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); animation:fade .35s ease both}
+@keyframes fade{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:translateY(0)}}
 
-h1{font-size:34px; line-height:1.25; margin:0 0 6px}
+h1{font-size:34px; margin:0 0 6px}
 h2{font-size:24px; margin:0 0 10px}
 h3{font-size:18px; margin:16px 0 8px}
 p{margin:8px 0} .small{font-size:13px} .muted{color:var(--muted)} .center{text-align:center}
 
-.btn{background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#222; border:none; padding:12px 16px; border-radius:14px; font-weight:900; cursor:pointer; box-shadow:0 12px 34px rgba(255,178,107,.35); transition:transform .08s, box-shadow .2s}
-.btn:hover{transform:translateY(-2px); box-shadow:0 18px 40px rgba(255,178,107,.45)}
-.btn:disabled{opacity:.5; cursor:not-allowed}
-.btn-ghost{background:#fff; color:#111; border:1px solid var(--line); padding:12px 14px; border-radius:12px; font-weight:800; cursor:pointer; transition:transform .08s; box-shadow:var(--shadow-soft)}
+/* buttons */
+.btn{--bg:linear-gradient(90deg,#111827,#374151); --glow:rgba(17,24,39,.32);
+  background:var(--bg); color:#fff; border:none; padding:12px 18px; border-radius:14px; font-weight:900; cursor:pointer;
+  box-shadow:0 10px 28px var(--glow); transition:transform .08s, box-shadow .2s, filter .2s}
+.btn:hover{transform:translateY(-1px); filter:brightness(1.03)}
+.btn-ghost{background:#fff; color:#111827; border:1px solid var(--line); padding:12px 14px; border-radius:12px; font-weight:800; cursor:pointer; box-shadow:var(--soft)}
 .btn-ghost:hover{transform:translateY(-1px)}
+.btn-accent{--bg:linear-gradient(90deg,#ffb385,#ffd6b0); --glow:rgba(255,179,133,.36)}
+.btn-mint{--bg:linear-gradient(90deg,#9bd9ca,#c7f5e9); --glow:rgba(155,217,202,.36)}
 
+/* inputs */
 input,select,textarea{width:100%; background:#fff; color:#111; border:1px solid var(--line); border-radius:12px; padding:12px; outline:none; transition:border-color .2s, box-shadow .2s}
-input:focus,select:focus,textarea:focus{border-color:#ffd7b0; box-shadow:0 0 0 6px rgba(255,178,107,.18)}
-label{font-size:14px; color:#3b4756}
+input:focus,select:focus,textarea:focus{border-color:#e9d7fe; box-shadow:0 0 0 6px rgba(213,216,255,.18)}
+label{font-size:14px; color:#374151}
 .section{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
 
-.grid{display:grid; gap:14px} .grid-2{grid-template-columns:1fr 1fr} @media (max-width:760px){ .grid-2{grid-template-columns:1fr} }
-.opt{border:2px solid var(--line); border-radius:16px; overflow:hidden; cursor:pointer; background:#fff; box-shadow:var(--shadow-soft); transition:transform .12s, box-shadow .2s, border-color .2s}
+.grid{display:grid; gap:14px}
+.grid-2{grid-template-columns:1fr 1fr}
+@media (max-width:760px){ .grid-2{grid-template-columns:1fr} }
+.opt{border:2px solid var(--line); border-radius:18px; overflow:hidden; cursor:pointer; background:#fff; box-shadow:var(--soft); transition:transform .12s, box-shadow .2s, border-color .2s}
 .opt:hover{transform:translateY(-2px)}
 .opt img{width:100%; display:block; aspect-ratio:4/3; object-fit:cover}
-.opt .cap{padding:12px; color:#3b4756; font-weight:700}
-.opt.sel{border-color:#ffc98b; box-shadow:0 0 0 6px rgba(255,201,139,.25)}
+.opt .cap{padding:12px; color:#374151; font-weight:700}
+.opt.sel{border-color:#ffd6b0; box-shadow:0 0 0 6px rgba(255,214,176,.25)}
 
 .acc{border-radius:14px; overflow:hidden; border:1px solid var(--line)}
 .acc-item{border-top:1px solid var(--line)}
@@ -94,17 +113,17 @@ label{font-size:14px; color:#3b4756}
 
 .skel{border-radius:12px; background:linear-gradient(90deg,#f3f4f6,#eaeef3,#f3f4f6); background-size:200% 100%; animation:sh 1.2s infinite} @keyframes sh{to{background-position:-200% 0}}
 .skel.box{height:16px} .skel.img{aspect-ratio:4/3}
-.toast{position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#1e293b; color:#fff; padding:10px 14px; border-radius:10px; box-shadow:var(--shadow-soft); display:none; z-index:99}
-
-@media print{ .header, .sticky, .btn:not(.btn-pdf), .btn-ghost, .blob {display:none !important} .card{box-shadow:none; border:1px solid #ddd} }
+.toast{position:fixed; bottom:18px; left:50%; transform:translateX(-50%); background:#111827; color:#fff; padding:10px 14px; border-radius:10px; box-shadow:var(--soft); display:none; z-index:99}
+@media print{ .header,.sticky,.btn:not(.btn-pdf),.btn-ghost{display:none!important} .card{box-shadow:none; border:1px solid #ddd} }
 </style>
 </head>
 <body>
-<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <div class="container">
-  <div class="header"><div class="brand"><div class="logo"></div><span>바른미술학원 · 미술적성테스트</span></div></div>
+  <div class="header">
+    <div class="brand"><div class="logo"></div><span>바른미술학원 · 미술적성테스트</span></div>
+  </div>
 
   <main class="main">
     <div class="sticky">
@@ -112,163 +131,145 @@ label{font-size:14px; color:#3b4756}
       <div class="topprogress" aria-hidden="true"><div id="topbar"></div></div>
       <div class="statusline" id="statusline">진행률 0%</div>
     </div>
+
     <section class="card" id="app"></section>
   </main>
 </div>
 
 <script>
-/* ====== 반드시 수정: 폼 연결 2가지 ====== */
+/* ===== 폼/시트 연결 (확정 값) ===== */
 const SHEET_ID = '1n10E7zVRNxO4Zndc1eZmj0nRkUcblIj-qixL8evidDQ';
-const FORM_ACTION = 'https://docs.google.com/forms/d/e/1FAIpQLSeRWq5YKN50zL0simiaQA6EBRsn6VXN__ZmLplAgDz1I1hyQA/formResponse'; // ← 네 폼의 formResponse
+const FORM_ACTION = 'https://docs.google.com/forms/d/e/1FAIpQLSeRWq5YKN50zL0simiaQA6EBRsn6VXN__ZmLplAgDz1I1hyQA/formResponse';
 const F = {
-  child_name:'entry.________', age:'entry.________', grade:'entry.________',
-  guardian:'entry.________', phone:'entry.________', campus:'entry.________',
-  answers:'entry.________', scores:'entry.________', top3:'entry.________',
-  resultId:'entry.________', timestamp:'entry.________'
+  child_name: 'entry.684468179',
+  age:        'entry.1066070471',
+  grade:      'entry.1812672802',
+  guardian:   'entry.1666083184',
+  phone:      'entry.89824848',
+  campus:     'entry.490719219',
+  answers:    'entry.85364862',
+  scores:     'entry.1455508168',
+  top3:       'entry.1261684833',
+  resultId:   'entry.2120338430',
+  timestamp:  'entry.532514127'
 };
-/* ======================================= */
+/* ================================== */
 
 const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Questions&tqx=out:json`;
 const DOMAINS = ["관찰력","서사력","디테일","구성력","색감각","공간감","도전성","소통력"];
 const STEPS = [{key:'start',label:'시작'},{key:'consent',label:'동의'},{key:'profile',label:'프로필'},{key:'test',label:'테스트'},{key:'result',label:'결과'}];
 const STATE = { step:'start', consent:false, consentMeta:null, profile:{}, questions:[], idx:0, answers:[], result:null };
-const $ = id => document.getElementById(id); const v = id => $(id)?.value?.trim() ?? ''; const app = () => $('app');
-function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',2000);}
-function maskPhone(p){ const d=(p||'').replace(/\D/g,''); if(d.length<7) return p||''; return `${d.slice(0,3)}-${d.slice(3,7)}-${d.slice(7)}`.replace(/\d(?=\d{2,4}\D*$)/g,'*'); }
+
+const $=id=>document.getElementById(id); const v=id=>$(id)?.value?.trim()??''; const app=()=>$('app');
+function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',1800);}
+function maskPhone(p){const d=(p||'').replace(/\D/g,'');if(d.length<7)return p||'';return`${d.slice(0,3)}-${d.slice(3,7)}-${d.slice(7)}`.replace(/\d(?=\d{2,4}\D*$)/g,'*');}
 
 /* NAV + Progress */
 function renderNav(){
-  const curIdx = STEPS.findIndex(s=>s.key===STATE.step);
-  $('topnav').innerHTML = STEPS.map((s,i)=>`<div class="step ${s.key===STATE.step?'active':''} ${curIdx>i?'done':''}" onclick="navGo('${s.key}')"><span class="num">${i+1}</span><span>${s.label}</span></div>`).join('')
-   + `<a class="step" style="text-decoration:none" href="./admin.html" target="_blank" rel="noopener"><span class="num">A</span><span>관리자</span></a>`;
+  const cur = STEPS.findIndex(s=>s.key===STATE.step);
+  $('topnav').innerHTML = STEPS.map((s,i)=>`<div class="step ${s.key===STATE.step?'active':''} ${cur>i?'done':''}" onclick="navGo('${s.key}')"><span class="num">${i+1}</span><span>${s.label}</span></div>`).join('')
+   + `<a class="step" style="text-decoration:none" href="./admin.html"><span class="num">A</span><span>관리자</span></a>`;
 }
 function updateTopProgress(){
-  let pctByStep = (STEPS.findIndex(s=>s.key===STATE.step)) / (STEPS.length-1) * 100;
-  if(STATE.step==='test' && STATE.questions.length){
-    const pct = Math.round(STATE.idx/STATE.questions.length*100);
-    $('topbar').style.width = pct + '%';
-    $('statusline').textContent = `테스트 진행 ${STATE.idx+1}/${STATE.questions.length} (${pct}%)`;
-    return;
-  }
-  $('topbar').style.width = Math.round(pctByStep) + '%';
-  $('statusline').textContent = `진행률 ${Math.round(pctByStep)}%`;
+  let pct = (STEPS.findIndex(s=>s.key===STATE.step))/(STEPS.length-1)*100;
+  if(STATE.step==='test' && STATE.questions.length){ const q = Math.round(STATE.idx/STATE.questions.length*100); $('topbar').style.width=q+'%'; $('statusline').textContent=`테스트 진행 ${STATE.idx+1}/${STATE.questions.length} (${q}%)`; return; }
+  $('topbar').style.width=Math.round(pct)+'%'; $('statusline').textContent=`진행률 ${Math.round(pct)}%`;
 }
 function navGo(step){ STATE.step=step; if(step==='test' && STATE.questions.length===0){ startTest(); return; } render(); }
 
-/* Helpers */
+/* Utils */
 function parseGViz(text){ const s=text.indexOf('{'), e=text.lastIndexOf('}'); if(s<0||e<0) return []; const obj=JSON.parse(text.slice(s,e+1)); const cols=obj.table.cols.map(c=>c.label); return obj.table.rows.map(r=>r.c.map(c=>c?(c.f??c.v):'')).map(a=>Object.fromEntries(cols.map((k,i)=>[k,a[i]]))); }
 async function loadQuestions(){
-  app().innerHTML = `<h2 class="center">문항을 불러오는 중…</h2><div class="grid grid-2">${Array.from({length:4}).map(()=>`<div class="skel img"></div>`).join('')}</div>`;
+  app().innerHTML=`<h2 class="center">문항을 불러오는 중…</h2><div class="grid grid-2">${Array.from({length:4}).map(()=>`<div class="skel img"></div>`).join('')}</div>`;
   const txt=await (await fetch(GVIZ_URL)).text(); const rows=parseGViz(txt);
-  if(!rows || !rows.length){ app().innerHTML = `<h2>문항을 불러오지 못했습니다</h2><p class="muted">Questions 시트를 <b>웹에 게시</b>했는지 / 이름이 <b>Questions</b>인지 / 헤더·active 값을 확인하세요.</p>`; return; }
-  const act=rows.filter(r=>String(r.active).toUpperCase()==='TRUE').sort((a,b)=>(+a.order - +b.order));
+  const act=(rows||[]).filter(r=>String(r.active).toUpperCase()==='TRUE').sort((a,b)=>(+a.order - +b.order));
   STATE.questions=act.map(r=>({ id:r.id, order:+r.order, prompt:r.prompt,
     options:['A','B','C','D'].map(k=>({ key:k, label:r[`${k}_label`]||'', imageUrl:r[`${k}_image`]||'', alt:r[`${k}_label`]||'',
       weights:(()=>{try{return JSON.parse(r[`${k}_weights`])||{}}catch{return{}}})() })) }));
 }
-function nowKST(){ const d=new Date(), p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())} KST`; }
+function nowKST(){ const d=new Date(),p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())} KST`; }
 
 /* Views */
-function viewStart(){ app().innerHTML = `<div class="center"><div class="btn-ghost" style="display:inline-block;border-radius:999px;background:#fff7ee;border-color:#ffe3c6;font-weight:900">ART APTITUDE · BASIC</div><h1>미술적성테스트</h1><p class="muted">아이의 강점을 발견하고, 오늘 바로 할 수 있는 15분 미션을 추천합니다.</p><div style="height:8px"></div><button class="btn" onclick="go('consent')">시작하기</button></div>`; window.scrollTo({top:0,behavior:'smooth'}); }
+function viewStart(){ app().innerHTML=`<div class="center">
+  <div class="btn btn-accent" style="display:inline-block;border-radius:999px">ART APTITUDE · BASIC</div>
+  <h1>미술적성테스트</h1>
+  <p class="muted">아이의 강점을 발견하고, 오늘 바로 할 수 있는 15분 미션을 추천합니다.</p>
+  <div style="height:8px"></div>
+  <button class="btn btn-mint" onclick="go('consent')">시작하기</button>
+</div>`; window.scrollTo({top:0,behavior:'smooth'}); }
 function accItem(t,html){ return `<div class="acc-item open"><div class="acc-head"><span>${t}</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="acc-body small">${html}</div></div>`;}
 function toggleAll(open){ document.querySelectorAll('.acc-item').forEach(it=>it.classList.toggle('open',!!open)); }
 function viewConsent(){
-  app().innerHTML = `
-    <h2 class="center">보호자 개인정보 및 이용 동의서</h2>
-    <p class="muted small center">본 테스트는 <b>교육 가이드</b> 목적이며 <b>의학·임상 진단이 아닙니다.</b></p>
-    <div class="acc" id="acc">
-      ${accItem('1. 수집·이용 목적','미술적성테스트 제공, 결과 산출 및 맞춤 가이드 제공 / 상담·등록 안내 / 서비스 품질 개선(통계·분석) / 결과지 이메일 발송(선택)')}
-      ${accItem('2. 수집 항목','<b>필수</b>: 아동 이름·나이·학년 / 보호자 이름·연락처 / 테스트 응답<br/><b>선택</b>: 이메일(결과지 발송)')}
+  app().innerHTML=`<h2 class="center">보호자 개인정보 및 이용 동의서</h2>
+  <p class="muted small center">본 테스트는 <b>교육 가이드</b> 목적이며 <b>의학·임상 진단이 아닙니다.</b></p>
+  <div class="acc">${accItem('1. 수집·이용 목적','테스트 제공/결과 산출/맞춤 가이드·상담 안내/서비스 품질 개선/결과지 이메일 발송(선택)')}${accItem('2. 수집 항목','<b>필수</b>: 아동 이름·나이·학년/보호자 이름·연락처/응답<br><b>선택</b>: 이메일(결과 발송)')}</div>
+  <div class="section" style="margin-top:16px">
+    <div class="grid grid-2">
+      <div><label>보호자 성명(서명)</label><input id="consent_guardian" placeholder="예: 홍길동(서명)"></div>
+      <div><label>연락처</label><input id="consent_phone" placeholder="010-0000-0000"></div>
+      <div><label>동의일시</label><input id="consent_ts" readonly></div>
+      <div><label>아동과의 관계</label><select id="consent_relation"><option>부모</option><option>법정대리인</option><option>기타</option></select></div>
     </div>
-    <div class="section" style="margin-top:16px">
-      <div class="grid grid-2">
-        <div><label>보호자 성명(서명)</label><input id="consent_guardian" placeholder="예: 홍길동(서명)"></div>
-        <div><label>연락처</label><input id="consent_phone" placeholder="010-0000-0000"></div>
-        <div><label>동의일시</label><input id="consent_ts" readonly></div>
-        <div><label>아동과의 관계</label><select id="consent_relation"><option>부모</option><option>법정대리인</option><option>기타</option></select></div>
-      </div>
-      <div style="margin-top:12px">
-        <label><input type="checkbox" id="chk_required"> (필수) 개인정보 수집·이용 동의</label><br/>
-        <label><input type="checkbox" id="chk_minor"> (필수) 만 14세 미만 아동 보호자 동의</label>
-      </div>
+    <div style="margin-top:12px">
+      <label><input type="checkbox" id="chk_required"> (필수) 개인정보 수집·이용 동의</label><br>
+      <label><input type="checkbox" id="chk_minor"> (필수) 만 14세 미만 아동 보호자 동의</label>
     </div>
-    <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center">
-      <button class="btn" id="btn_consent" disabled>동의하고 진행</button>
-      <button class="btn-ghost" onclick="toggleAll(true)">전문 펼치기</button>
-      <button class="btn-ghost" onclick="toggleAll(false)">모두 접기</button>
-    </div>
-  `;
-  $('consent_ts').value = nowKST();
-  ['chk_required','chk_minor','consent_guardian','consent_phone'].forEach(id=>{ $(id).addEventListener('input',evalConsentBtn); $(id).addEventListener('change',evalConsentBtn); });
-  function evalConsentBtn(){ const ok=$('chk_required').checked&&$('chk_minor').checked; const g=v('consent_guardian'); const p=v('consent_phone'); const okp=/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(p); $('btn_consent').disabled=!(ok&&g.length>=2&&okp); }
-  $('btn_consent').onclick=()=>{ STATE.consent=true; STATE.consentMeta={guardian:v('consent_guardian'),phone:v('consent_phone'),relation:v('consent_relation'),ts:$('consent_ts').value,version:"v1.3"}; go('profile'); };
+  </div>
+  <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center">
+    <button class="btn" id="btn_consent" disabled>동의하고 진행</button>
+    <button class="btn-ghost" onclick="toggleAll(true)">전문 펼치기</button>
+    <button class="btn-ghost" onclick="toggleAll(false)">모두 접기</button>
+  </div>`;
+  $('consent_ts').value=nowKST();
+  ['chk_required','chk_minor','consent_guardian','consent_phone'].forEach(id=>{ $(id).addEventListener('input',evalBtn); $(id).addEventListener('change',evalBtn); });
+  function evalBtn(){ const ok=$('chk_required').checked&&$('chk_minor').checked; const g=v('consent_guardian'); const p=v('consent_phone'); const okp=/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(p); $('btn_consent').disabled=!(ok&&g.length>=2&&okp); }
+  $('btn_consent').onclick=()=>{ STATE.consent=true; STATE.consentMeta={guardian:v('consent_guardian'),phone:v('consent_phone'),relation:v('consent_relation'),ts:$('consent_ts').value,ver:"v1.3"}; go('profile'); };
   document.querySelectorAll('.acc-head').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open'))); window.scrollTo({top:0,behavior:'smooth'});
 }
 function viewProfile(){
-  app().innerHTML = `
-    <h2 class="center">프로필 정보</h2>
-    <div class="grid grid-2" style="margin-top:8px">
-      <div><label>아동 이름</label><input id="cname" placeholder="예: 홍길동"></div>
-      <div><label>나이</label>
-        <select id="age"><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select>
-      </div>
-      <div><label>학년</label>
-        <select id="grade"><option>1학년</option><option>2학년</option><option>3학년</option><option>4학년</option><option>5학년</option><option>6학년</option></select>
-      </div>
-      <div><label>보호자 이름</label><input id="gname" placeholder="예: 김보호자"></div>
-      <div><label>연락처</label><input id="phone" placeholder="010-0000-0000"></div>
-      <div><label>이메일(선택, 결과지 전송)</label><input id="email" placeholder="example@email.com"></div>
-      <div><label>관심 캠퍼스(선택)</label><input id="campus" placeholder="예: 분당점"></div>
-    </div>
-    <div class="center" style="margin-top:16px"><button class="btn" onclick="startTest()">테스트 시작</button></div>
-  `; window.scrollTo({top:0,behavior:'smooth'});
+  app().innerHTML=`<h2 class="center">프로필 정보</h2>
+  <div class="grid grid-2" style="margin-top:8px">
+    <div><label>아동 이름</label><input id="cname" placeholder="예: 홍길동"></div>
+    <div><label>나이</label><select id="age"><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select></div>
+    <div><label>학년</label><select id="grade"><option>1학년</option><option>2학년</option><option>3학년</option><option>4학년</option><option>5학년</option><option>6학년</option></select></div>
+    <div><label>보호자 이름</label><input id="gname" placeholder="예: 김보호자"></div>
+    <div><label>연락처</label><input id="phone" placeholder="010-0000-0000"></div>
+    <div><label>이메일(선택, 결과지 전송)</label><input id="email" placeholder="example@email.com"></div>
+    <div><label>관심 캠퍼스(선택)</label><input id="campus" placeholder="예: 분당점"></div>
+  </div>
+  <div class="center" style="margin-top:16px"><button class="btn btn-mint" onclick="startTest()">테스트 시작</button></div>`;
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 async function startTest(){
   STATE.profile={child_name:v('cname'),age:v('age'),grade:v('grade'),guardian:v('gname'),phone:v('phone'),email:v('email'),campus:v('campus')};
   if(!STATE.profile.child_name || !/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(STATE.profile.phone||'')){ toast('이름/연락처를 확인해 주세요'); return; }
   await loadQuestions(); STATE.idx=0; STATE.answers=[]; go('test');
+  document.body.classList.add('test-bg'); // 테스트 단계 배경 on
 }
 function viewTest(){
-  const hasQ=STATE.questions.length>0; const q=STATE.questions[STATE.idx]||{prompt:'문항을 불러오는 중입니다',options:[]};
-  app().innerHTML = `
-    <div class="center small muted">Q${hasQ?STATE.idx+1:'-'} / ${hasQ?STATE.questions.length:'-'}</div>
-    <div class="grid grid-2" style="margin-top:12px">
-      ${q.options.length?q.options.map(o=>`<div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label}" onclick="choose('${o.key}')" onkeydown="if(event.key==='Enter'||event.key===' '){choose('${o.key}')}"><img src="${o.imageUrl}" alt="${o.alt}" onerror="this.style.opacity=.2" loading="lazy"><div class="cap center">${o.label}</div></div>`).join(''):Array.from({length:2}).map(()=>`<div class="skel img"></div>`).join('')}
+  const q=STATE.questions[STATE.idx]; if(!q){ app().innerHTML='<h3 class="center">문항을 불러오지 못했습니다.</h3>'; return; }
+  app().innerHTML=`<div class="center small muted">Q${STATE.idx+1} / ${STATE.questions.length}</div>
+    <h2 class="center" style="margin-top:6px">${q.prompt||''}</h2>
+    <div class="grid grid-2" style="margin-top:10px">
+      ${q.options.map(o=>`<div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label}" onclick="choose('${o.key}')" onkeydown="if(event.key==='Enter'||event.key===' '){choose('${o.key}')}">
+        <img src="${o.imageUrl}" alt="${o.alt||o.label}" onerror="this.style.opacity=.2" loading="lazy"><div class="cap center">${o.label}</div></div>`).join('')}
     </div>
     <div class="center" style="margin-top:18px; display:flex; gap:8px; justify-content:center">
       <button class="btn-ghost" onclick="prev()" ${STATE.idx===0?'disabled':''}>이전</button>
-      <button class="btn" id="nextBtn" onclick="next()" disabled>다음</button>
-    </div>
-  `; document.addEventListener('keydown',keyNavOnce,{once:true}); window.scrollTo({top:0,behavior:'smooth'}); updateTopProgress();
+      <button class="btn btn-accent" id="nextBtn" onclick="next()" disabled>다음</button>
+    </div>`;
+  document.addEventListener('keydown',keyNavOnce,{once:true}); window.scrollTo({top:0,behavior:'smooth'}); updateTopProgress();
 }
 function keyNavOnce(e){ if(e.key==='ArrowRight') next(); if(e.key==='ArrowLeft') prev(); if(e.key==='Enter'){ if(!$('nextBtn').disabled) next(); } }
-function choose(key){ const q=STATE.questions[STATE.idx]; ['A','B','C','D'].forEach(k=>{const n=$(`opt_${k}`); if(n) n.classList.remove('sel');}); const node=$(`opt_${key}`); if(node){ node.classList.add('sel'); node.animate([{transform:'scale(1)'},{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:180}); } const opt=q.options.find(o=>o.key===key); STATE.answers[STATE.idx]={ qid:q.id, key, weights:opt.weights }; $('nextBtn').disabled=false; }
+function choose(key){ const q=STATE.questions[STATE.idx]; ['A','B','C','D'].forEach(k=>{const n=$(`opt_${k}`); if(n) n.classList.remove('sel');}); const node=$(`opt_${key}`); if(node){ node.classList.add('sel'); node.animate([{transform:'scale(1)'},{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:160}); } const opt=q.options.find(o=>o.key===key); STATE.answers[STATE.idx]={ qid:q.id, key, weights:opt.weights }; $('nextBtn').disabled=false; }
 function next(){ if(!STATE.answers[STATE.idx]) return toast('하나를 선택해 주세요'); if(STATE.idx<STATE.questions.length-1){ STATE.idx++; viewTest(); } else submitAll(); }
 function prev(){ if(STATE.idx>0){ STATE.idx--; viewTest(); } }
 
-/* 점수 산출 & 세분화 멘트 */
-function aggregateScores(ans){ const sum={}; DOMAINS.forEach(d=>sum[d]=0); ans.forEach(a=>Object.entries(a.weights||{}).forEach(([k,v])=>sum[k]=(sum[k]||0)+Number(v||0))); const qCount=ans.length||1, max=qCount*1.0; const scores={}; DOMAINS.forEach(d=>{ const v=(sum[d]||0)/max*4; scores[d]=Math.round(v*10)/10; }); return scores; }
+/* 점수/멘트 */
+function aggregateScores(ans){ const sum={}; DOMAINS.forEach(d=>sum[d]=0); ans.forEach(a=>Object.entries(a.weights||{}).forEach(([k,v])=>sum[k]=(sum[k]||0)+Number(v||0))); const n=ans.length||1; const scores={}; DOMAINS.forEach(d=>{ const v=(sum[d]||0)/n*4; scores[d]=Math.round(v*10)/10; }); return scores; }
 function band(v){ if(v>=3.6) return 'S'; if(v>=3.2) return 'A'; if(v>=2.8) return 'A-'; if(v>=2.4) return 'B+'; if(v>=2.0) return 'B'; if(v>=1.6) return 'C+'; if(v>=1.0) return 'C'; return 'D'; }
-const MENT = {
-  'S': k=>`${k} 최상위! 자율기획·심화연구로 리더십을 키워요.`,
-  'A': k=>`${k} 매우 우수. 테마 프로젝트를 스스로 설계해 보세요.`,
-  'A-':k=>`${k} 탄탄합니다. 완성도 높이기에 집중하면 좋아요.`,
-  'B+':k=>`${k} 안정적이에요. 난이도 한 단계 업!`,
-  'B': k=>`${k} 기본기 양호. 루틴을 늘려 안정감 확보.`,
-  'C+':k=>`${k} 성장 구간. 작은 목표로 꾸준히 끌어올리기.`,
-  'C': k=>`${k} 기초 훈련 필요. 쉬운 과제로 성공 경험부터.`,
-  'D': k=>`${k} 감각 깨우기부터. 짧고 자주, 재미 위주로!`
-};
-const MISSIONS = {
-  관찰력:{'S':'패브릭·금속·유리 재질 3종 연구','A':'빛/그림자 관찰 스터디','A-':'사물 3개 디테일 스케치','B+':'5분 관찰 드로잉 3장','B':'실루엣/형태 분해 연습','C+':'윤곽선 따라 그리기','C':'도형으로 바꿔 그리기','D':'점-선 잇기 놀이'},
-  서사력:{'S':'6컷 연속 서사 시퀀스','A':'3컷 만화로 오늘 기록','A-':'장면-전환 실험','B+':'말풍선 추가 설명','B':'스토리 한 문장 쓰기','C+':'그림 제목 붙이기','C':'시작/끝 묘사','D':'좋아하는 장면 한 컷'},
-  디테일:{'S':'미세 텍스처 라이팅 연구','A':'클린업/엣지 관리','A-':'재질 3종 표현','B+':'선 굵기 계층화','B':'단계별 마감','C+':'칸 안 번짐 없이 색칠','C':'선 정리','D':'점묘로 면 채우기'},
-  구성력:{'S':'포스터 2안 AB테스트','A':'그리드 레이아웃 리팩터','A-':'썸네일 6장','B+':'주/부 시선 배치','B':'3×3 격자 연습','C+':'중심-여백 의식하기','C':'대·중·소 형태 배치','D':'도형 3개 균형잡기'},
-  색감각:{'S':'한정 팔레트 시리즈','A':'보색 포인트 실험','A-':'톤 밸런스 체크','B+':'따뜻/차가운 색 분리','B':'2색 팔레트 변주','C+':'3색만 쓰기','C':'명도 단계 연습','D':'컬러칩 붙이기'},
-  공간감:{'S':'1·2·3점 투시 시리즈','A':'겹침/원근 과장','A-':'회전 투시 연습','B+':'앞-중-뒤 레이어','B':'바닥선/수평선 표시','C+':'상자부터 그리기','C':'겹침 표현','D':'크기 차로 깊이감'},
-  도전성:{'S':'매체 믹스 업사이클링','A':'새 소재 2개 시도','A-':'리퍼런스 대담 변형','B+':'실패작 리터치','B':'낯선 도구 1개','C+':'3분 드로잉 루틴','C':'매일 한 장 습관','D':'낙서 놀이'},
-  소통력:{'S':'작가노트/전시 카드 작성','A':'비평문 5문장','A-':'의도 3문장 정의','B+':'피드백 라운드','B':'좋았던 점 2가지','C+':'작품 제목 만들기','C':'키워드 3개 적기','D':'감정 색으로 표현'}
-};
+const MENT = {'S':k=>`${k} 최상위! 자율기획·심화연구 권장`,'A':k=>`${k} 매우 우수. 테마 프로젝트를 스스로 설계`,'A-':k=>`${k} 탄탄합니다. 완성도 높이기 집중`,'B+':k=>`${k} 안정적. 난이도 한 단계 업`,'B':k=>`${k} 기본기 양호. 루틴 확장`,'C+':k=>`${k} 성장 구간. 작은 목표로 꾸준히`,'C':k=>`${k} 기초 훈련 필요. 쉬운 과제부터`,'D':k=>`${k} 감각 깨우기부터. 짧고 자주!`};
+const MISSIONS={'관찰력':{'S':'재질 3종 연구','A':'광원 관찰 드로잉','A-':'디테일 스케치','B+':'5분 관찰 3장','B':'실루엣 분해','C+':'윤곽선 따라 그리기','C':'도형 바꾸기','D':'점-선 잇기'},'서사력':{'S':'6컷 시퀀스','A':'3컷 만화','A-':'장면 전환','B+':'말풍선 설명','B':'스토리 한 문장','C+':'제목 만들기','C':'시작/끝 묘사','D':'좋아하는 장면 한 컷'},'디테일':{'S':'텍스처 라이팅','A':'클린업','A-':'재질 3종','B+':'선 굵기 계층화','B':'단계별 마감','C+':'칸 안 번짐 없이','C':'선 정리','D':'점묘 면 채우기'},'구성력':{'S':'포스터 2안','A':'그리드 리팩터','A-':'썸네일 6장','B+':'주/부 시선','B':'3×3 격자','C+':'중심-여백','C':'대·중·소 배치','D':'도형 3개 균형'},'색감각':{'S':'한정 팔레트','A':'보색 포인트','A-':'톤 밸런스','B+':'온/냉 분리','B':'2색 변주','C+':'3색만','C':'명도 단계','D':'컬러칩 붙이기'},'공간감':{'S':'1·2·3점 투시','A':'원근 과장','A-':'회전 투시','B+':'앞-중-뒤 레이어','B':'바닥/수평선','C+':'상자부터','C':'겹침 표현','D':'크기 차 강조'},'도전성':{'S':'매체 믹스','A':'새 소재 2개','A-':'대담 변형','B+':'실패작 리터치','B':'낯선 도구 1개','C+':'3분 드로잉','C':'매일 한 장','D':'낙서 놀이'},'소통력':{'S':'작가노트','A':'비평문 5문장','A-':'의도 3문장','B+':'피드백 라운드','B':'좋았던 점 2가지','C+':'작품 제목','C':'키워드 3개','D':'감정 색 표현'}};
 
 /* 제출 */
 async function submitAll(){
@@ -279,94 +280,74 @@ async function submitAll(){
   const form=new FormData();
   form.append(F.child_name,STATE.profile.child_name); form.append(F.age,STATE.profile.age); form.append(F.grade,STATE.profile.grade);
   form.append(F.guardian,STATE.profile.guardian); form.append(F.phone,STATE.profile.phone); form.append(F.campus,STATE.profile.campus||'');
-  form.append(F.answers,JSON.stringify(answersWithMeta)); form.append(F.scores,JSON.stringify(scores)); form.append(F.top3,top3.join(','));
-  form.append(F.resultId,resultId); form.append(F.timestamp,nowKST());
+  form.append(F.answers,JSON.stringify(answersWithMeta)); form.append(F.scores,JSON.stringify(scores)); form.append(F.top3,top3.join(',')); form.append(F.resultId,resultId); form.append(F.timestamp,nowKST());
   try{ fetch(FORM_ACTION,{method:'POST',mode:'no-cors',body:form}); }catch(e){}
-  STATE.result={ scores, top3, resultId };
-  go('result');
+  STATE.result={scores,top3,resultId}; go('result');
 }
 
-/* 결과 화면 + 차트 (그라디언트/쉐도우) */
+/* 결과 */
 let CHARTS=[];
 function destroyCharts(){ CHARTS.forEach(c=>c.destroy?.()); CHARTS=[]; }
-function makeGrad(ctx, area, c1, c2){ const g=ctx.createLinearGradient(area.left, area.top, area.right, area.bottom); g.addColorStop(0,c1); g.addColorStop(1,c2); return g; }
-const Shadow = { id:'shadow', beforeDatasetsDraw(chart, args, pluginOptions){ const {ctx} = chart; ctx.save(); ctx.shadowColor = 'rgba(23,35,50,.12)'; ctx.shadowBlur = 16; ctx.shadowOffsetY = 8; }, afterDatasetsDraw(chart){ chart.ctx.restore(); } };
+function makeGrad(ctx,area,c1,c2){const g=ctx.createLinearGradient(area.left,area.top,area.right,area.bottom); g.addColorStop(0,c1); g.addColorStop(1,c2); return g;}
+const Glow={id:'glow', beforeDatasetsDraw(c){const x=c.ctx; x.save(); x.shadowColor='rgba(17,24,39,.18)'; x.shadowBlur=16; x.shadowOffsetY=10;}, afterDatasetsDraw(c){c.ctx.restore();}};
 
 async function viewResult(){
-  const has=!!STATE.result; const r=STATE.result||{top3:[],scores:{}}; const s=r.scores||{};
-  app().innerHTML = `
-    <div id="resultCard">
-      <div class="center">
-        <h2>미술적성 결과</h2>
-        ${has?`<div class="btn-ghost" style="display:inline-block;border-radius:999px;background:#fff7ee;border-color:#ffe3c6;font-weight:900">ID · ${r.resultId.slice(0,8)}</div>`:''}
-        <div style="height:6px"></div>
-        ${has?`<p class="muted small">수험자: <b>${STATE.profile.child_name||'-'}</b> · 나이 ${STATE.profile.age||'-'} · ${STATE.profile.grade||'-'} · 연락처 ${maskPhone(STATE.profile.phone)} ${STATE.profile.campus?`· ${STATE.profile.campus}`:''}</p>`:''}
-        <div style="height:4px"></div>
-        ${has?`<p><b>Top 3</b> : ${r.top3.join(', ')||'-'}</p>`:`<p class="muted">아직 결과가 없습니다. 테스트를 완료해 주세요.</p>`}
-      </div>
-
-      ${has?`
-      <div class="grid grid-2" style="margin-top:12px">
-        <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px">
-          <h3 class="center">영역별 레이다</h3><canvas id="radar" height="320"></canvas>
-        </div>
-        <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px">
-          <h3 class="center">상위 3개 막대</h3><canvas id="bars" height="320"></canvas>
-        </div>
-      </div>
-
-      <div class="section" style="margin-top:12px">
-        <h3>항목별 해석 & 15분 미션</h3>
-        <div class="grid" style="grid-template-columns:1fr 1fr">
-          ${DOMAINS.map(k=>{
-            const v=+(s[k]??0); const b=band(v); const w=(v/4)*100;
-            return `<div style="border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff">
-              <div style="display:flex;justify-content:space-between"><b>${k}</b><span class="muted">${v.toFixed(1)} / 4.0</span></div>
-              <div class="topprogress" style="height:8px;margin:6px 0 8px"><div style="width:${w}%;height:100%;background:linear-gradient(90deg,#7aa7ff,#65e8da,#bff4df)"></div></div>
-              <div class="small" style="color:#334155">${MENT[b](k)}</div>
-              <div class="small" style="margin-top:6px;color:#0f172a">오늘의 15분 미션: <b>${MISSIONS[k][b]}</b></div>
-            </div>`;
-          }).join('')}
-        </div>
-      </div>
-      `:``}
+  document.body.classList.remove('test-bg'); // 배경 off
+  const r=STATE.result, s=r?.scores||{};
+  app().innerHTML=`<div id="resultCard">
+    <div class="center">
+      <h2>미술적성 결과</h2>
+      <div class="btn btn-accent" style="display:inline-block;border-radius:999px">ID · ${r.resultId.slice(0,8)}</div>
+      <p class="muted small" style="margin-top:6px">수험자: <b>${STATE.profile.child_name}</b> · 나이 ${STATE.profile.age} · ${STATE.profile.grade} · ${STATE.profile.campus?`캠퍼스 ${STATE.profile.campus} · `:''}연락처 ${maskPhone(STATE.profile.phone)}</p>
+      <p><b>Top 3</b> : ${r.top3.join(', ')}</p>
     </div>
-
-    <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap">
-      <button class="btn-ghost" onclick="go('start')">처음으로</button>
-      ${has?`<button class="btn btn-pdf" onclick="window.print()">PDF 저장</button>`:''}
-      ${has?`<div class="small muted" style="margin-top:8px">※ 이메일은 제출 후 <b>자동 발송</b>됩니다 (프로필에 이메일 입력 시).</div>`:''}
+    <div class="grid grid-2" style="margin-top:12px">
+      <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px"><h3 class="center">영역별 레이다</h3><canvas id="radar" height="320"></canvas></div>
+      <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px"><h3 class="center">상위 3개 막대</h3><canvas id="bars" height="320"></canvas></div>
     </div>
-    <p class="small muted center" style="margin-top:8px">※ 교육 가이드 목적이며 <b>의학·임상 진단이 아닙니다.</b></p>
-  `;
-  if(has){
-    // confetti
-    try{ const c=document.createElement('canvas'); c.width=app().clientWidth; c.height=120; c.style.width='100%'; c.style.height='120px'; c.style.display='block'; c.style.margin='10px 0'; app().insertBefore(c,app().children[1]); miniConfetti(c); setTimeout(()=>c.remove(),1500);}catch(e){}
-    // charts
-    destroyCharts();
-    const rctx=$('radar').getContext('2d'); const bctx=$('bars').getContext('2d');
-    CHARTS.push(new Chart(rctx,{ type:'radar',
-      data:{ labels:DOMAINS, datasets:[{ label:'점수(0~4)', data:DOMAINS.map(k=>s[k]||0), fill:true, pointRadius:3, borderWidth:2 }] },
-      options:{ animation:{duration:900}, scales:{ r:{ suggestedMin:0, suggestedMax:4, ticks:{stepSize:1}, angleLines:{color:'#eef2f6'}, grid:{color:'#eef2f6'} }}, plugins:{legend:{display:false}, tooltip:{enabled:true}}, elements:{ line:{ borderJoinStyle:'round' }}, plugins:[Shadow],
-      plugins:{
-        legend:{display:false}
-      },
-      plugins: [Shadow],
-      pluginsHooks: {}
-    }));
-    // gradient + rounded bar
-    CHARTS.push(new Chart(bctx,{ type:'bar',
-      data:{ labels:STATE.result.top3, datasets:[{ label:'점수', data:STATE.result.top3.map(k=>s[k]||0), borderRadius:10, borderSkipped:false }] },
-      options:{ animation:{duration:800}, scales:{ y:{ suggestedMin:0, suggestedMax:4, ticks:{stepSize:1}, grid:{color:'#f1f5f9'}}, x:{grid:{display:false}} }, plugins:{legend:{display:false}, tooltip:{enabled:true}} , plugins:[Shadow] }
-    ));
-  }
-  window.scrollTo({top:0,behavior:'smooth'});
+    <div class="section" style="margin-top:12px">
+      <h3>항목별 해석 & 15분 미션</h3>
+      <div class="grid" style="grid-template-columns:1fr 1fr">
+        ${DOMAINS.map(k=>{ const v=+(s[k]||0), b=band(v), w=(v/4)*100;
+          return `<div style="border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff">
+            <div style="display:flex;justify-content:space-between"><b>${k}</b><span class="muted">${v.toFixed(1)} / 4.0</span></div>
+            <div class="topprogress" style="height:8px;margin:6px 0 8px"><div style="width:${w}%;height:100%;background:linear-gradient(90deg,#9db2ff,#79ead9,#ffd6b0)"></div></div>
+            <div class="small" style="color:#334155">${MENT[b](k)}</div>
+            <div class="small" style="margin-top:6px;color:#0f172a">오늘의 15분 미션: <b>${MISSIONS[k][b]}</b></div>
+          </div>`; }).join('')}
+      </div>
+    </div>
+  </div>
+  <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap">
+    <button class="btn-ghost" onclick="go('start')">처음으로</button>
+    <button class="btn btn-accent btn-pdf" onclick="window.print()">PDF 저장</button>
+    <div class="small muted" style="margin-top:8px">※ 이메일은 제출 후 Apps Script로 <b>자동 발송</b>됩니다(프로필에 이메일 입력 시).</div>
+  </div>
+  <p class="small muted center" style="margin-top:8px">※ 교육 가이드 목적이며 <b>의학·임상 진단이 아닙니다.</b></p>`;
+
+  destroyCharts();
+  const rctx=$('radar').getContext('2d'); const bctx=$('bars').getContext('2d');
+  CHARTS.push(new Chart(rctx,{type:'radar',
+    data:{labels:DOMAINS, datasets:[{data:DOMAINS.map(k=>s[k]||0), borderWidth:2, pointRadius:3, fill:true}]},
+    options:{animation:{duration:900}, scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#eef2f7'},angleLines:{color:'#eef2f7'}}}, plugins:{legend:{display:false}}},
+    plugins:[Glow]
+  ));
+  CHARTS.push(new Chart(bctx,{type:'bar',
+    data:{labels:r.top3, datasets:[{data:r.top3.map(k=>s[k]||0), borderRadius:12, borderSkipped:false}]},
+    options:{animation:{duration:800}, scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}}, plugins:{legend:{display:false}}},
+    plugins:[Glow]
+  ));
 }
-function miniConfetti(cv){ const ctx=cv.getContext('2d'),W=cv.width,H=cv.height; const parts=Array.from({length:80}).map(()=>({x:Math.random()*W,y:Math.random()*-H*0.3,v:2+Math.random()*3,s:4+Math.random()*6,c:['#ffd9a8','#ffc98b','#bff4df','#dcd6ff'][Math.floor(Math.random()*4)]})); let t=0; (function step(){ctx.clearRect(0,0,W,H); parts.forEach(p=>{p.y+=p.v;p.x+=Math.sin((t+p.y)*0.05);ctx.fillStyle=p.c;ctx.fillRect(p.x,p.y,p.s,p.s);}); t+=1; if(t<120) requestAnimationFrame(step); })(); }
 
-/* Router */
 function go(step){ STATE.step=step; render(); }
-function render(){ renderNav(); updateTopProgress(); if(STATE.step==='start')return viewStart(); if(STATE.step==='consent')return viewConsent(); if(STATE.step==='profile')return viewProfile(); if(STATE.step==='test')return viewTest(); if(STATE.step==='result')return viewResult(); }
+function render(){
+  renderNav(); updateTopProgress();
+  if(STATE.step==='start') return viewStart();
+  if(STATE.step==='consent') return viewConsent();
+  if(STATE.step==='profile') return viewProfile();
+  if(STATE.step==='test') return viewTest();
+  if(STATE.step==='result') return viewResult();
+}
 window.addEventListener('hashchange',()=>{ const s=location.hash.replace('#',''); if(STEPS.some(x=>x.key===s)){ navGo(s); }});
 render();
 </script>
