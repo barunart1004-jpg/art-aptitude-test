@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
 <style>
 :root{
   --ink:#0f172a; --muted:#6b7280;
@@ -76,10 +77,7 @@ input,select,textarea{width:100%; background:#fff; color:#111; border:1px solid 
 input:focus,select:focus,textarea:focus{border-color:#FFD9BE; box-shadow:0 0 0 6px rgba(255,217,190,.26)}
 label{font-size:14px; color:#374151}
 .section{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
-
-.grid{display:grid; gap:14px}
-.grid-2{grid-template-columns:1fr 1fr}
-@media (max-width:860px){ .grid-2{grid-template-columns:1fr} }
+input[type=checkbox],input[type=radio]{accent-color:#FFB98A}
 
 /* 보기 */
 .opt{border:2px solid var(--line); border-radius:18px; overflow:hidden; cursor:pointer; background:#fff; box-shadow:var(--soft); transition:transform .12s, border-color .2s}
@@ -97,12 +95,7 @@ label{font-size:14px; color:#374151}
 }
 @media (max-width:1023px){ .sideNav{display:none} }
 
-/* 아코디언 · 결과 블록 */
-.acc{border-radius:14px; overflow:hidden; border:1px solid var(--line)}
-.acc-item{border-top:1px solid var(--line)}
-.acc-head{padding:14px 16px; background:#FFF4EC; cursor:pointer; display:flex; justify-content:space-between; align-items:center}
-.acc-body{padding:14px 16px; display:none; background:#fff}
-.acc-item.open .acc-body{display:block}
+/* 동의서/결과 공통 */
 .block{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 26px rgba(16,24,40,.06);page-break-inside:avoid}
 .block h3{margin:0 0 10px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -114,8 +107,34 @@ label{font-size:14px; color:#374151}
 .callout:before{content:"";position:absolute;inset:-1px;border-radius:18px;padding:1px;background:linear-gradient(90deg,#FFD9BE,#E6E2FF,#CFF7EE);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 .credit{font-size:12px;color:#6b7280;text-align:center}
 .skel{border-radius:12px; background:linear-gradient(90deg,#f3f4f6,#eaeef3,#f3f4f6); background-size:200% 100%; animation:sh 1.2s infinite}@keyframes sh{to{background-position:-200% 0}}
-
 .checkRow{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+
+/* 첫 화면 전용 */
+.heroWrap{position:relative; padding:42px 16px 28px; text-align:center}
+.heroTitle{font-size:38px; font-weight:900; letter-spacing:.2px}
+.heroSub{color:#475467}
+.glows{position:absolute; inset:-40px -20px auto -20px; height:230px; pointer-events:none; opacity:.7; filter:blur(24px);
+background:
+  radial-gradient(140px 100px at 20% 55%, rgba(255,185,138,.55), transparent 60%),
+  radial-gradient(180px 120px at 80% 40%, rgba(188,222,255,.50), transparent 60%),
+  radial-gradient(260px 160px at 50% 85%, rgba(230,226,255,.55), transparent 60%)}
+.heroGrid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; max-width:980px; margin:14px auto 0}
+@media(max-width:900px){ .heroGrid{grid-template-columns:1fr} }
+.fcard{position:relative; background:#fff; border:1px solid var(--line); padding:18px 16px; border-radius:18px; box-shadow:0 18px 42px rgba(16,24,40,.10); overflow:hidden}
+.fcard:before{content:""; position:absolute; inset:-1px; border-radius:18px; padding:1px; background:linear-gradient(90deg,#FFE6CF,#E6E2FF,#CFF7EE);
+ -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude}
+.fhead{font-weight:900; font-size:18px}
+.fdesc{font-size:13px; color:var(--muted)}
+.fbadge{display:inline-flex; gap:6px; align-items:center; background:linear-gradient(90deg,#FFF4EC,#FFFFFF); border:1px solid var(--line); padding:6px 10px; border-radius:999px; font-weight:800; box-shadow:0 8px 24px rgba(16,24,40,.06)}
+.fchip{display:inline-block; background:linear-gradient(90deg,#FFE6CF,#FFD9BE); border:1px solid #ffe3cd; padding:8px 12px; border-radius:999px; font-weight:900; color:#5a3f2f}
+
+/* 동의 아코디언 */
+.acc{border-radius:14px; overflow:hidden; border:1px solid var(--line)}
+.acc-item{border-top:1px solid var(--line)}
+.acc-head{padding:14px 16px; background:#FFF4EC; cursor:pointer; display:flex; justify-content:space-between; align-items:center}
+.acc-body{padding:14px 16px; display:none; background:#fff}
+.acc-item.open .acc-body{display:block}
+.ul{margin:6px 0 0 18px; padding:0} .ul li{margin:4px 0; color:#374151; font-size:14px}
 
 /* 인쇄 */
 @media print{
@@ -156,7 +175,8 @@ const DOMAINS = ["관찰력","서사력","디테일","구성력","색감각","�
 const STEPS = [{key:'start',label:'시작'},{key:'consent',label:'동의'},{key:'profile',label:'프로필'},{key:'test',label:'테스트'},{key:'result',label:'결과'}];
 const STATE = { step:'start', consent:false, consentMeta:null, profile:{}, questions:[], idx:0, answers:[], result:null };
 
-const $=id=>document.getElementById(id); const v=id=>$(id)?.value?.trim()??''; const app=()=>$('app');
+const $=id=>document.getElementById(id);
+const v=id=>$(id)?.value?.trim()??'';
 
 /* NAV + Progress */
 function renderNav(){
@@ -177,7 +197,13 @@ function navGo(step){ STATE.step=step; if(step==='test' && STATE.questions.lengt
 const go=navGo;
 
 /* GViz 파서 */
-function parseGViz(text){ const s=text.indexOf('{'), e=text.lastIndexOf('}'); if(s<0||e<0) return []; const obj=JSON.parse(text.slice(s,e+1)); const cols=obj.table.cols.map(c=>c.label); return obj.table.rows.map(r=>r.c.map(c=>c?(c.f??c.v):'')).map(a=>Object.fromEntries(cols.map((k,i)=>[k,a[i]]))); }
+function parseGViz(text){
+  const s=text.indexOf('{'), e=text.lastIndexOf('}');
+  if(s<0||e<0) return [];
+  const obj=JSON.parse(text.slice(s,e+1));
+  const cols=obj.table.cols.map(c=>c.label);
+  return obj.table.rows.map(r=>r.c.map(c=>c?(c.f??c.v):'')).map(a=>Object.fromEntries(cols.map((k,i)=>[k,a[i]])));
+}
 async function loadQuestions(){
   const txt=await (await fetch(GVIZ_URL)).text(); const rows=parseGViz(txt)||[];
   const act=rows.filter(r=>String(r.active).toUpperCase()==='TRUE').sort((a,b)=>(+a.order - +b.order));
@@ -186,72 +212,108 @@ async function loadQuestions(){
       weights:(()=>{try{return JSON.parse(r[`${k}_weights`])||{}}catch{return{}}})() })) }));
 }
 
-/* START – 인터렉티브 카드/버튼 */
+/* START – (이모지 없는) 화려한 카드 */
 function startScreen(){
-  return `<div class="center">
-    <div style="display:inline-flex;gap:10px;align-items:center;transform:translateZ(0)">
-      <div class="chip" style="box-shadow:0 10px 26px rgba(255,185,138,.35)">미술적성테스트 Basic</div>
+  return `<div class="heroWrap">
+    <div class="glows"></div>
+    <div class="fbadge">미술적성테스트 Basic</div>
+    <div class="heroTitle" style="margin-top:10px">바른미술학원 · 미술적성테스트</div>
+    <p class="heroSub small">소요시간 <b>약 6–8분</b> · 결과는 즉시 확인하고 <b>PDF 저장</b>할 수 있어요</p>
+    <div class="heroGrid">
+      <div class="fcard">
+        <div class="fhead">빠른 테스트</div>
+        <div class="fdesc">간단한 12문항, 6–8분이면 충분해요.</div>
+        <span class="fchip" style="margin-top:10px">부담 없이 시작</span>
+      </div>
+      <div class="fcard">
+        <div class="fhead">맞춤 분석</div>
+        <div class="fdesc">아이의 강점과 교육 포인트를 바로 제시합니다.</div>
+        <span class="fchip" style="margin-top:10px">강점 먼저 칭찬</span>
+      </div>
+      <div class="fcard">
+        <div class="fhead">즉시 결과</div>
+        <div class="fdesc">결과 화면에서 바로 인쇄/PDF 저장이 가능해요.</div>
+        <span class="fchip" style="margin-top:10px">원클릭 저장</span>
+      </div>
     </div>
-    <h1 style="margin-top:8px">바른미술학원 · 미술적성테스트</h1>
-    <p class="muted">소요시간 <b>약 6~8분</b> · 결과는 즉시 확인하고 <b>메일/PDF 저장</b>할 수 있어요</p>
-    <div style="height:8px"></div>
-    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
-      ${[
-        {title:'빠른 테스트',desc:'6–8분이면 충분해요',emoji:'⚡'},
-        {title:'맞춤 분석',desc:'강점과 교육 포인트',emoji:'🎯'},
-        {title:'즉시 결과',desc:'바로 확인·저장',emoji:'📩'}
-      ].map((f,i)=>`
-        <div class="featureCard" style="width:min(320px,92vw);background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px 16px;box-shadow:0 14px 36px rgba(16,24,40,.08);position:relative;overflow:hidden">
-          <div style="position:absolute; inset:-1px; padding:1px; border-radius:18px; background:linear-gradient(90deg,#FFE6CF,#E6E2FF,#CFF7EE); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude"></div>
-          <div style="font-size:22px"> ${f.emoji} <b>${f.title}</b></div>
-          <div class="small muted">${f.desc}</div>
-        </div>`).join('')}
+    <div style="margin-top:18px">
+      <button class="btn btn-mint" onclick="go('consent')" onmousemove="this.style.setProperty('--x', event.offsetX+'px'); this.style.setProperty('--y', event.offsetY+'px')">시작하기</button>
     </div>
-    <div style="height:14px"></div>
-    <button class="btn btn-mint" onclick="go('consent')" onmousemove="this.style.setProperty('--x', event.offsetX+'px'); this.style.setProperty('--y', event.offsetY+'px')">시작하기</button>
   </div>`;
 }
-function viewStart(){ app().innerHTML=startScreen(); window.scrollTo({top:0,behavior:'smooth'}); }
+function viewStart(){ $('app').innerHTML=startScreen(); window.scrollTo({top:0,behavior:'smooth'}); }
 
-/* CONSENT */
-function accItem(t,html){ return `<div class="acc-item open"><div class="acc-head"><span>${t}</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="acc-body small">${html}</div></div>`;}
+/* CONSENT – 문구 다듬고 체크 정렬 */
+function accItem(head,body){return `
+  <div class="acc-item open">
+    <div class="acc-head"><span><b>${head}</b></span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="acc-body small">${body}</div>
+  </div>`}
 function viewConsent(){
-  app().innerHTML=`<h2 class="center">개인정보 수집·이용 동의서</h2>
-  <p class="muted small center">본 테스트는 <b>교육 가이드</b> 목적이며, 의학/임상 진단이 아닙니다.</p>
-  <div class="acc">
-    ${accItem('1) 수집·이용 목적','① 테스트 제공/결과 산출 ② 결과지·코칭 가이드 제공 ③ 상담 품질 개선 ④ (선택) 결과지 이메일 발송')}
-    ${accItem('2) 수집 항목','<b>필수</b>: 아동 이름·나이·학년 / 보호자 이름·연락처 / 문항 응답<br><b>선택</b>: 이메일(결과 전송), 관심 캠퍼스')}
-    ${accItem('3) 보관 기간','수집일로부터 <b>12개월</b> 보관 후 파기')}
-    ${accItem('4) 처리/보관','Google Forms/Sheets에 저장·처리')}
-    ${accItem('5) 권리','동의 거부 가능(거부 시 서비스 제한 가능)')}
-    ${accItem('6) 문의','barunart1004@gmail.com')}
-  </div>
-  <div class="section" style="margin-top:16px">
-    <div class="grid grid-2">
-      <div><label>보호자 성명(서명)</label><input id="consent_guardian" placeholder="예: 홍길동(서명)"></div>
-      <div><label>연락처</label><input id="consent_phone" placeholder="010-0000-0000"></div>
-      <div><label>아동과의 관계</label><select id="consent_relation"><option>부모</option><option>법정대리인</option><option>기타</option></select></div>
-      <div><label>(선택) 결과지 이메일 수신 동의</label><select id="consent_email_ok"><option value="동의">동의</option><option value="미동의" selected>미동의</option></select></div>
+  $('app').innerHTML=`
+    <h2 class="center">개인정보 수집·이용 동의서</h2>
+    <p class="muted small center" style="margin-top:4px">
+      본 테스트는 <b>교육 가이드</b> 제공을 목적으로 하며, 의학·임상 진단이 아닙니다.
+    </p>
+    <div class="acc">
+      ${accItem('1) 처리 목적',
+        '<ul class="ul"><li>미술적성테스트 제공 및 결과 산출</li><li>맞춤 결과지 및 코칭 포인트 제공</li><li>서비스 품질 개선을 위한 통계 분석</li></ul>')}
+      ${accItem('2) 수집 항목',
+        '<ul class="ul"><li><b>필수</b>: 아동 이름·나이·학년, 보호자 이름·연락처, 문항 응답</li><li><b>선택</b>: 관심 캠퍼스</li></ul>')}
+      ${accItem('3) 보관 기간',
+        '수집일로부터 <b>12개월</b> 보관 후 안전하게 파기합니다.')}
+      ${accItem('4) 보관/처리 위탁',
+        'Google Forms/Sheets에 안전하게 저장·처리합니다.')}
+      ${accItem('5) 권리 및 유의사항',
+        '<ul class="ul"><li>동의는 거부할 수 있으며, 미동의 시 서비스 이용이 제한될 수 있습니다.</li><li>열람·정정·삭제 등 권리 행사가 가능합니다.</li></ul>')}
+      ${accItem('6) 문의',
+        '관리자 이메일: <b>barunart1004@gmail.com</b>')}
     </div>
-    <div class="checkRow" style="margin-top:12px">
-      <label><input type="checkbox" id="chk_required"> (필수) 개인정보 수집·이용에 동의합니다</label>
-      <label><input type="checkbox" id="chk_minor"> (필수) 만 14세 미만 아동의 법정대리인으로서 동의합니다</label>
+
+    <div class="section" style="margin-top:16px">
+      <div class="grid grid-2">
+        <div><label>보호자 성명(서명)</label><input id="consent_guardian" placeholder="예: 홍길동(서명)"></div>
+        <div><label>연락처</label><input id="consent_phone" placeholder="010-0000-0000"></div>
+        <div><label>아동과의 관계</label>
+          <select id="consent_relation"><option>부모</option><option>법정대리인</option><option>기타</option></select>
+        </div>
+      </div>
+
+      <div class="checkRow" style="margin-top:12px">
+        <label><input type="checkbox" id="chk_required"> (필수) 개인정보 수집·이용에 동의합니다</label>
+        <label><input type="checkbox" id="chk_minor"> (필수) 만 14세 미만 아동의 법정대리인으로서 동의합니다</label>
+      </div>
     </div>
-  </div>
-  <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center">
-    <button class="btn" id="btn_consent" disabled>동의하고 진행</button>
-    <button class="btn-ghost" onclick="document.querySelectorAll('.acc-item').forEach(it=>it.classList.add('open'))">전문 펼치기</button>
-    <button class="btn-ghost" onclick="document.querySelectorAll('.acc-item').forEach(it=>it.classList.remove('open'))">모두 접기</button>
-  </div>`;
-  const validate=()=>{ const ok=$('chk_required').checked&&$('chk_minor').checked; const g=$('consent_guardian').value.trim(); const p=$('consent_phone').value.trim(); const okp=/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(p); $('btn_consent').disabled=!(ok&&g.length>=2&&okp); };
-  ['chk_required','chk_minor','consent_guardian','consent_phone'].forEach(id=>{$(id).addEventListener('input',validate);$(id).addEventListener('change',validate);});
-  $('btn_consent').onclick=()=>{ STATE.consent=true; STATE.consentMeta={guardian:$('consent_guardian').value.trim(),phone:$('consent_phone').value.trim(),relation:$('consent_relation').value,email_ok:$('consent_email_ok').value,ver:'v1.7'}; go('profile'); };
+
+    <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center">
+      <button class="btn" id="btn_consent" disabled>동의하고 진행</button>
+      <button class="btn-ghost" onclick="document.querySelectorAll('.acc-item').forEach(it=>it.classList.add('open'))">전문 펼치기</button>
+      <button class="btn-ghost" onclick="document.querySelectorAll('.acc-item').forEach(it=>it.classList.remove('open'))">모두 접기</button>
+    </div>`;
+
+  const validate=()=>{
+    const ok=$('chk_required').checked&&$('chk_minor').checked;
+    const g=$('consent_guardian').value.trim();
+    const p=$('consent_phone').value.trim();
+    const okp=/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(p);
+    $('btn_consent').disabled=!(ok&&g.length>=2&&okp);
+  };
+  ['chk_required','chk_minor','consent_guardian','consent_phone'].forEach(id=>{
+    $(id).addEventListener('input',validate); $(id).addEventListener('change',validate);
+  });
+  $('btn_consent').onclick=()=>{
+    STATE.consent=true;
+    STATE.consentMeta={guardian:$('consent_guardian').value.trim(),phone:$('consent_phone').value.trim(),relation:$('consent_relation').value,ver:'v2.0'};
+    go('profile');
+  };
   document.querySelectorAll('.acc-head').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
 }
 
 /* PROFILE */
 function viewProfile(){
-  app().innerHTML=`<h2 class="center">프로필 정보</h2>
+  $('app').innerHTML=`<h2 class="center">프로필 정보</h2>
   <div class="grid grid-2" style="margin-top:8px">
     <div><label>아동 이름</label><input id="cname" placeholder="예: 홍길동"></div>
     <div><label>나이</label><select id="age"><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select></div>
@@ -260,22 +322,21 @@ function viewProfile(){
       <option>초등학교 4학년</option><option>초등학교 5학년</option><option>초등학교 6학년</option></select></div>
     <div><label>보호자 이름</label><input id="gname"></div>
     <div><label>연락처</label><input id="phone" placeholder="010-0000-0000"></div>
-    <div><label>이메일(선택, 결과지 전송)</label><input id="email" placeholder="example@email.com"></div>
     <div><label>관심 캠퍼스(선택)</label><input id="campus" placeholder="예: 분당점"></div>
   </div>
   <div class="center" style="margin-top:16px"><button class="btn btn-mint" onclick="startTest()">테스트 시작</button></div>`;
 }
 async function startTest(){
-  STATE.profile={child_name:v('cname'),age:v('age'),grade:v('grade'),guardian:v('gname'),phone:v('phone'),email:v('email'),campus:v('campus')};
+  STATE.profile={child_name:v('cname'),age:v('age'),grade:v('grade'),guardian:v('gname'),phone:v('phone'),campus:v('campus')};
   if(!STATE.profile.child_name || !/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(STATE.profile.phone||'')){ alert('이름/연락처를 확인해 주세요'); return; }
   await loadQuestions(); STATE.idx=0; STATE.answers=[]; STATE.step='test'; render();
 }
 
 /* TEST */
 function viewTest(){
-  const q=STATE.questions[STATE.idx]; if(!q){ app().innerHTML='<h3 class="center">문항을 불러오지 못했습니다. 관리자에 문의해 주세요.</h3>'; return; }
+  const q=STATE.questions[STATE.idx]; if(!q){ $('app').innerHTML='<h3 class="center">문항을 불러오지 못했습니다. 관리자에 문의해 주세요.</h3>'; return; }
   const gridCls = (window.matchMedia('(min-width:1024px)').matches?'test-grid':'grid grid-2');
-  app().innerHTML=`<div class="center small muted">Q${STATE.idx+1} / ${STATE.questions.length}</div>
+  $('app').innerHTML=`<div class="center small muted">Q${STATE.idx+1} / ${STATE.questions.length}</div>
     <h2 class="center" style="margin-top:6px">${q.prompt||''}</h2>
     <div class="${gridCls}" style="margin-top:10px">
       ${q.options.map(o=>`<div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label}" onclick="choose('${o.key}')" onkeydown="if(event.key==='Enter'||event.key===' '){choose('${o.key}')}">
@@ -287,12 +348,25 @@ function viewTest(){
     </div>`;
   document.addEventListener('keydown',e=>{ if(e.key==='ArrowRight'){ next(); } if(e.key==='ArrowLeft'){ prev(); } if(e.key==='Enter'){ if(!$('nextBtn').disabled) next(); } },{once:true});
 }
-function choose(key){ const q=STATE.questions[STATE.idx]; ['A','B','C','D'].forEach(k=>{const n=document.getElementById(`opt_${k}`); if(n) n.classList.remove('sel');}); const node=document.getElementById(`opt_${key}`); if(node){ node.classList.add('sel'); node.animate([{transform:'scale(1)'},{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:160}); } const opt=q.options.find(o=>o.key===key); STATE.answers[STATE.idx]={ qid:q.id, key, weights:opt.weights }; document.getElementById('nextBtn').disabled=false; }
+function choose(key){
+  const q=STATE.questions[STATE.idx];
+  ['A','B','C','D'].forEach(k=>{const n=document.getElementById(`opt_${k}`); if(n) n.classList.remove('sel');});
+  const node=document.getElementById(`opt_${key}`); if(node){ node.classList.add('sel'); node.animate([{transform:'scale(1)'},{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:160}); }
+  const opt=q.options.find(o=>o.key===key);
+  STATE.answers[STATE.idx]={ qid:q.id, key, weights:opt.weights };
+  document.getElementById('nextBtn').disabled=false;
+}
 function next(){ if(!STATE.answers[STATE.idx]){ alert('하나를 선택해 주세요'); return; } if(STATE.idx<STATE.questions.length-1){ STATE.idx++; render(); } else submitAll(); }
 function prev(){ if(STATE.idx>0){ STATE.idx--; render(); } }
 
 /* 점수 보정 / 멘트 */
-function aggregateScores(ans){ const sum={}; DOMAINS.forEach(d=>sum[d]=0); ans.forEach(a=>Object.entries(a.weights||{}).forEach(([k,v])=>sum[k]=(sum[k]||0)+Number(v||0))); const n=ans.length||1; const raw={}; DOMAINS.forEach(d=>{ const v=(sum[d]||0)/n*4; raw[d]=Math.max(0,Math.round(v*10)/10); }); return raw; }
+function aggregateScores(ans){
+  const sum={}; DOMAINS.forEach(d=>sum[d]=0);
+  ans.forEach(a=>Object.entries(a.weights||{}).forEach(([k,v])=>sum[k]=(sum[k]||0)+Number(v||0)));
+  const n=ans.length||1; const raw={};
+  DOMAINS.forEach(d=>{ const v=(sum[d]||0)/n*4; raw[d]=Math.max(0,Math.round(v*10)/10); });
+  return raw;
+}
 const adjust=v=>Math.round((2 + v/2) * 10)/10; // 0→2.0, 4→4.0
 function band(v){ if(v>=3.6) return 'S'; if(v>=3.2) return 'A'; if(v>=2.8) return 'A-'; if(v>=2.4) return 'B+'; if(v>=2.0) return 'B'; if(v>=1.6) return 'B-'; if(v>=1.0) return 'C+'; return 'C'; }
 
@@ -329,7 +403,7 @@ async function submitAll(){
   const raw=aggregateScores(STATE.answers);
   const scores=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,adjust(v)])); // 2.0~4.0 보정
   const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3);
-  const resultId=crypto.randomUUID();
+  const resultId=(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36));
 
   const form=new FormData();
   const answersWithMeta={consent:STATE.consentMeta,profile:STATE.profile,questions:STATE.answers};
@@ -348,7 +422,7 @@ function viewResult(){
   const r=STATE.result, s=r?.scores||{};
   const overall = Math.round((Object.values(s).reduce((a,b)=>a+(+b||0),0))*10)/10 || 0;
 
-  app().innerHTML=`<div id="resultCard">
+  $('app').innerHTML=`<div id="resultCard">
     <div class="block callout" style="text-align:center">
       <div class="chip" style="margin:0 auto 8px;display:inline-block">테스트 완료</div>
       <h2 style="margin:0 0 10px"><b>${STATE.profile.child_name}</b>님, 오늘 정말 멋졌어요!</h2>
@@ -410,7 +484,8 @@ function viewResult(){
 }
 
 /* Router */
-function render(){ renderNav(); updateTopProgress();
+function render(){
+  renderNav(); updateTopProgress();
   if(STATE.step==='start') return viewStart();
   if(STATE.step==='consent') return viewConsent();
   if(STATE.step==='profile') return viewProfile();
