@@ -64,11 +64,12 @@ p{margin:8px 0} .small{font-size:13px} .muted{color:var(--muted)} .center{text-a
 
 .btn{
   --bg:linear-gradient(90deg,#FFB98A,#FFD9BE); --glow:rgba(255,185,138,.35);
-  background:var(--bg); color:#5a3f2f; border:none; padding:12px 18px; border-radius:14px; font-weight:900; cursor:pointer;
-  box-shadow:0 10px 28px var(--glow); transition:transform .08s, filter .2s}
+  background:var(--bg); color:#5a3f2f; border:none; padding:14px 22px; border-radius:16px; font-weight:900; cursor:pointer;
+  box-shadow:0 12px 32px var(--glow); transition:transform .08s, filter .2s, box-shadow .2s; position:relative; overflow:hidden}
 .btn:hover{transform:translateY(-1px); filter:brightness(1.03)}
+.btn:after{content:""; position:absolute; inset:0; background:radial-gradient(120px 120px at var(--x,50%) var(--y,50%), rgba(255,255,255,.6), transparent 40%); opacity:.0; transition:opacity .25s}
+.btn:hover:after{opacity:.6}
 .btn-ghost{background:#fff; color:#111827; border:1px solid var(--line); padding:12px 14px; border-radius:12px; font-weight:800; cursor:pointer; box-shadow:var(--soft)}
-.btn-ghost:hover{transform:translateY(-1px)}
 .btn-mint{--bg:linear-gradient(90deg,#FFE6CF,#FFD9BE); --glow:rgba(255,214,190,.4)}
 
 input,select,textarea{width:100%; background:#fff; color:#111; border:1px solid var(--line); border-radius:12px; padding:12px; outline:none}
@@ -91,7 +92,7 @@ label{font-size:14px; color:#374151}
   .opt img{aspect-ratio:4/3}
   .sideNav{position:fixed; top:50%; transform:translateY(-50%); z-index:20}
   .sideNav.left{left:18px} .sideNav.right{right:18px}
-  .sideBtn{background:linear-gradient(90deg,#fff,#FFF4EC); border:1px solid var(--line); width:46px; height:46px; border-radius:50%; display:grid; place-items:center; box-shadow:var(--soft); cursor:pointer; font-weight:900}
+  .sideBtn{background:linear-gradient(90deg,#fff,#FFF4EC); border:1px solid var(--line); width:46px; height:46px; border-radius:50%; display:grid; place-items:center; box-shadow:0 12px 26px rgba(16,24,40,.08); cursor:pointer; font-weight:900}
   .sideBtn:hover{transform:translateY(-1px)}
 }
 @media (max-width:1023px){ .sideNav{display:none} }
@@ -102,14 +103,15 @@ label{font-size:14px; color:#374151}
 .acc-head{padding:14px 16px; background:#FFF4EC; cursor:pointer; display:flex; justify-content:space-between; align-items:center}
 .acc-body{padding:14px 16px; display:none; background:#fff}
 .acc-item.open .acc-body{display:block}
-.block{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--soft);page-break-inside:avoid}
+.block{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 26px rgba(16,24,40,.06);page-break-inside:avoid}
 .block h3{margin:0 0 10px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{background:linear-gradient(90deg,#FFE6CF,#FFD9BE);color:#5a3f2f;border:1px solid #ffe8d6;padding:8px 12px;border-radius:999px;font-weight:900}
 .kpi{display:flex;align-items:flex-end;gap:10px}
-.kpi .num{font-size:40px;font-weight:900;line-height:1}
+.kpi .num{font-size:44px;font-weight:900;line-height:1}
 .kpi .unit{font-size:14px;color:#6b7280}
-.callout{background:linear-gradient(135deg,#FFF2E6,#F8FBFF);padding:18px;border-radius:16px;border:1px solid var(--line);box-shadow:0 10px 30px rgba(255,185,138,.25)}
+.callout{position:relative;background:linear-gradient(135deg,#FFF2E6,#F8FBFF);padding:22px;border-radius:18px;border:1px solid var(--line);box-shadow:0 12px 34px rgba(255,185,138,.25)}
+.callout:before{content:"";position:absolute;inset:-1px;border-radius:18px;padding:1px;background:linear-gradient(90deg,#FFD9BE,#E6E2FF,#CFF7EE);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 .credit{font-size:12px;color:#6b7280;text-align:center}
 .skel{border-radius:12px; background:linear-gradient(90deg,#f3f4f6,#eaeef3,#f3f4f6); background-size:200% 100%; animation:sh 1.2s infinite}@keyframes sh{to{background-position:-200% 0}}
 
@@ -144,7 +146,7 @@ label{font-size:14px; color:#374151}
 
 <script>
 /* ===== 연결값(시트/폼) ===== */
-const SHEET_ID   = '14VLQBhDJtduxjCnfr7VEOstZ5ez8-CX3ArXy1OvYCQg'; // 결과/질문 시트
+const SHEET_ID   = '14VLQBhDJtduxjCnfr7VEOstZ5ez8-CX3ArXy1OvYCQg';
 const FORM_ACTION= 'https://docs.google.com/forms/d/e/1FAIpQLSeRWq5YKN50zL0simiaQA6EBRsn6VXN__ZmLplAgDz1I1hyQA/formResponse';
 const F = { child_name:'entry.684468179', age:'entry.1066070471', grade:'entry.1812672802', guardian:'entry.1666083184', phone:'entry.89824848', campus:'entry.490719219', answers:'entry.85364862', scores:'entry.1455508168', top3:'entry.1261684833', resultId:'entry.2120338430', timestamp:'entry.532514127' };
 /* ========================= */
@@ -184,26 +186,29 @@ async function loadQuestions(){
       weights:(()=>{try{return JSON.parse(r[`${k}_weights`])||{}}catch{return{}}})() })) }));
 }
 
-/* START */
+/* START – 인터렉티브 카드/버튼 */
 function startScreen(){
   return `<div class="center">
-    <div class="btn" style="display:inline-block;border-radius:999px">미술적성테스트 Basic</div>
-    <h1 style="margin-top:6px">바른미술학원 · 미술적성테스트</h1>
-    <p class="muted">소요시간 <b>약 6~8분</b> · 결과는 즉시 확인하고 <b>메일로 저장</b>할 수 있어요</p>
-    <div style="height:6px"></div>
-    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-      <div class="feature" style="min-width:220px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 16px;box-shadow:var(--soft)">
-        <h3 style="margin:0 0 6px">빠른 테스트</h3><p class="small muted">6–8분이면 충분한 간편 문항</p>
-      </div>
-      <div class="feature" style="min-width:220px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 16px;box-shadow:var(--soft)">
-        <h3 style="margin:0 0 6px">맞춤 분석</h3><p class="small muted">아이의 강점과 교육 포인트 제시</p>
-      </div>
-      <div class="feature" style="min-width:220px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 16px;box-shadow:var(--soft)">
-        <h3 style="margin:0 0 6px">즉시 결과</h3><p class="small muted">결과 확인 후 메일/PDF 저장</p>
-      </div>
+    <div style="display:inline-flex;gap:10px;align-items:center;transform:translateZ(0)">
+      <div class="chip" style="box-shadow:0 10px 26px rgba(255,185,138,.35)">미술적성테스트 Basic</div>
     </div>
-    <div style="height:12px"></div>
-    <button class="btn btn-mint" onclick="go('consent')">시작하기</button>
+    <h1 style="margin-top:8px">바른미술학원 · 미술적성테스트</h1>
+    <p class="muted">소요시간 <b>약 6~8분</b> · 결과는 즉시 확인하고 <b>메일/PDF 저장</b>할 수 있어요</p>
+    <div style="height:8px"></div>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      ${[
+        {title:'빠른 테스트',desc:'6–8분이면 충분해요',emoji:'⚡'},
+        {title:'맞춤 분석',desc:'강점과 교육 포인트',emoji:'🎯'},
+        {title:'즉시 결과',desc:'바로 확인·저장',emoji:'📩'}
+      ].map((f,i)=>`
+        <div class="featureCard" style="width:min(320px,92vw);background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px 16px;box-shadow:0 14px 36px rgba(16,24,40,.08);position:relative;overflow:hidden">
+          <div style="position:absolute; inset:-1px; padding:1px; border-radius:18px; background:linear-gradient(90deg,#FFE6CF,#E6E2FF,#CFF7EE); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude"></div>
+          <div style="font-size:22px"> ${f.emoji} <b>${f.title}</b></div>
+          <div class="small muted">${f.desc}</div>
+        </div>`).join('')}
+    </div>
+    <div style="height:14px"></div>
+    <button class="btn btn-mint" onclick="go('consent')" onmousemove="this.style.setProperty('--x', event.offsetX+'px'); this.style.setProperty('--y', event.offsetY+'px')">시작하기</button>
   </div>`;
 }
 function viewStart(){ app().innerHTML=startScreen(); window.scrollTo({top:0,behavior:'smooth'}); }
@@ -240,7 +245,7 @@ function viewConsent(){
   </div>`;
   const validate=()=>{ const ok=$('chk_required').checked&&$('chk_minor').checked; const g=$('consent_guardian').value.trim(); const p=$('consent_phone').value.trim(); const okp=/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(p); $('btn_consent').disabled=!(ok&&g.length>=2&&okp); };
   ['chk_required','chk_minor','consent_guardian','consent_phone'].forEach(id=>{$(id).addEventListener('input',validate);$(id).addEventListener('change',validate);});
-  $('btn_consent').onclick=()=>{ STATE.consent=true; STATE.consentMeta={guardian:$('consent_guardian').value.trim(),phone:$('consent_phone').value.trim(),relation:$('consent_relation').value,email_ok:$('consent_email_ok').value,ver:'v1.6'}; go('profile'); };
+  $('btn_consent').onclick=()=>{ STATE.consent=true; STATE.consentMeta={guardian:$('consent_guardian').value.trim(),phone:$('consent_phone').value.trim(),relation:$('consent_relation').value,email_ok:$('consent_email_ok').value,ver:'v1.7'}; go('profile'); };
   document.querySelectorAll('.acc-head').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
 }
 
@@ -322,7 +327,7 @@ const MISSIONS={
 function nowKST(){ const d=new Date(),p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())} KST`; }
 async function submitAll(){
   const raw=aggregateScores(STATE.answers);
-  const scores=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,adjust(v)])); // 보정
+  const scores=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,adjust(v)])); // 2.0~4.0 보정
   const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3);
   const resultId=crypto.randomUUID();
 
@@ -341,16 +346,17 @@ let CHARTS=[];
 function destroyCharts(){ CHARTS.forEach(c=>c.destroy?.()); CHARTS=[]; }
 function viewResult(){
   const r=STATE.result, s=r?.scores||{};
-  const overall = Math.round((Object.values(s).reduce((a,b)=>a+(+b||0),0))*10)/10 || 0; // 보정된 합계(최소 16~최대 32)
+  const overall = Math.round((Object.values(s).reduce((a,b)=>a+(+b||0),0))*10)/10 || 0;
 
   app().innerHTML=`<div id="resultCard">
-    <div class="block callout">
-      <h2 style="margin:0 0 6px"><b>${STATE.profile.child_name}</b>님, 오늘 아주 멋졌어요!</h2>
-      <div class="kpi"><div class="num">${overall.toFixed(1)}</div><div class="unit">/ 32 (8영역 합산)</div></div>
-      <p class="small" style="margin-top:6px;color:#374151">
+    <div class="block callout" style="text-align:center">
+      <div class="chip" style="margin:0 auto 8px;display:inline-block">테스트 완료</div>
+      <h2 style="margin:0 0 10px"><b>${STATE.profile.child_name}</b>님, 오늘 정말 멋졌어요!</h2>
+      <div class="kpi" style="justify-content:center"><div class="num" style="font-size:52px">${overall.toFixed(1)}</div><div class="unit">/ 32 (8영역 합산)</div></div>
+      <p class="small" style="margin-top:10px;color:#0f172a;font-size:15px">
         특히 <b>${r.top3.join(', ')}</b>에서 재능이 또렷합니다. 즐거운 루틴으로 기회를 자주 만들어 볼게요.
       </p>
-      <div class="chips" style="margin-top:8px">${r.top3.map(t=>`<span class="chip">${t} 재능</span>`).join('')}</div>
+      <div class="chips" style="margin-top:10px;justify-content:center">${r.top3.map(t=>`<span class="chip">${t} 재능</span>`).join('')}</div>
     </div>
 
     <div class="grid grid-2">
@@ -360,7 +366,7 @@ function viewResult(){
 
     <div class="block">
       <h3>총평</h3>
-      <p class="small" style="color:#0f172a">아이의 강점이 선명하게 드러난 결과예요. 스스로 선택하고 몰입할 때 성장이 크게 일어납니다. “잘할 수 있다”는 경험을 꾸준히 쌓을 수 있도록 작고 자주 하는 미션을 제안합니다.</p>
+      <p style="color:#0f172a;font-size:15px;line-height:1.7">아이의 강점이 선명하게 드러난 결과예요. 스스로 선택하고 몰입할 때 성장이 크게 일어납니다. “잘할 수 있다”는 경험을 꾸준히 쌓을 수 있도록 작고 자주 하는 미션을 제안합니다.</p>
     </div>
 
     <div class="block">
@@ -368,7 +374,7 @@ function viewResult(){
       <div class="grid" style="grid-template-columns:1fr 1fr">
         ${DOMAINS.map(k=>{
           const v=+(s[k]||0), b=band(v), w=Math.min(100,(v/4)*100);
-          return `<div style="border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff;box-shadow:var(--soft)">
+          return `<div style="border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff;box-shadow:0 10px 26px rgba(16,24,40,.06)">
             <div style="display:flex;justify-content:space-between;align-items:flex-end">
               <strong>${k}</strong>
               <div class="kpi"><div class="num" style="font-size:28px">${v.toFixed(1)}</div><div class="unit">/ 4.0</div></div>
