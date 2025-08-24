@@ -6,48 +6,48 @@
 <title>ArtTest Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{ --bg1:#fff7f1; --bg2:#f7f3ff; --card:#fff; --ink:#0f172a; --muted:#6b7280; --line:#eef2f7; --accent:#ffd6b0; --accent2:#d5d8ff; --shadow:0 18px 60px rgba(16,24,40,.10); }
+:root{ --bg1:#fff7f1; --bg2:#f7f3ff; --card:#fff; --ink:#0f172a; --muted:#6b7280; --line:#eef2f7; --o1:#FFE6CF; --o2:#FFD9BE; --shadow:0 18px 60px rgba(16,24,40,.10);}
 *{box-sizing:border-box}
 body{margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--ink);font-family:"Pretendard",ui-sans-serif,system-ui,"Noto Sans KR",Segoe UI,Roboto,Arial}
+body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:linear-gradient(rgba(255,255,255,.82),rgba(255,255,255,.82)),url("/bg.png") center/cover no-repeat fixed;filter:saturate(1.02)}
 .header{position:sticky; top:0; z-index:10; backdrop-filter:blur(8px); background:rgba(255,255,255,.6); border-bottom:1px solid var(--line)}
 .header .wrap{max-width:1100px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:10px}
 .brand{display:flex;align-items:center;gap:10px;font-weight:900}
-.brand .dot{width:22px;height:22px;border-radius:50%;background:conic-gradient(from 0deg,#ffb385,#ffd6b0,#d5d8ff,#c7f5e9,#ffb385)}
-.link{margin-left:auto;color:#111;text-decoration:none;font-weight:900;border:1px solid var(--line);padding:8px 12px;border-radius:12px;background:#fff;box-shadow:0 10px 24px rgba(16,24,40,.06)}
+.brand .dot{width:22px;height:22px;border-radius:50%;background:conic-gradient(from 0deg,#FFB98A,#FFE6CF,#E6E2FF,#CFF7EE,#FFB98A)}
+.link{margin-left:auto;color:#111;text-decoration:none;font-weight:900;border:1px solid var(--line);padding:10px 14px;border-radius:12px;background:#fff;box-shadow:0 10px 24px rgba(16,24,40,.06)}
 .wrap-main{max-width:1100px;margin:0 auto;padding:18px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow);margin-bottom:14px;animation:fade .3s ease both}
-@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-h2{margin:0 0 10px} .muted{color:var(--muted)} .small{font-size:13px}
-.btn{background:linear-gradient(90deg,#111827,#374151);color:#fff;border:none;padding:10px 14px;border-radius:12px;font-weight:900;cursor:pointer;box-shadow:0 10px 28px rgba(17,24,39,.25)}
-.btn-ghost{background:#fff;color:#111;border:1px solid var(--line);padding:10px 12px;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:0 10px 24px rgba(16,24,40,.06)}
-input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:12px}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}} h2{margin:0 0 10px}
+.muted{color:var(--muted)} .small{font-size:13px}
+.btn{min-width:120px;background:linear-gradient(90deg,#FFB98A,#FFD9BE);color:#5a3f2f;border:none;padding:12px 14px;border-radius:12px;font-weight:900;cursor:pointer;box-shadow:0 10px 28px rgba(255,185,138,.35)}
+.btn-ghost{min-width:120px;background:#fff;color:#111;border:1px solid var(--line);padding:12px 14px;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:0 10px 24px rgba(16,24,40,.06)}
+input,select,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px}
 .grid{display:grid;gap:14px} .grid-2{grid-template-columns:1fr 2fr} @media(max-width:1000px){.grid-2{grid-template-columns:1fr}}
 .list{display:flex;flex-direction:column;gap:10px;max-height:520px;overflow:auto}
-.qitem{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:8px;background:#fff;cursor:pointer}
+.qitem{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff;cursor:pointer}
 .qitem:hover{box-shadow:0 10px 24px rgba(16,24,40,.06)}
-.thumb{width:56px;height:42px;border-radius:8px;background:#f3f4f6;object-fit:cover;border:1px solid var(--line)}
-.row{display:flex;gap:8px;align-items:center}
+.thumb{width:64px;height:48px;border-radius:8px;background:#f3f4f6;object-fit:cover;border:1px solid var(--line)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .bad{border-color:#ef4444 !important}
-.hint{font-size:12px;color:#6b7280}
 .table{border-collapse:collapse;width:100%} .table th,.table td{border:1px solid var(--line);padding:8px;font-size:12px}
 .tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .tab{padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:#fff;font-weight:900;cursor:pointer;box-shadow:0 10px 24px rgba(16,24,40,.06)}
-.tab.active{background:linear-gradient(90deg,#ffb385,#ffd6b0);color:#111;border-color:transparent}
+.tab.active{background:linear-gradient(90deg,var(--o1),var(--o2));color:#111;border-color:transparent}
 .section{display:none}.section.active{display:block}
 .center{text-align:center}
 label>span{display:block;font-size:12px;color:#6b7280;margin-top:4px}
 .gate{position:fixed; inset:0; display:grid; place-items:center; background:rgba(255,255,255,.85); backdrop-filter:blur(8px); z-index:9999}
-.gatebox{background:#fff; border:1px solid var(--line); border-radius:16px; padding:18px; width:min(360px,90vw); box-shadow:0 18px 44px rgba(16,24,40,.12)}
+.gatebox{background:#fff; border:1px solid var(--line); border-radius:16px; padding:18px; width:min(380px,90vw); box-shadow:0 18px 44px rgba(16,24,40,.12)}
 </style>
 </head>
 <body>
 <div id="gate" class="gate">
   <div class="gatebox">
     <h3 style="margin:0 0 10px">관리자 로그인</h3>
-    <p class="small muted" style="margin:0 0 8px">내부용 간편 비밀번호입니다. (보안 강함 아님)</p>
+    <p class="small muted" style="margin:0 0 8px">내부용 간편 비밀번호입니다.</p>
     <input id="pw" type="password" placeholder="비밀번호 (기본 250824)" />
     <div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn" onclick="enterGate()">입장</button></div>
-    <div id="gateMsg" class="hint" style="margin-top:6px"></div>
+    <div id="gateMsg" class="small muted" style="margin-top:6px"></div>
   </div>
 </div>
 
@@ -61,7 +61,8 @@ label>span{display:block;font-size:12px;color:#6b7280;margin-top:4px}
 <main class="wrap-main">
   <div class="tabs">
     <div class="tab active" data-tab="t1">결과 보기</div>
-    <div class="tab" data-tab="t2">문항 관리 (문제·보기·이미지)</div>
+    <div class="tab" data-tab="t2">문항 관리</div>
+    <div class="tab" data-tab="t3">환경설정</div>
     <div class="tab" id="signin">Google 로그인</div>
     <div class="tab" id="signout" style="display:none">로그아웃</div>
   </div>
@@ -87,57 +88,24 @@ label>span{display:block;font-size:12px;color:#6b7280;margin-top:4px}
       <div>
         <div class="row" style="justify-content:flex-start;gap:12px">
           <label style="min-width:120px">문항 ID <span>(자동)</span></label><input id="qid" readonly style="max-width:240px" />
-          <label style="min-width:80px">순서(order)</label><input id="order" style="max-width:100px" />
+          <label style="min-width:80px">순서</label><input id="order" style="max-width:110px" />
           <label class="row" style="gap:6px"><input type="checkbox" id="active"/><span>활성화</span></label>
         </div>
         <label style="margin-top:8px">문제(질문)</label>
         <textarea id="prompt" rows="2" placeholder="예: 전시 포스터를 만든다면 어디에 집중할까?"></textarea>
 
         <div class="grid" style="grid-template-columns:1fr 1fr; margin-top:8px">
-          <!-- A -->
+          ${['A','B','C','D'].map(k=>`
           <div style="border:1px solid var(--line); border-radius:12px; padding:10px">
-            <div class="row"><strong>A 보기</strong></div>
-            <label>라벨</label><input id="A_label"/>
-            <label>이미지 URL <span>이미지 미리보기 ▼</span></label>
-            <input id="A_image" oninput="updateThumb('A')" placeholder="https://drive.google.com/uc?export=view&id=..."/>
-            <img id="A_thumb" class="thumb" alt="A 이미지" />
-            <label>A 이미지 가중치(JSON)</label>
-            <input id="A_weights" placeholder='{"관찰력":1}' oninput="validateJSON(this)"/>
-            <div id="A_err" class="hint"></div>
-          </div>
-          <!-- B -->
-          <div style="border:1px solid var(--line); border-radius:12px; padding:10px">
-            <div class="row"><strong>B 보기</strong></div>
-            <label>라벨</label><input id="B_label"/>
-            <label>이미지 URL <span>이미지 미리보기 ▼</span></label>
-            <input id="B_image" oninput="updateThumb('B')" placeholder="https://drive.google.com/uc?export=view&id=..."/>
-            <img id="B_thumb" class="thumb" alt="B 이미지" />
-            <label>B 이미지 가중치(JSON)</label>
-            <input id="B_weights" placeholder='{"색감각":1}' oninput="validateJSON(this)"/>
-            <div id="B_err" class="hint"></div>
-          </div>
-          <!-- C -->
-          <div style="border:1px solid var(--line); border-radius:12px; padding:10px">
-            <div class="row"><strong>C 보기</strong></div>
-            <label>라벨</label><input id="C_label"/>
-            <label>이미지 URL <span>이미지 미리보기 ▼</span></label>
-            <input id="C_image" oninput="updateThumb('C')" placeholder="https://drive.google.com/uc?export=view&id=..."/>
-            <img id="C_thumb" class="thumb" alt="C 이미지" />
-            <label>C 이미지 가중치(JSON)</label>
-            <input id="C_weights" placeholder='{"구성력":1}' oninput="validateJSON(this)"/>
-            <div id="C_err" class="hint"></div>
-          </div>
-          <!-- D -->
-          <div style="border:1px solid var(--line); border-radius:12px; padding:10px">
-            <div class="row"><strong>D 보기</strong></div>
-            <label>라벨</label><input id="D_label"/>
-            <label>이미지 URL <span>이미지 미리보기 ▼</span></label>
-            <input id="D_image" oninput="updateThumb('D')" placeholder="https://drive.google.com/uc?export=view&id=..."/>
-            <img id="D_thumb" class="thumb" alt="D 이미지" />
-            <label>D 이미지 가중치(JSON)</label>
-            <input id="D_weights" placeholder='{"서사력":1}' oninput="validateJSON(this)"/>
-            <div id="D_err" class="hint"></div>
-          </div>
+            <div class="row"><strong>${k} 보기</strong></div>
+            <label>라벨</label><input id="${k}_label"/>
+            <label>이미지 URL <span>(Drive 공유: 링크공유/모두보기)</span></label>
+            <input id="${k}_image" oninput="updateThumb('${k}')" placeholder="https://drive.google.com/uc?export=view&id=..."/>
+            <img id="${k}_thumb" class="thumb" alt="${k} 이미지" />
+            <label>${k} 가중치(JSON)</label>
+            <input id="${k}_weights" placeholder='{"관찰력":1}' oninput="validateJSON(this)"/>
+            <div id="${k}_err" class="small muted"></div>
+          </div>`).join('')}
         </div>
 
         <div class="row" style="margin-top:12px; justify-content:center">
@@ -149,6 +117,21 @@ label>span{display:block;font-size:12px;color:#6b7280;margin-top:4px}
     </div>
     <p class="small muted center" style="margin-top:10px">※ 시트 편집권한이 있어야 저장됩니다.</p>
   </section>
+
+  <section id="t3" class="section card">
+    <h2>환경설정</h2>
+    <div class="grid" style="grid-template-columns:1fr 1fr">
+      <div>
+        <label>관리자 비밀번호</label>
+        <input id="cfg_pw" type="text" placeholder="예: 250824" />
+        <div class="row" style="margin-top:8px"><button class="btn" onclick="savePw()">저장</button></div>
+        <p class="small muted" id="cfg_msg"></p>
+      </div>
+      <div>
+        <p class="small muted">이 비밀번호는 브라우저 로컬에 저장됩니다(간편 보안). 여러 명이 쓰면 각자 브라우저에서 설정하세요.</p>
+      </div>
+    </div>
+  </section>
 </main>
 
 <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -157,31 +140,29 @@ label>span{display:block;font-size:12px;color:#6b7280;margin-top:4px}
 /* ===== 키/ID/시트 ===== */
 const API_KEY   = 'AIzaSyBsTZlRW0JcDURjQY4nK2CRX-oSpxqux_4';
 const CLIENT_ID = '51272397260-bnumg4lmc58udrh5o30kogjq096gmdkp.apps.googleusercontent.com';
-const SHEET_ID  = '1n10E7zVRNxO4Zndc1eZmj0nRkUcblIj-qixL8evidDQ';
+const SHEET_ID  = '14VLQBhDJtduxjCnfr7VEOstZ5ez8-CX3ArXy1OvYCQg';
 /* ==================== */
 
 /* Password gate */
-function g(id){return document.getElementById(id);}
-function enterGate(){ const ok = g('pw').value === '250824'; if(ok){ g('gate').style.display='none'; } else { g('gateMsg').textContent='비밀번호가 올바르지 않습니다.'; }}
+function curPw(){ return localStorage.getItem('admin_pw') || '250824'; }
+function enterGate(){ const ok = document.getElementById('pw').value === curPw(); if(ok){ document.getElementById('gate').style.display='none'; } else { document.getElementById('gateMsg').textContent='비밀번호가 올바르지 않습니다.'; }}
+function savePw(){ const v=document.getElementById('cfg_pw').value.trim(); if(!v){return} localStorage.setItem('admin_pw',v); document.getElementById('cfg_msg').textContent='저장되었습니다. 다음 접속부터 적용됩니다.'; }
 
 /* Tabs */
 document.addEventListener('click',(e)=>{ if(e.target.classList.contains('tab') && e.target.dataset.tab){ document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t===e.target)); document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active', s.id===e.target.dataset.tab)); } });
 
-/* Auth (GIS 토큰 클라이언트) */
+/* Auth */
 const DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
 const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
-let tokenClient, gapiInited=false, gisInited=false;
+let tokenClient;
 window.onload = () => {
-  gapi.load('client', async () => { try{ await gapi.client.init({ apiKey: API_KEY, discoveryDocs: DISCOVERY_DOCS }); }catch(e){} gapiInited = true; maybeEnable(); });
+  gapi.load('client', async () => { try{ await gapi.client.init({ apiKey: API_KEY, discoveryDocs: DISCOVERY_DOCS }); }catch(e){} });
   tokenClient = google.accounts.oauth2.initTokenClient({ client_id: CLIENT_ID, scope: SCOPES, callback: (resp)=>{ if(resp && resp.access_token){ onSignedIn(); } } });
-  gisInited = true; maybeEnable();
-
-  g('signin').onclick = ()=> tokenClient.requestAccessToken({ prompt:'' });
-  g('signout').onclick = ()=>{ const t=gapi.client.getToken(); if(t){ google.accounts.oauth2.revoke(t.access_token); gapi.client.setToken(''); } onSignedOut(); };
+  document.getElementById('signin').onclick = ()=> tokenClient.requestAccessToken({ prompt:'' });
+  document.getElementById('signout').onclick = ()=>{ const t=gapi.client.getToken(); if(t){ google.accounts.oauth2.revoke(t.access_token); gapi.client.setToken(''); } onSignedOut(); };
 };
-function maybeEnable(){ if(gapiInited && gisInited){ g('signin').style.pointerEvents='auto'; } }
-function onSignedIn(){ g('signin').style.display='none'; g('signout').style.display='inline-block'; loadResults(); loadQuestions(); }
-function onSignedOut(){ g('signin').style.display='inline-block'; g('signout').style.display='none'; g('results').innerHTML='-'; g('qlist').innerHTML=''; g('msg').textContent=''; }
+function onSignedIn(){ document.getElementById('signin').style.display='none'; document.getElementById('signout').style.display='inline-block'; loadResults(); loadQuestions(); }
+function onSignedOut(){ document.getElementById('signin').style.display='inline-block'; document.getElementById('signout').style.display='none'; document.getElementById('results').innerHTML='-'; document.getElementById('qlist').innerHTML=''; document.getElementById('msg').textContent=''; }
 
 /* Sheets helpers */
 async function readRange(range){ const r = await gapi.client.sheets.spreadsheets.values.get({ spreadsheetId:SHEET_ID, range }); return r.result.values || []; }
@@ -189,11 +170,11 @@ async function writeRange(range, values){ return gapi.client.sheets.spreadsheets
 
 /* Results */
 async function loadResults(){
-  const rows = await readRange('Results!A1:K10000'); const header = rows.shift()||[]; const idx = Object.fromEntries(header.map((h,i)=>[h,i]));
-  if(!header.length){ g('results').innerHTML = '<div class="muted">Results 시트가 비어 있습니다.</div>'; return; }
+  const rows = await readRange('Form_Responses!A1:K10000'); const header = rows.shift()||[]; const idx = Object.fromEntries(header.map((h,i)=>[h,i]));
+  if(!header.length){ document.getElementById('results').innerHTML = '<div class="muted">Form_Responses 시트가 비어 있습니다.</div>'; return; }
   const html = ['<table class="table"><tr><th>time</th><th>child</th><th>phone</th><th>top3</th></tr>'];
   (rows||[]).slice(-200).reverse().forEach(r=>{ html.push(`<tr><td>${r[idx['timestamp']]||''}</td><td>${r[idx['child_name']]||''}</td><td>${r[idx['phone']]||''}</td><td>${r[idx['top3']]||r[idx['top3(csv)']]||''}</td></tr>`); });
-  html.push('</table>'); g('results').innerHTML = html.join('');
+  html.push('</table>'); document.getElementById('results').innerHTML = html.join('');
 }
 
 /* Questions */
@@ -211,21 +192,22 @@ async function loadQuestions(){
   })).sort((a,b)=>a.order-b.order);
   renderList(QUESTIONS); bindSearch(); if(QUESTIONS[0]) fill(QUESTIONS[0]);
 }
-function bindSearch(){ g('qsearch').oninput=(e)=>{ const q=e.target.value.toLowerCase(); const f=QUESTIONS.filter(x=>(x.prompt||'').toLowerCase().includes(q) || [x.A_label,x.B_label,x.C_label,x.D_label].some(t=>(t||'').toLowerCase().includes(q))); renderList(f); }; }
+function bindSearch(){ document.getElementById('qsearch').oninput=(e)=>{ const q=e.target.value.toLowerCase(); const f=QUESTIONS.filter(x=>(x.prompt||'').toLowerCase().includes(q) || [x.A_label,x.B_label,x.C_label,x.D_label].some(t=>(t||'').toLowerCase().includes(q))); renderList(f); }; }
 function renderList(arr){
-  const el=g('qlist'); el.innerHTML='';
+  const el=document.getElementById('qlist'); el.innerHTML='';
   arr.forEach(q=>{
     const it=document.createElement('div'); it.className='qitem'; it.onclick=()=>fill(q);
-    const img=q.A_image||q.B_image||q.C_image||q.D_image||''; it.innerHTML = `<img class="thumb" src="${img}" alt="" onerror="this.style.opacity=.2"><div><div><b>${q.order}.</b> ${q.prompt||'(제목 없음)'}</div><div class="hint">${q.id||''}</div></div>`;
+    const img=q.A_image||q.B_image||q.C_image||q.D_image||''; it.innerHTML = `<img class="thumb" src="${img}" alt="" onerror="this.style.opacity=.2"><div><div><b>${q.order}.</b> ${q.prompt||'(제목 없음)'}</div><div class="small muted">${q.id||''}</div></div>`;
     el.appendChild(it);
   });
 }
+function g(id){return document.getElementById(id);}
 function updateThumb(k){ g(k+'_thumb').src = g(k+'_image').value; }
-function validateJSON(inp){ const id = inp.id.replace('_weights',''); const err = g(id+'_err'); try{ JSON.parse(inp.value); inp.classList.remove('bad'); err.textContent=''; } catch(e){ inp.classList.add('bad'); err.textContent='유효한 JSON이 아닙니다. 예: {"관찰력":1,"색감각":0.5}'; } }
+function validateJSON(inp){ const id = inp.id.replace('_weights',''); const err = g(id+'_err'); try{ if(inp.value) JSON.parse(inp.value); inp.classList.remove('bad'); err.textContent=''; } catch(e){ inp.classList.add('bad'); err.textContent='유효한 JSON이 아닙니다. 예: {"관찰력":1,"색감각":0.5}'; } }
 function fill(q){
   g('qid').value=q.id||''; g('order').value=q.order||''; g('active').checked=!!q.active; g('prompt').value=q.prompt||'';
   ['A','B','C','D'].forEach(k=>{ g(`${k}_label`).value=q[`${k}_label`]||''; g(`${k}_image`).value=q[`${k}_image`]||''; g(`${k}_weights`).value=q[`${k}_weights`]||''; updateThumb(k); });
-  document.querySelectorAll('.qitem').forEach(n=>n.style.outline=''); const sel=[...document.querySelectorAll('.qitem')].find(n=>n.innerText.includes(q.id)); if(sel) sel.style.outline='2px solid #ffd6b0';
+  document.querySelectorAll('.qitem').forEach(n=>n.style.outline=''); 
 }
 async function save(){
   const id=g('qid').value; const q = QUESTIONS.find(x=>x.id===id); if(!q) return;
@@ -240,7 +222,7 @@ async function addQuestion(){
   const nextOrder=(QUESTIONS[QUESTIONS.length-1]?.order||0)+1; const newId=`q${nextOrder}`;
   const values=[newId,String(nextOrder),'새 문항을 입력하세요','보기 A','', '{"관찰력":1}','보기 B','', '{"색감각":1}','보기 C','', '{"구성력":1}','보기 D','', '{"서사력":1}','TRUE'];
   const target=QUESTIONS.length+2; await writeRange(`Questions!A${target}:P${target}`,[values]);
-  g('msg').textContent='새 문항 추가됨'; setTimeout(()=>g('msg').textContent='',1500); await loadQuestions(); const q=QUESTIONS.find(x=>x.id===newId); if(q) fill(q);
+  g('msg').textContent='새 문항 추가됨'; setTimeout(()=>g('msg').textContent='',1500); await loadQuestions();
 }
 function previewTest(){ window.open('./index.html#test','_blank'); }
 </script>
