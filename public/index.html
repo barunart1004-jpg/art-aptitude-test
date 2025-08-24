@@ -109,11 +109,8 @@ input[type=checkbox],input[type=radio]{accent-color:#FFB98A}
 .skel{border-radius:12px; background:linear-gradient(90deg,#f3f4f6,#eaeef3,#f3f4f6); background-size:200% 100%; animation:sh 1.2s infinite}@keyframes sh{to{background-position:-200% 0}}
 .checkRow{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
 
-/* 첫 화면 전용 – Orange pastel, glass & glow */
-.heroWrap{
-  position:relative; padding:48px 16px 30px; text-align:center;
-  perspective:1000px;
-}
+/* 첫 화면 – 히어로 */
+.heroWrap{position:relative; padding:48px 16px 30px; text-align:center; perspective:1000px;}
 .heroTitle{
   font-size:40px; font-weight:900; letter-spacing:.2px; margin:6px 0 8px;
   background:linear-gradient(90deg,#FFB98A 0%, #FFCCAA 35%, #E6E2FF 70%, #CFF7EE 100%);
@@ -142,7 +139,6 @@ input[type=checkbox],input[type=radio]{accent-color:#FFB98A}
 
 .heroGrid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; max-width:980px; margin:16px auto 0}
 @media(max-width:900px){ .heroGrid{grid-template-columns:1fr} }
-
 .fcard{
   position:relative; background:#fff; border:1px solid var(--line); padding:20px 16px; border-radius:20px;
   box-shadow:0 20px 46px rgba(16,24,40,.12); overflow:hidden; transform-style:preserve-3d;
@@ -162,14 +158,9 @@ input[type=checkbox],input[type=radio]{accent-color:#FFB98A}
   width:30px;height:30px;border-radius:10px;display:grid;place-items:center;margin-right:4px;
   background:linear-gradient(180deg,#FFF1E6,#FFFFFF); border:1px solid #ffe3cd; box-shadow:0 10px 20px rgba(255,185,138,.15)
 }
-.fchip{
-  display:inline-block; background:linear-gradient(90deg,#FFE6CF,#FFD9BE); border:1px solid #ffe3cd;
-  padding:8px 12px; border-radius:999px; font-weight:900; color:#5a3f2f; margin-top:10px
-}
 
-.ctaRow{margin-top:20px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
-.ctaHelp{font-size:12px; color:#6b7280}
-
+.ctaRow{margin-top:20px; display:flex; justify-content:center}
+.ctaHelp{font-size:12px; color:#6b7280; margin-top:12px}
 .orb{position:absolute; border-radius:50%; filter:blur(10px); opacity:.25; pointer-events:none}
 .orb.a{width:180px;height:180px; left:6%; top:22%; background:#FFD9BE; animation:float 8s ease-in-out infinite}
 .orb.b{width:140px;height:140px; right:10%; top:30%; background:#E6E2FF; animation:float 10s ease-in-out infinite reverse}
@@ -218,7 +209,22 @@ input[type=checkbox],input[type=radio]{accent-color:#FFB98A}
 /* ===== 연결값(시트/폼) ===== */
 const SHEET_ID   = '14VLQBhDJtduxjCnfr7VEOstZ5ez8-CX3ArXy1OvYCQg';
 const FORM_ACTION= 'https://docs.google.com/forms/d/e/1FAIpQLSeRWq5YKN50zL0simiaQA6EBRsn6VXN__ZmLplAgDz1I1hyQA/formResponse';
-const F = { child_name:'entry.684468179', age:'entry.1066070471', grade:'entry.1812672802', guardian:'entry.1666083184', phone:'entry.89824848', campus:'entry.490719219', answers:'entry.85364862', scores:'entry.1455508168', top3:'entry.1261684833', resultId:'entry.2120338430', timestamp:'entry.532514127' };
+
+/* ⚠️ top3와 resultId가 뒤바뀌지 않도록 아래 매핑을 사용하세요. */
+const F = {
+  child_name:'entry.684468179',
+  age:'entry.1066070471',
+  grade:'entry.1812672802',
+  guardian:'entry.1666083184',
+  phone:'entry.89824848',
+  campus:'entry.490719219',
+  answers:'entry.85364862',
+  scores:'entry.1455508168',
+  /* 기존과 반대로 지정: top3 → 2120338430, resultId → 1261684833 */
+  top3:'entry.2120338430',
+  resultId:'entry.1261684833',
+  timestamp:'entry.532514127'
+};
 /* ========================= */
 
 const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Questions&tqx=out:json`;
@@ -263,7 +269,7 @@ async function loadQuestions(){
       weights:(()=>{try{return JSON.parse(r[`${k}_weights`])||{}}catch{return{}}})() })) }));
 }
 
-/* START – 화려한 오렌지 파스텔 히어로 */
+/* START – 히어로 */
 function startScreen(){
   return `
   <div class="heroWrap">
@@ -286,13 +292,15 @@ function startScreen(){
     </div>
 
     <div class="heroTitle">바른미술학원 · 미술적성테스트</div>
-    <p class="heroSub">아이의 미술 흥미·성향을 파악하고, 강점을 중심으로 칭찬과 코칭 포인트를 제시합니다.</p>
+    <p class="heroSub">
+      아이의 <b>미술 적성</b>과 <b>잠재력</b>을 가볍게 확인하고, 항목별 결과를 즉시 확인하는 테스트입니다.
+    </p>
 
     <div class="heroGrid">
       ${[
         {head:'부담 없이 빠르게',desc:'12문항으로 핵심만 체크합니다.',icon:'<path d="M3 12h18M12 3v18" stroke="#FFB98A" stroke-width="1.6" stroke-linecap="round"/>'},
-        {head:'맞춤형 해석',desc:'8개 영역 점수와 칭찬 멘트를 제공합니다.',icon:'<circle cx="12" cy="12" r="7" stroke="#FFB98A" stroke-width="1.6"/><path d="M12 8v5l3 2" stroke="#FFB98A" stroke-width="1.6" stroke-linecap="round"/>'},
-        {head:'원클릭 저장',desc:'결과 화면에서 바로 인쇄/PDF 저장.',icon:'<path d="M6 9V5a2 2 0 0 1 2-2h8v6H6z" stroke="#FFB98A" stroke-width="1.6"/><path d="M6 14h12v5H6z" stroke="#FFB98A" stroke-width="1.6"/>'},
+        {head:'정확하고 보기 쉬운 결과',desc:'8개 영역 점수와 영역별 해석을 제공합니다.',icon:'<circle cx="12" cy="12" r="7" stroke="#FFB98A" stroke-width="1.6"/><path d="M12 8v5l3 2" stroke="#FFB98A" stroke-width="1.6" stroke-linecap="round"/>'},
+        {head:'저장·공유 간편',desc:'결과 화면에서 바로 인쇄/PDF 저장.',icon:'<path d="M6 9V5a2 2 0 0 1 2-2h8v6H6z" stroke="#FFB98A" stroke-width="1.6"/><path d="M6 14h12v5H6z" stroke="#FFB98A" stroke-width="1.6"/>'},
       ].map(c=>`
         <div class="fcard tilt">
           <div class="fhead">
@@ -300,15 +308,14 @@ function startScreen(){
             ${c.head}
           </div>
           <div class="fdesc">${c.desc}</div>
-          <span class="fchip">오렌지 파스텔 가이드</span>
         </div>`).join('')}
     </div>
 
     <div class="ctaRow">
       <button class="btn btn-mint" onclick="go('consent')" 
         onmousemove="this.style.setProperty('--x', event.offsetX+'px'); this.style.setProperty('--y', event.offsetY+'px')">시작하기</button>
-      <div class="ctaHelp">※ 본 테스트는 <b>교육 가이드</b> 목적이며 의학/임상 진단이 아닙니다.</div>
     </div>
+    <div class="ctaHelp">※ 본 테스트는 <b>교육 가이드</b> 목적이며 의학/임상 진단이 아닙니다.</div>
   </div>`;
 }
 function viewStart(){
@@ -345,7 +352,7 @@ function viewConsent(){
     </p>
     <div class="acc">
       ${accItem('1) 처리 목적',
-        '<ul class="ul"><li>미술적성테스트 제공 및 결과 산출</li><li>맞춤 결과지 및 코칭 포인트 제공</li><li>서비스 품질 개선을 위한 통계 분석</li></ul>')}
+        '<ul class="ul"><li>미술적성테스트 제공 및 결과 산출</li><li>영역별 결과 및 코칭 포인트 제공</li><li>서비스 품질 개선을 위한 통계 분석</li></ul>')}
       ${accItem('2) 수집 항목',
         '<ul class="ul"><li><b>필수</b>: 아동 이름·나이·학년, 보호자 이름·연락처, 문항 응답</li><li><b>선택</b>: 관심 캠퍼스</li></ul>')}
       ${accItem('3) 보관 기간',
@@ -397,7 +404,7 @@ function viewConsent(){
   });
   $('btn_consent').onclick=()=>{
     STATE.consent=true;
-    STATE.consentMeta={guardian:$('consent_guardian').value.trim(),phone:$('consent_phone').value.trim(),relation:$('consent_relation').value,ver:'v2.1'};
+    STATE.consentMeta={guardian:$('consent_guardian').value.trim(),phone:$('consent_phone').value.trim(),relation:$('consent_relation').value,ver:'v2.2'};
     go('profile');
   };
   document.querySelectorAll('.acc-head').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
@@ -495,7 +502,7 @@ function nowKST(){ const d=new Date(),p=n=>String(n).padStart(2,'0'); return `${
 async function submitAll(){
   const raw=aggregateScores(STATE.answers);
   const scores=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,adjust(v)])); // 2.0~4.0 보정
-  const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3);
+  const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3);   // ["관찰력","색감각","..."]
   const resultId=(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36));
 
   const form=new FormData();
@@ -503,12 +510,14 @@ async function submitAll(){
   form.append(F.child_name,STATE.profile.child_name); form.append(F.age,STATE.profile.age); form.append(F.grade,STATE.profile.grade);
   form.append(F.guardian,STATE.profile.guardian); form.append(F.phone,STATE.profile.phone); form.append(F.campus,STATE.profile.campus||'');
   form.append(F.answers,JSON.stringify(answersWithMeta)); form.append(F.scores,JSON.stringify(scores));
-  form.append(F.top3,top3.join(',')); form.append(F.resultId,resultId); form.append(F.timestamp,nowKST());
+  form.append(F.top3,top3.join(','));                       // ✅ 영역명 3개가 들어감
+  form.append(F.resultId,resultId);                         // ✅ uuid는 resultId로
+  form.append(F.timestamp,nowKST());
   try{ fetch(FORM_ACTION,{method:'POST',mode:'no-cors',body:form}); }catch(e){}
   STATE.result={scores,top3,resultId}; STATE.step='result'; render();
 }
 
-/* RESULT – 더 화려/깔끔, 그래프 한 줄 */
+/* RESULT – 레이더(왼쪽) + 막대(오른쪽) 한 줄 */
 let CHARTS=[];
 function destroyCharts(){ CHARTS.forEach(c=>c.destroy?.()); CHARTS=[]; }
 function viewResult(){
@@ -522,16 +531,16 @@ function viewResult(){
         <span class="chip">${STATE.profile.age}세</span>
         <span class="chip">${STATE.profile.grade}</span>
       </div>
-      <h2 style="margin:4px 0 8px"><b>${STATE.profile.child_name}</b>님, 오늘 정말 멋졌어요!</h2>
+      <h2 style="margin:4px 0 8px"><b>${STATE.profile.child_name}</b>님, 수고 많았어요!</h2>
       <div class="kpi" style="justify-content:center"><div class="num" style="font-size:50px">${overall.toFixed(1)}</div><div class="unit">/ 32 (8영역 합산)</div></div>
       <p class="small" style="margin-top:8px;color:#0f172a;font-size:15px">
-        특히 <b>${r.top3.join(', ')}</b>에서 재능이 또렷합니다. 즐거운 루틴으로 기회를 자주 만들어 볼게요.
+        특히 <b>${r.top3.join(', ')}</b> 영역에서 강점이 또렷합니다. 즐거운 일상 15분 루틴으로 잠재력을 크게 키워 볼게요.
       </p>
     </div>
 
     <div class="grid grid-2">
-      <div class="block" style="overflow:hidden"><h3 class="center">영역별 관심도</h3><canvas id="radar" height="260"></canvas></div>
-      <div class="block" style="overflow:hidden"><h3 class="center">상위 3개 막대</h3><canvas id="bars" height="260"></canvas></div>
+      <div class="block" style="overflow:hidden"><h3 class="center">영역별 관심도</h3><canvas id="radar" height="240"></canvas></div>
+      <div class="block" style="overflow:hidden"><h3 class="center">뛰어난 영역(Top3)</h3><canvas id="bars" height="240"></canvas></div>
     </div>
 
     <div class="block">
@@ -540,7 +549,7 @@ function viewResult(){
         아이의 강점이 선명하게 드러난 결과예요. 스스로 선택하고 몰입할 때 성장이 크게 일어납니다.
         “잘할 수 있다”는 경험을 꾸준히 쌓도록, 집에서도 바로 할 수 있는 15분 루틴을 제안합니다.
       </p>
-      <div class="chips" style="margin-top:6px">${r.top3.map(t=>`<span class="chip">${t} 칭찬</span>`).join('')}</div>
+      <div class="chips" style="margin-top:6px">${r.top3.map(t=>`<span class="chip">${t} 우수</span>`).join('')}</div>
     </div>
 
     <div class="block">
