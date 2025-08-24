@@ -1,14 +1,19 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>바른미술학원 · 미술적성테스트</title>
+
+<!-- 글꼴/라이브러리 -->
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<!-- PDF 생성용 -->
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+
 <style>
 :root{
-  --ink:#0f172a; --muted:#6b7280; --line:#eef2f7;
+  --ink:#0f172a; --muted:#667085; --line:#eef2f7;
   --bg1:#fff7f1; --bg2:#f7f3ff; --card:#ffffff;
   --o1:#FFE6CF; --o2:#FFD9BE; --o3:#FFC9A3; --o4:#FFB98A;
   --mint:#CFF7EE; --vio:#E6E2FF;
@@ -96,7 +101,7 @@ label{font-size:14px; color:#374151}
 }
 @media (max-width:1023px){ .sideNav{display:none} }
 
-/* 인터렉티브 카드(시작화면) */
+/* 시작 특징 카드 */
 .feature{position:relative;width:min(320px,92vw);padding:16px;border-radius:18px;border:1px solid var(--line);background:#fff;box-shadow:0 16px 40px rgba(16,24,40,.10);overflow:hidden}
 .feature:before{content:"";position:absolute;inset:-1px;border-radius:18px;padding:1px;background:linear-gradient(90deg,#FFE6CF,#E6E2FF,#CFF7EE);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 .feature .glass{position:absolute;inset:auto -20% -40% -20%;height:140px;background:radial-gradient(circle at 30% 50%, rgba(255,185,138,.35), transparent 40%),radial-gradient(circle at 70% 40%, rgba(188,222,255,.35), transparent 45%);filter:blur(20px)}
@@ -137,51 +142,51 @@ label{font-size:14px; color:#374151}
   </main>
 </div>
 
+<!-- 좌우 네비(PC) -->
 <div class="sideNav left" id="sideLeft" style="display:none"><button class="sideBtn" onclick="prev()" aria-label="이전">‹</button></div>
 <div class="sideNav right" id="sideRight" style="display:none"><button class="sideBtn" onclick="next()" aria-label="다음">›</button></div>
 
 <script>
 /* ===== 연결값(시트/폼) ===== */
 const SHEET_ID   = '14VLQBhDJtduxjCnfr7VEOstZ5ez8-CX3ArXy1OvYCQg';
+const GVIZ_URL   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Questions&tqx=out:json`;
 const FORM_ACTION= 'https://docs.google.com/forms/d/e/1FAIpQLSeRWq5YKN50zL0simiaQA6EBRsn6VXN__ZmLplAgDz1I1hyQA/formResponse';
 const F = { child_name:'entry.684468179', age:'entry.1066070471', grade:'entry.1812672802', guardian:'entry.1666083184', phone:'entry.89824848', campus:'entry.490719219', answers:'entry.85364862', scores:'entry.1455508168', top3:'entry.1261684833', resultId:'entry.2120338430', timestamp:'entry.532514127' };
 /* ========================= */
 
-const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Questions&tqx=out:json`;
-const DOMAINS = ["관찰력","서사력","디테일","구성력","색감각","공간감","도전성","소통력"];
-const STEPS = [{key:'start',label:'시작'},{key:'consent',label:'동의'},{key:'profile',label:'프로필'},{key:'test',label:'테스트'},{key:'result',label:'결과'}];
-const STATE = { step:'start', consent:false, consentMeta:null, profile:{}, questions:[], idx:0, answers:[], result:null };
+const DOMAINS=["관찰력","서사력","디테일","구성력","색감각","공간감","도전성","소통력"];
+const STEPS=[{key:'start',label:'시작'},{key:'consent',label:'동의'},{key:'profile',label:'프로필'},{key:'test',label:'테스트'},{key:'result',label:'결과'}];
+const STATE={step:'start',consent:false,consentMeta:null,profile:{},questions:[],idx:0,answers:[],result:null};
 
 const $=id=>document.getElementById(id); const v=id=>$(id)?.value?.trim()??''; const app=()=>$('app');
 
-/* NAV + Progress */
-function renderNav(){ const cur = STEPS.findIndex(s=>s.key===STATE.step);
-  $('topnav').innerHTML = STEPS.map((s,i)=>`<div class="step ${s.key===STATE.step?'active':''} ${cur>i?'done':''}" onclick="navGo('${s.key}')"><span class="num">${i+1}</span><span>${s.label}</span></div>`).join('')
+/* NAV + 진행바 */
+function renderNav(){ const cur=STEPS.findIndex(s=>s.key===STATE.step);
+  $('topnav').innerHTML=STEPS.map((s,i)=>`<div class="step ${s.key===STATE.step?'active':''} ${cur>i?'done':''}" onclick="navGo('${s.key}')"><span class="num">${i+1}</span><span>${s.label}</span></div>`).join('')
 }
 function updateTopProgress(){
   if(STATE.step==='test' && STATE.questions.length){
-    const q = Math.round(STATE.idx/STATE.questions.length*100);
+    const q=Math.round(STATE.idx/STATE.questions.length*100);
     $('topbar').style.width=q+'%'; $('statusline').textContent=`테스트 진행 ${STATE.idx+1}/${STATE.questions.length} (${q}%)`;
     $('sideLeft').style.display='block'; $('sideRight').style.display='block'; return;
   }
   $('sideLeft').style.display='none'; $('sideRight').style.display='none';
-  let pct = (STEPS.findIndex(s=>s.key===STATE.step))/(STEPS.length-1)*100;
+  let pct=(STEPS.findIndex(s=>s.key===STATE.step))/(STEPS.length-1)*100;
   $('topbar').style.width=Math.round(pct)+'%'; $('statusline').textContent=`진행률 ${Math.round(pct)}%`;
 }
 function navGo(step){ STATE.step=step; if(step==='test' && STATE.questions.length===0){ startTest(); return; } render(); }
-const go=navGo;
 
 /* GViz 파서 */
 function parseGViz(text){ const s=text.indexOf('{'), e=text.lastIndexOf('}'); if(s<0||e<0) return []; const obj=JSON.parse(text.slice(s,e+1)); const cols=obj.table.cols.map(c=>c.label); return obj.table.rows.map(r=>r.c.map(c=>c?(c.f??c.v):'')).map(a=>Object.fromEntries(cols.map((k,i)=>[k,a[i]]))); }
 async function loadQuestions(){
   const txt=await (await fetch(GVIZ_URL)).text(); const rows=parseGViz(txt)||[];
   const act=rows.filter(r=>String(r.active).toUpperCase()==='TRUE').sort((a,b)=>(+a.order - +b.order));
-  STATE.questions=act.map(r=>({ id:r.id, order:+r.order, prompt:(r.prompt||'').replace(/\$\{[\s\S]*?\}\s*$/,''), // <- 시트에 잘못 붙은 템플릿 제거
+  STATE.questions=act.map(r=>({ id:r.id, order:+r.order, prompt:(r.prompt||'').replace(/\$\{[\s\S]*?\}\s*$/,''),
     options:['A','B','C','D'].map(k=>({ key:k, label:r[`${k}_label`]||'', imageUrl:r[`${k}_image`]||'', alt:r[`${k}_label`]||'',
       weights:(()=>{try{return JSON.parse(r[`${k}_weights`])||{}}catch{return{}}})() })) }));
 }
 
-/* START – 화려한 시작 카드 */
+/* 시작 화면 */
 const ICONS={
   palette:`<svg viewBox="0 0 24 24" fill="none"><path d="M12 3c-5.5 0-9 3.7-9 7.5 0 4 3.2 7.5 7.5 7.5h1c.8 0 1.5-.7 1.5-1.5 0-.6-.4-1.1-.9-1.3C11.2 14.7 11 14 11 13.2c0-1.6 1.3-2.8 2.8-2.8h.7C17.8 10.4 21 8 21 6c0-1.7-3.3-3-9-3z" fill="#FFB98A"/></svg>`,
   target:`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#FFB98A" stroke-width="2"/><circle cx="12" cy="12" r="5" stroke="#FFA96E" stroke-width="2"/><circle cx="12" cy="12" r="2.2" fill="#FF9C56"/></svg>`,
@@ -192,8 +197,8 @@ function feature(title,desc,icon){ return `
     <div class="glass"></div>
     <div class="row"><div class="icon">${icon}</div><div><div style="font-weight:900">${title}</div><div class="small muted">${desc}</div></div></div>
   </div>`; }
-function startScreen(){
-  return `<div class="center">
+function viewStart(){
+  app().innerHTML=`<div class="center">
     <h1 style="margin:4px 0 6px">바른미술학원 · 미술적성테스트</h1>
     <div class="small muted">소요시간 <b>약 6–8분</b> · 결과는 즉시 확인하고 <b>메일/PDF 저장</b>할 수 있어요</div>
     <div style="height:14px"></div>
@@ -203,22 +208,22 @@ function startScreen(){
       ${feature('즉시 결과','바로 확인·저장',ICONS.mail)}
     </div>
     <div style="height:16px"></div>
-    <button class="btn btn-mint" onclick="go('consent')" onmousemove="this.style.setProperty('--x', event.offsetX+'px'); this.style.setProperty('--y', event.offsetY+'px')">시작하기</button>
+    <button class="btn btn-mint" onclick="navGo('consent')" onmousemove="this.style.setProperty('--x', event.offsetX+'px'); this.style.setProperty('--y', event.offsetY+'px')">시작하기</button>
   </div>`;
+  window.scrollTo({top:0,behavior:'smooth'});
 }
-function viewStart(){ app().innerHTML=startScreen(); window.scrollTo({top:0,behavior:'smooth'}); }
 
-/* CONSENT */
+/* 동의서 */
 function accItem(t,html){ return `<div style="border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:10px 0"><div style="padding:12px 14px;background:#FFF4EC;font-weight:800">${t}</div><div style="padding:12px 14px;background:#fff" class="small">${html}</div></div>`;}
 function viewConsent(){
   app().innerHTML=`<h2 class="center">개인정보 수집·이용 동의서</h2>
-  <p class="muted small center">본 테스트는 <b>교육 가이드</b> 목적이며, 의학/임상 진단이 아닙니다.</p>
-  ${accItem('1) 수집·이용 목적','① 테스트 제공/결과 산출 ② 결과지·코칭 가이드 제공 ③ 상담 품질 개선 ④ (선택) 결과지 이메일 발송')}
-  ${accItem('2) 수집 항목','<b>필수</b>: 아동 이름·나이·학년 / 보호자 이름·연락처 / 문항 응답<br><b>선택</b>: 이메일(결과 전송), 관심 캠퍼스')}
-  ${accItem('3) 보관 기간','수집일로부터 <b>12개월</b> 보관 후 파기')}
-  ${accItem('4) 처리/보관','Google Forms/Sheets에 저장·처리')}
-  ${accItem('5) 권리','동의 거부 가능(거부 시 서비스 제한 가능)')}
-  ${accItem('6) 문의','barunart1004@gmail.com')}
+  <p class="muted small center">본 테스트는 <b>교육 가이드</b> 제공을 위한 것으로, 의학/임상 진단이 아닙니다.</p>
+  ${accItem('1) 목적','① 테스트 제공 및 결과 산출 ② 맞춤 결과지/코칭 포인트 제공 ③ 서비스 품질 개선 ④ (선택) 결과지 이메일 발송')}
+  ${accItem('2) 수집 항목','<b>필수</b>: 아동 이름·나이·학년, 보호자 이름·연락처, 문항 응답<br><b>선택</b>: 이메일(결과 전송), 관심 캠퍼스')}
+  ${accItem('3) 보관 기간','수집일로부터 <b>12개월 보관 후 파기</b>합니다.')}
+  ${accItem('4) 처리/보관','Google Forms/Sheets를 이용해 안전하게 저장·처리합니다.')}
+  ${accItem('5) 권리','동의는 거부할 수 있으나, 미동의 시 일부 서비스 제공이 제한될 수 있습니다.')}
+  ${accItem('6) 문의','관리자 이메일: <b>barunart1004@gmail.com</b>')}
   <div class="section" style="margin-top:10px">
     <div class="grid grid-2">
       <div><label>보호자 성명(서명)</label><input id="consent_guardian" placeholder="예: 홍길동(서명)"></div>
@@ -226,7 +231,7 @@ function viewConsent(){
       <div><label>아동과의 관계</label><select id="consent_relation"><option>부모</option><option>법정대리인</option><option>기타</option></select></div>
       <div><label>(선택) 결과지 이메일 수신 동의</label><select id="consent_email_ok"><option value="동의">동의</option><option value="미동의" selected>미동의</option></select></div>
     </div>
-    <div class="checkRow" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:8px">
+    <div class="row" style="gap:16px; align-items:center; flex-wrap:wrap; margin-top:8px">
       <label><input type="checkbox" id="chk_required"> (필수) 개인정보 수집·이용에 동의합니다</label>
       <label><input type="checkbox" id="chk_minor"> (필수) 만 14세 미만 아동의 법정대리인으로서 동의합니다</label>
     </div>
@@ -236,10 +241,10 @@ function viewConsent(){
   </div>`;
   const validate=()=>{ const ok=$('chk_required').checked&&$('chk_minor').checked; const g=$('consent_guardian').value.trim(); const p=$('consent_phone').value.trim(); const okp=/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(p); $('btn_consent').disabled=!(ok&&g.length>=2&&okp); };
   ['chk_required','chk_minor','consent_guardian','consent_phone'].forEach(id=>{$(id).addEventListener('input',validate);$(id).addEventListener('change',validate);});
-  $('btn_consent').onclick=()=>{ STATE.consent=true; STATE.consentMeta={guardian:$('consent_guardian').value.trim(),phone:$('consent_phone').value.trim(),relation:$('consent_relation').value,email_ok:$('consent_email_ok').value,ver:'v1.8'}; go('profile'); };
+  $('btn_consent').onclick=()=>{ STATE.consent=true; STATE.consentMeta={guardian:$('consent_guardian').value.trim(),phone:$('consent_phone').value.trim(),relation:$('consent_relation').value,email_ok:$('consent_email_ok').value,ver:'v2.0'}; navGo('profile'); };
 }
 
-/* PROFILE */
+/* 프로필 */
 function viewProfile(){
   app().innerHTML=`<h2 class="center">프로필 정보</h2>
   <div class="grid grid-2" style="margin-top:8px">
@@ -250,7 +255,7 @@ function viewProfile(){
       <option>초등학교 4학년</option><option>초등학교 5학년</option><option>초등학교 6학년</option></select></div>
     <div><label>보호자 이름</label><input id="gname"></div>
     <div><label>연락처</label><input id="phone" placeholder="010-0000-0000"></div>
-    <div><label>이메일(선택, 결과지 전송)</label><input id="email" placeholder="example@email.com"></div>
+    <div><label>이메일(선택 · 결과지 전송)</label><input id="email" placeholder="example@email.com"></div>
     <div><label>관심 캠퍼스(선택)</label><input id="campus" placeholder="예: 분당점"></div>
   </div>
   <div class="center" style="margin-top:16px"><button class="btn btn-mint" onclick="startTest()">테스트 시작</button></div>`;
@@ -261,10 +266,10 @@ async function startTest(){
   await loadQuestions(); STATE.idx=0; STATE.answers=[]; STATE.step='test'; render();
 }
 
-/* TEST */
+/* 테스트 */
 function viewTest(){
   const q=STATE.questions[STATE.idx]; if(!q){ app().innerHTML='<h3 class="center">문항을 불러오지 못했습니다. 관리자에 문의해 주세요.</h3>'; return; }
-  const gridCls = (window.matchMedia('(min-width:1024px)').matches?'test-grid':'grid grid-2');
+  const gridCls=(window.matchMedia('(min-width:1024px)').matches?'test-grid':'grid grid-2');
   app().innerHTML=`<div class="center small muted">Q${STATE.idx+1} / ${STATE.questions.length}</div>
     <h2 class="center" style="margin-top:6px">${q.prompt||''}</h2>
     <div class="${gridCls}" style="margin-top:10px">
@@ -283,7 +288,7 @@ function prev(){ if(STATE.idx>0){ STATE.idx--; render(); } }
 
 /* 점수 보정 + 멘트 */
 function aggregateScores(ans){ const sum={}; DOMAINS.forEach(d=>sum[d]=0); ans.forEach(a=>Object.entries(a.weights||{}).forEach(([k,v])=>sum[k]=(sum[k]||0)+Number(v||0))); const n=ans.length||1; const raw={}; DOMAINS.forEach(d=>{ const v=(sum[d]||0)/n*4; raw[d]=Math.max(0,Math.round(v*10)/10); }); return raw; }
-const adjust=v=>Math.round((2 + v/2) * 10)/10; // 0→2.0, 4→4.0 (최소 2점 보정)
+const adjust=v=>Math.round((2 + v/2) * 10)/10; // 0→2.0, 4→4.0 보정
 function band(v){ if(v>=3.6) return 'S'; if(v>=3.2) return 'A'; if(v>=2.8) return 'A-'; if(v>=2.4) return 'B+'; if(v>=2.0) return 'B'; if(v>=1.6) return 'B-'; if(v>=1.0) return 'C+'; return 'C'; }
 const DETAIL={ '관찰력':n=>`${n}님은 대상을 오랫동안 바라보고 특징을 뽑아내는 힘이 뛰어나요. 미묘한 변화도 놓치지 않아 표현의 밀도가 높아집니다.`, '서사력':n=>`${n}님은 장면 속에 이야기를 심는 데 강점이 있어요. 캐릭터의 감정과 사건의 흐름을 자연스럽게 연결합니다.`, '디테일':n=>`${n}님은 마감과 표현의 섬세함이 돋보여요. 질감·무늬·작은 요소까지 챙기는 집중력이 강점입니다.`, '구성력':n=>`${n}님은 화면에서 시선이 흐르는 길을 잘 설계해요. 중심과 여백의 균형을 안정적으로 잡습니다.`, '색감각':n=>`${n}님은 색의 분위기를 읽고 조합하는 능력이 뛰어나요. 팔레트 제약 속에서도 멋진 결과를 냅니다.`, '공간감':n=>`${n}님은 원근·스케일을 활용해 입체감을 살리는 데 강합니다. 장면의 깊이를 안정적으로 구성합니다.`, '도전성':n=>`${n}님은 새로운 도구와 방식에 두려움이 적어요. 실패를 경험으로 바꾸며 시도를 이어갑니다.`, '소통력':n=>`${n}님은 자신의 의도를 언어로 풀어내는 힘이 좋아요. 작품의 핵심을 또래에게 설득력 있게 전달합니다.`};
 const PRAISE={ 'S':k=>`와, ${k}에서 <b>타고난 재능</b>이 돋보여요!`, 'A':k=>`${k} 감각이 <b>뛰어납니다</b>.`, 'A-':k=>`${k} 실력이 <b>탄탄</b>해요.`, 'B+':k=>`${k}이 안정적이에요.`, 'B':k=>`${k} 기본기가 좋아요.` };
@@ -306,10 +311,11 @@ async function submitAll(){
   STATE.result={scores,top3,resultId}; STATE.step='result'; render();
 }
 
-/* RESULT + PDF 안정화(캔버스 이미지로 교체) */
+/* 결과 + PDF + 이메일 */
 let CHARTS=[]; let PRINT_SWAP=[];
 function destroyCharts(){ CHARTS.forEach(c=>c.destroy?.()); CHARTS=[]; }
 function prepPrint(){
+  // Chart.js를 이미지로 바꿔 인쇄 시 깨짐 방지
   PRINT_SWAP=[];
   document.querySelectorAll('canvas').forEach((cv)=>{
     const chart=CHARTS.find(c=>c.canvas===cv);
@@ -324,6 +330,21 @@ window.addEventListener('afterprint',()=>{
   PRINT_SWAP.forEach(({cv,ph,chart})=>{ ph.replaceWith(cv); chart?.resize(); });
   PRINT_SWAP=[];
 });
+
+async function makePdfDataUri(){
+  const el=document.getElementById('resultCard');
+  const opt={ margin:10, filename:'result.pdf', image:{type:'jpeg',quality:0.98}, html2canvas:{scale:2,useCORS:true}, jsPDF:{unit:'mm', format:'a4', orientation:'portrait'} };
+  return await html2pdf().from(el).set(opt).outputPdf('datauristring'); // data:application/pdf;base64,....
+}
+async function sendEmail(){
+  const email = STATE.profile.email || prompt('받을 이메일을 입력하세요');
+  if(!email) return;
+  const dataUri = await makePdfDataUri();
+  const base64 = dataUri.split(',')[1];
+  const payload = { to: email, subject:`[바른미술학원] ${STATE.profile.child_name} 결과지`, filename:`result-${STATE.result.resultId}.pdf`, pdfBase64: base64, html:`<p>안녕하세요. 바른미술학원입니다.<br>첨부된 PDF로 ${STATE.profile.child_name}님의 미술적성 결과지를 보내드립니다.</p>` };
+  const resp = await fetch('/.netlify/functions/send-pdf',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+  if(resp.ok){ alert('이메일을 보냈습니다. (수신함/스팸함을 확인해 주세요)'); } else { const t=await resp.text(); alert('전송 실패: '+t); }
+}
 
 function viewResult(){
   const r=STATE.result, s=r?.scores||{};
@@ -371,9 +392,11 @@ function viewResult(){
 
   <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap">
     <button class="btn-ghost" onclick="STATE.step='start'; render()">처음으로</button>
-    <button class="btn btn-mint" onclick="prepPrint()">PDF 저장</button>
+    <button class="btn" onclick="prepPrint()">PDF 저장(인쇄)</button>
+    <button class="btn btn-mint" onclick="sendEmail()">이메일로 결과지 보내기</button>
   </div>`;
 
+  // 차트
   destroyCharts();
   const rctx=document.getElementById('radar').getContext('2d');
   CHARTS.push(new Chart(rctx,{type:'radar',
