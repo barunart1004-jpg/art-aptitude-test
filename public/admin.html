@@ -19,8 +19,8 @@ body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;ba
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow);margin-bottom:14px;animation:fade .3s ease both}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}} h2{margin:0 0 10px}
 .muted{color:var(--muted)} .small{font-size:13px}
-.btn{min-width:120px;background:linear-gradient(90deg,#FFB98A,#FFD9BE);color:#5a3f2f;border:none;padding:12px 14px;border-radius:12px;font-weight:900;cursor:pointer;box-shadow:0 10px 28px rgba(255,185,138,.35)}
-.btn-ghost{min-width:120px;background:#fff;color:#111;border:1px solid var(--line);padding:12px 14px;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:0 10px 24px rgba(16,24,40,.06)}
+.btn{min-width:140px;background:linear-gradient(90deg,#FFB98A,#FFD9BE);color:#5a3f2f;border:none;padding:12px 14px;border-radius:12px;font-weight:900;cursor:pointer;box-shadow:0 10px 28px rgba(255,185,138,.35)}
+.btn-ghost{min-width:140px;background:#fff;color:#111;border:1px solid var(--line);padding:12px 14px;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:0 10px 24px rgba(16,24,40,.06)}
 input,select,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px}
 .grid{display:grid;gap:14px} .grid-2{grid-template-columns:1fr 2fr} @media(max-width:1000px){.grid-2{grid-template-columns:1fr}}
 .list{display:flex;flex-direction:column;gap:10px;max-height:520px;overflow:auto}
@@ -54,7 +54,7 @@ label>span{display:block;font-size:12px;color:#6b7280;margin-top:4px}
 <header class="header">
   <div class="wrap">
     <div class="brand"><div class="dot"></div><span style="font-weight:900">ArtTest Admin</span></div>
-    <a class="link" href="./index.html" target="_blank" rel="noopener">수험자 페이지</a>
+    <a class="link" href="./index.html" target="_blank" rel="noopener">테스트 페이지</a>
   </div>
 </header>
 
@@ -67,11 +67,25 @@ label>span{display:block;font-size:12px;color:#6b7280;margin-top:4px}
     <div class="tab" id="signout" style="display:none">로그아웃</div>
   </div>
 
+  <!-- 결과 보기 -->
   <section id="t1" class="section active card">
     <h2>Results</h2>
+    <div class="row" style="justify-content:space-between;margin-bottom:8px">
+      <input id="res_search" placeholder="검색: 이름/전화/탑3" style="max-width:360px">
+      <div class="row">
+        <label>정렬</label>
+        <select id="res_sort" style="min-width:160px">
+          <option value="time_desc">시간 ↓</option>
+          <option value="time_asc">시간 ↑</option>
+          <option value="name_asc">이름 A→Z</option>
+          <option value="top1_asc">상위1 영역 A→Z</option>
+        </select>
+      </div>
+    </div>
     <div id="results" class="small muted center">로그인 후 조회됩니다.</div>
   </section>
 
+  <!-- 문항 관리 -->
   <section id="t2" class="section card">
     <h2>문항 관리</h2>
     <div class="grid grid-2" style="margin-top:12px">
@@ -94,23 +108,42 @@ label>span{display:block;font-size:12px;color:#6b7280;margin-top:4px}
         <label style="margin-top:8px">문제(질문)</label>
         <textarea id="prompt" rows="2" placeholder="예: 전시 포스터를 만든다면 어디에 집중할까?"></textarea>
 
-        <div class="grid" style="grid-template-columns:1fr 1fr; margin-top:8px">
-          ${['A','B','C','D'].map(k=>`
-          <div style="border:1px solid var(--line); border-radius:12px; padding:10px">
-            <div class="row"><strong>${k} 보기</strong></div>
-            <label>라벨</label><input id="${k}_label"/>
-            <label>이미지 URL <span>(Drive 공유: 링크공유/모두보기)</span></label>
-            <input id="${k}_image" oninput="updateThumb('${k}')" placeholder="https://drive.google.com/uc?export=view&id=..."/>
-            <img id="${k}_thumb" class="thumb" alt="${k} 이미지" />
-            <label>${k} 가중치(JSON)</label>
-            <input id="${k}_weights" placeholder='{"관찰력":1}' oninput="validateJSON(this)"/>
-            <div id="${k}_err" class="small muted"></div>
-          </div>`).join('')}
+        <!-- A -->
+        <div style="border:1px solid var(--line); border-radius:12px; padding:10px; margin-top:8px">
+          <strong>A 보기</strong>
+          <label>라벨</label><input id="A_label"/>
+          <label>이미지 URL</label><input id="A_image" oninput="updateThumb('A')" placeholder="https://..."/>
+          <img id="A_thumb" class="thumb" alt="A 이미지">
+          <label>A 가중치(JSON)</label><input id="A_weights" placeholder='{"관찰력":1}' oninput="validateJSON(this)"><div id="A_err" class="small muted"></div>
+        </div>
+        <!-- B -->
+        <div style="border:1px solid var(--line); border-radius:12px; padding:10px; margin-top:8px">
+          <strong>B 보기</strong>
+          <label>라벨</label><input id="B_label"/>
+          <label>이미지 URL</label><input id="B_image" oninput="updateThumb('B')" placeholder="https://..."/>
+          <img id="B_thumb" class="thumb" alt="B 이미지">
+          <label>B 가중치(JSON)</label><input id="B_weights" placeholder='{"색감각":1}' oninput="validateJSON(this)"><div id="B_err" class="small muted"></div>
+        </div>
+        <!-- C -->
+        <div style="border:1px solid var(--line); border-radius:12px; padding:10px; margin-top:8px">
+          <strong>C 보기</strong>
+          <label>라벨</label><input id="C_label"/>
+          <label>이미지 URL</label><input id="C_image" oninput="updateThumb('C')" placeholder="https://..."/>
+          <img id="C_thumb" class="thumb" alt="C 이미지">
+          <label>C 가중치(JSON)</label><input id="C_weights" placeholder='{"서사력":1}' oninput="validateJSON(this)"><div id="C_err" class="small muted"></div>
+        </div>
+        <!-- D -->
+        <div style="border:1px solid var(--line); border-radius:12px; padding:10px; margin-top:8px">
+          <strong>D 보기</strong>
+          <label>라벨</label><input id="D_label"/>
+          <label>이미지 URL</label><input id="D_image" oninput="updateThumb('D')" placeholder="https://..."/>
+          <img id="D_thumb" class="thumb" alt="D 이미지">
+          <label>D 가중치(JSON)</label><input id="D_weights" placeholder='{"공간감":1}' oninput="validateJSON(this)"><div id="D_err" class="small muted"></div>
         </div>
 
         <div class="row" style="margin-top:12px; justify-content:center">
-          <button class="btn" onclick="save()">저장</button>
-          <button class="btn-ghost" onclick="reload()">다시 불러오기</button>
+          <button class="btn" onclick="save()" style="width:220px">저장</button>
+          <button class="btn-ghost" onclick="reload()" style="width:220px">다시 불러오기</button>
         </div>
         <div id="msg" class="small muted center" style="margin-top:6px"></div>
       </div>
@@ -118,6 +151,7 @@ label>span{display:block;font-size:12px;color:#6b7280;margin-top:4px}
     <p class="small muted center" style="margin-top:10px">※ 시트 편집권한이 있어야 저장됩니다.</p>
   </section>
 
+  <!-- 설정 -->
   <section id="t3" class="section card">
     <h2>환경설정</h2>
     <div class="grid" style="grid-template-columns:1fr 1fr">
@@ -137,11 +171,9 @@ label>span{display:block;font-size:12px;color:#6b7280;margin-top:4px}
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://apis.google.com/js/api.js" async defer></script>
 <script>
-/* ===== 키/ID/시트 ===== */
 const API_KEY   = 'AIzaSyBsTZlRW0JcDURjQY4nK2CRX-oSpxqux_4';
 const CLIENT_ID = '51272397260-bnumg4lmc58udrh5o30kogjq096gmdkp.apps.googleusercontent.com';
 const SHEET_ID  = '14VLQBhDJtduxjCnfr7VEOstZ5ez8-CX3ArXy1OvYCQg';
-/* ==================== */
 
 /* Password gate */
 function curPw(){ return localStorage.getItem('admin_pw') || '250824'; }
@@ -161,21 +193,59 @@ window.onload = () => {
   document.getElementById('signin').onclick = ()=> tokenClient.requestAccessToken({ prompt:'' });
   document.getElementById('signout').onclick = ()=>{ const t=gapi.client.getToken(); if(t){ google.accounts.oauth2.revoke(t.access_token); gapi.client.setToken(''); } onSignedOut(); };
 };
-function onSignedIn(){ document.getElementById('signin').style.display='none'; document.getElementById('signout').style.display='inline-block'; loadResults(); loadQuestions(); }
-function onSignedOut(){ document.getElementById('signin').style.display='inline-block'; document.getElementById('signout').style.display='none'; document.getElementById('results').innerHTML='-'; document.getElementById('qlist').innerHTML=''; document.getElementById('msg').textContent=''; }
+
+function onSignedIn(){ document.getElementById('signin').style.display='none'; document.getElementById('signout').style.display='inline-block'; document.getElementById('results').innerHTML='불러오는 중…'; loadResults(); loadQuestions(); }
+function onSignedOut(){ document.getElementById('signin').style.display='inline-block'; document.getElementById('signout').style.display='none'; document.getElementById('results').innerHTML='로그인 후 조회됩니다.'; document.getElementById('qlist').innerHTML=''; document.getElementById('msg').textContent=''; }
 
 /* Sheets helpers */
 async function readRange(range){ const r = await gapi.client.sheets.spreadsheets.values.get({ spreadsheetId:SHEET_ID, range }); return r.result.values || []; }
 async function writeRange(range, values){ return gapi.client.sheets.spreadsheets.values.update({ spreadsheetId:SHEET_ID, range, valueInputOption:'RAW', resource:{ values } }); }
 
-/* Results */
+/* Results with filter/sort */
+let RES_ROWS=[], RES_IDX={};
 async function loadResults(){
-  const rows = await readRange('Form_Responses!A1:K10000'); const header = rows.shift()||[]; const idx = Object.fromEntries(header.map((h,i)=>[h,i]));
-  if(!header.length){ document.getElementById('results').innerHTML = '<div class="muted">Form_Responses 시트가 비어 있습니다.</div>'; return; }
-  const html = ['<table class="table"><tr><th>time</th><th>child</th><th>phone</th><th>top3</th></tr>'];
-  (rows||[]).slice(-200).reverse().forEach(r=>{ html.push(`<tr><td>${r[idx['timestamp']]||''}</td><td>${r[idx['child_name']]||''}</td><td>${r[idx['phone']]||''}</td><td>${r[idx['top3']]||r[idx['top3(csv)']]||''}</td></tr>`); });
+  try{
+    const rows = await readRange('Form_Responses!A1:Z10000'); const header = rows.shift()||[];
+    RES_IDX = Object.fromEntries(header.map((h,i)=>[h,i]));
+    RES_ROWS = rows;
+    applyResultsFilter();
+  }catch(e){
+    document.getElementById('results').innerHTML = `<div class="muted">불러오지 못했습니다. 권한/범위를 확인해주세요.</div>`;
+  }
+}
+function applyResultsFilter(){
+  const q=(document.getElementById('res_search').value||'').toLowerCase();
+  const sort=document.getElementById('res_sort').value;
+  let arr = RES_ROWS.slice();
+  if(q){
+    arr = arr.filter(r=>{
+      const name=r[RES_IDX['child_name']]||'', phone=r[RES_IDX['phone']]||'', top3=r[RES_IDX['top3']]||r[RES_IDX['top3(csv)']]||'';
+      return [name,phone,top3].join(' ').toLowerCase().includes(q);
+    });
+  }
+  // 정렬
+  const byTime=(a,b)=> (new Date(a[RES_IDX['timestamp']]||0)) - (new Date(b[RES_IDX['timestamp']]||0));
+  const byName=(a,b)=> String(a[RES_IDX['child_name']]||'').localeCompare(String(b[RES_IDX['child_name']]||''));
+  const byTop1=(a,b)=> String((a[RES_IDX['top3']]||'').split(',')[0]).localeCompare(String((b[RES_IDX['top3']]||'').split(',')[0]));
+  if(sort==='time_desc') arr.sort((a,b)=>byTime(b,a));
+  if(sort==='time_asc')  arr.sort(byTime);
+  if(sort==='name_asc')  arr.sort(byName);
+  if(sort==='top1_asc')  arr.sort(byTop1);
+
+  const html = ['<table class="table"><tr><th>시간</th><th>이름</th><th>학년</th><th>연락처</th><th>Top3</th></tr>'];
+  arr.slice(-500).reverse().forEach(r=>{
+    html.push(`<tr>
+      <td>${r[RES_IDX['timestamp']]||''}</td>
+      <td>${r[RES_IDX['child_name']]||''}</td>
+      <td>${r[RES_IDX['grade']]||''}</td>
+      <td>${r[RES_IDX['phone']]||''}</td>
+      <td>${r[RES_IDX['top3']]||r[RES_IDX['top3(csv)']]||''}</td>
+    </tr>`);
+  });
   html.push('</table>'); document.getElementById('results').innerHTML = html.join('');
 }
+document.getElementById('res_search').oninput=applyResultsFilter;
+document.getElementById('res_sort').onchange=applyResultsFilter;
 
 /* Questions */
 let QUESTIONS=[], HDR={};
