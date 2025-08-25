@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>바른미술학원 · 미술적성테스트</title>
 
+<!-- 폰트 & 차트 -->
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
@@ -73,7 +74,7 @@ p{margin:8px 0} .small{font-size:13px} .muted{color:var(--muted)} .center{text-a
 .btn:after{content:""; position:absolute; inset:0; background:radial-gradient(160px 160px at var(--x,50%) var(--y,50%), rgba(255,255,255,.6), transparent 42%); opacity:.0; transition:opacity .25s}
 .btn:hover:after{opacity:.6}
 
-/* ▶ 이전/다음 버튼 동일 크기로 보정 */
+/* ▶ 이전/다음 버튼 동일 크기 */
 .btn-ghost{
   background:#fff; color:#111827; border:1px solid var(--line);
   padding:24px 40px; border-radius:20px; font-weight:900; cursor:pointer; box-shadow:var(--soft); font-size:22px;
@@ -117,7 +118,7 @@ label{font-size:14px; color:#374151}
 .acc-body{padding:14px 16px; display:none; background:#fff; line-height:1.7}
 .acc-item.open .acc-body{display:block}
 
-/* Result blocks */
+/* Result */
 .block{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 26px rgba(16,24,40,.06);page-break-inside:avoid}
 .block h3{margin:0 0 10px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -179,7 +180,6 @@ const F = {
   resultId:'entry.2120338430',
   timestamp:'entry.532514127'
 };
-
 const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Questions&tqx=out:json`;
 
 /* 12개 + 꾸준성 */
@@ -193,6 +193,7 @@ const STEPS = [
 ];
 
 const STATE = { step:'start', consent:false, profile:{}, questions:[], idx:0, answers:[], result:null };
+
 const $=id=>document.getElementById(id);
 const v=id=>$(id)?.value?.trim()??'';
 const app=()=>$('app');
@@ -229,7 +230,13 @@ function parseGViz(text){
   return rows.map(a=>Object.fromEntries(cols.map((k,i)=>[k,a[i]])));
 }
 async function loadQuestions(){
-  const txt=await (await fetch(GVIZ_URL,{cache:'no-store'})).text();
+  let txt='';
+  try{
+    const res=await fetch(GVIZ_URL,{cache:'no-store'});
+    txt=await res.text();
+  }catch(e){
+    console.error(e); throw new Error('시트 로딩 실패');
+  }
   const rows=parseGViz(txt)||[];
   const act=rows.filter(r=>String(r.active).toUpperCase()==='TRUE').sort((a,b)=>(+a.order - +b.order));
   STATE.questions=act.map(r=>({ id:r.id, order:+r.order, prompt:r.prompt,
@@ -260,7 +267,7 @@ function startScreen(){
 }
 function viewStart(){ app().innerHTML=startScreen(); window.scrollTo({top:0,behavior:'smooth'}); }
 
-/* ===== Consent (설명 복구 + 체크만) ===== */
+/* ===== Consent (설명 + 체크만) ===== */
 function viewConsent(){
   app().innerHTML=`
     <h2 class="center">개인정보 수집·이용 동의서</h2>
@@ -306,13 +313,10 @@ function viewConsent(){
       <button class="btn" id="btn_consent" disabled>동의하고 진행</button>
     </div>
   `;
-
-  // 아코디언 토글/컨트롤
   document.querySelectorAll('.acc-head').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
   $('#btn_open').onclick=()=>document.querySelectorAll('.acc-item').forEach(it=>it.classList.add('open'));
   $('#btn_close').onclick=()=>document.querySelectorAll('.acc-item').forEach(it=>it.classList.remove('open'));
 
-  // 체크 검증
   const validate=()=>{ $('#btn_consent').disabled = !( $('#chk_required').checked && $('#chk_minor').checked ); };
   ['chk_required','chk_minor'].forEach(id=>$(id).addEventListener('change',validate));
   $('#btn_consent').onclick=()=>{ STATE.consent=true; navGo('profile'); };
@@ -367,7 +371,6 @@ function viewTest(){
         <img src="${o.imageUrl}" alt="${o.label}" onerror="this.style.opacity=.2" loading="lazy"><div class="cap center">${o.label}</div></div>`).join('')}
     </div>
     <div class="center" style="margin-top:18px; display:flex; gap:8px; justify-content:center">
-      <!-- ▶ 동일 크기 버튼 -->
       <button class="btn-ghost" onclick="prev()" ${STATE.idx===0?'disabled':''}>이전</button>
       <button class="btn" id="nextBtn" onclick="next()" disabled>다음</button>
     </div>`;
@@ -385,7 +388,7 @@ function choose(key){
 function next(){ if(!STATE.answers[STATE.idx]){ alert('하나를 선택해 주세요'); return; } if(STATE.idx<STATE.questions.length-1){ STATE.idx++; render(); } else submitAll(); }
 function prev(){ if(STATE.idx>0){ STATE.idx--; render(); } }
 
-/* ===== Score ===== */
+/* ===== Score / Result ===== */
 function aggregateScores(ans){ const sum={}; DOMAINS.forEach(d=>sum[d]=0); ans.forEach(a=>Object.entries(a.weights||{}).forEach(([k,v])=>sum[k]=(sum[k]||0)+Number(v||0))); const n=ans.length||1, raw={}; DOMAINS.forEach(d=>{ const v=(sum[d]||0)/n*4; raw[d]=Math.max(0,Math.round(v*10)/10); }); return raw; }
 const adjust=v=>Math.round((2 + v/2) * 10)/10; // 0→2.0, 4→4.0
 function band(v){ if(v>=3.6) return 'S'; if(v>=3.2) return 'A'; if(v>=2.8) return 'A-'; if(v>=2.4) return 'B+'; if(v>=2.0) return 'B'; return 'B-'; }
@@ -514,14 +517,18 @@ function viewResult(){
 }
 
 /* Router */
-function render(){ renderNav(); updateTopProgress();
+function render(){
+  renderNav();
+  updateTopProgress();
   if(STATE.step==='start') return viewStart();
   if(STATE.step==='consent') return viewConsent();
   if(STATE.step==='profile') return viewProfile();
   if(STATE.step==='test') return viewTest();
   if(STATE.step==='result') return viewResult();
 }
-document.addEventListener('DOMContentLoaded',render);
+document.addEventListener('DOMContentLoaded', () => {
+  try { render(); } catch(e){ console.error(e); $('app').innerHTML='<h3 class="center">초기 렌더링 오류가 발생했습니다.</h3>'; }
+});
 </script>
 </body>
 </html>
