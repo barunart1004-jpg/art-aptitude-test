@@ -9,7 +9,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 :root{
-  /* 컬러 토큰 (오렌지 파스텔 + 민트/바이올렛 하이라이트) */
   --ink:#0f172a; --muted:#6b7280;
   --bg1:#fff7f1; --bg2:#f7f3ff;
   --card:#ffffff; --line:#eef2f7;
@@ -32,7 +31,6 @@ body::before{
   background:linear-gradient(rgba(255,255,255,.85), rgba(255,255,255,.85)), url("/bg.png") center/cover no-repeat fixed;
   filter:saturate(1.02);
 }
-
 .container{min-height:100dvh; display:flex; flex-direction:column; align-items:center}
 .main{width:100%; max-width:1100px; padding:18px; display:flex; flex-direction:column; gap:16px; margin:0 auto}
 
@@ -53,7 +51,7 @@ body::before{
 .step:hover{transform:translateY(-1px)}
 .step .num{width:20px;height:20px;border-radius:50%;display:inline-grid;place-items:center;background:#fff;border:1px solid var(--line);font-size:12px}
 .step.active{background:linear-gradient(90deg,var(--o1),var(--vio)); color:#111827; box-shadow:0 12px 30px rgba(255,214,176,.28)}
-.step.done{background:#f2fffa; border-color:#dff7ef}
+.step.done{background:#f2fdf7; border-color:#dff7ef}
 .topprogress{height:10px; background:#f6f7fb; border-radius:999px; overflow:hidden}
 .topprogress>div{height:100%; width:0; background:linear-gradient(90deg,#B9C8FF,#9DE5D5,#FFD9BE); transition:width .35s ease}
 .statusline{font-size:12px; color:#6b7280; text-align:center}
@@ -66,26 +64,19 @@ p{margin:8px 0} .small{font-size:13px} .muted{color:var(--muted)} .center{text-a
 
 .btn{
   --bg:linear-gradient(90deg,#FFB98A,#FFD9BE); --glow:rgba(255,185,138,.35);
-  background:var(--bg); color:#5a3f2f; border:none; padding:18px 28px; border-radius:18px; font-weight:900; cursor:pointer;
-  box-shadow:0 18px 40px var(--glow); transition:transform .08s, filter .2s, box-shadow .2s; position:relative; overflow:hidden; font-size:20px}
+  background:var(--bg); color:#5a3f2f; border:none; padding:24px 40px; border-radius:20px; font-weight:900; cursor:pointer;
+  box-shadow:0 18px 44px var(--glow); transition:transform .08s, filter .2s, box-shadow .2s; position:relative; overflow:hidden; font-size:22px}
 .btn:hover{transform:translateY(-1px); filter:brightness(1.03)}
-.btn:after{content:""; position:absolute; inset:0; background:radial-gradient(140px 140px at var(--x,50%) var(--y,50%), rgba(255,255,255,.6), transparent 42%); opacity:.0; transition:opacity .25s}
+.btn:after{content:""; position:absolute; inset:0; background:radial-gradient(160px 160px at var(--x,50%) var(--y,50%), rgba(255,255,255,.6), transparent 42%); opacity:.0; transition:opacity .25s}
 .btn:hover:after{opacity:.6}
 .btn-ghost{background:#fff; color:#111827; border:1px solid var(--line); padding:12px 14px; border-radius:12px; font-weight:800; cursor:pointer; box-shadow:var(--soft)}
 
 input,select,textarea{width:100%; background:#fff; color:#111; border:1px solid var(--line); border-radius:12px; padding:12px; outline:none}
 input:focus,select:focus,textarea:focus{border-color:#FFD9BE; box-shadow:0 0 0 6px rgba(255,217,190,.26)}
 label{font-size:14px; color:#374151}
-.section{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
-
-.grid{display:grid; gap:14px}
-.grid-2{grid-template-columns:1fr 1fr}
-.grid-3{grid-template-columns:repeat(3,1fr)}
-@media (max-width:860px){ .grid-2{grid-template-columns:1fr} .grid-3{grid-template-columns:1fr} }
+.section{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}
 
 /* START hero */
-.heroBadge{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
-.badge{background:#fff;border:1px solid var(--line);padding:8px 12px;border-radius:999px;box-shadow:var(--soft);font-weight:800}
 .hero{display:flex;flex-direction:column;align-items:center;gap:16px;padding:10px 4px}
 .heroTitle{font-size:44px;font-weight:900;letter-spacing:.3px;background:linear-gradient(90deg,#FFB98A,#E6E2FF);-webkit-background-clip:text;background-clip:text;color:transparent}
 .heroDesc{color:#334155;font-size:18px;text-align:center;max-width:860px;line-height:1.6}
@@ -123,12 +114,8 @@ label{font-size:14px; color:#374151}
 .callout{position:relative;background:linear-gradient(135deg,#FFF2E6,#F8FBFF);padding:22px;border-radius:18px;border:1px solid var(--line);box-shadow:0 12px 34px rgba(255,185,138,.25)}
 .callout:before{content:"";position:absolute;inset:-1px;border-radius:18px;padding:1px;background:linear-gradient(90deg,#FFD9BE,#E6E2FF,#CFF7EE);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 .credit{font-size:12px;color:#6b7280;text-align:center}
-.skel{border-radius:12px; background:linear-gradient(90deg,#f3f4f6,#eaeef3,#f3f4f6); background-size:200% 100%; animation:sh 1.2s infinite}@keyframes sh{to{background-position:-200% 0}}
-.checkRow{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
-.checkItem{display:flex;align-items:center;gap:8px;font-weight:800}
-.checkItem input{width:20px;height:20px}
 
-/* 결과 차트 그리드(한 줄) */
+/* 결과 차트 한 줄 */
 .chartRow{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
 @media (max-width:900px){ .chartRow{grid-template-columns:1fr} }
 
@@ -167,18 +154,14 @@ const FORM_ACTION= 'https://docs.google.com/forms/d/e/1FAIpQLSeRWq5YKN50zL0simia
 const F = { child_name:'entry.684468179', age:'entry.1066070471', grade:'entry.1812672802', guardian:'entry.1666083184', phone:'entry.89824848', campus:'entry.490719219', answers:'entry.85364862', scores:'entry.1455508168', top3:'entry.1261684833', resultId:'entry.2120338430', timestamp:'entry.532514127' };
 /* ================================= */
 
-/* 12개 영역(8 기존 + 4 신규) */
+/* 12개 영역(8 기본 + 4 심화 + 꾸준성 추가) */
 const DOMAINS = [
   "관찰력","서사력","디테일","구성력","색감각","공간감","도전성","소통력",
-  "미적 판단력","정서표현/공감","창의 문제해결","자기성찰/개선"
+  "미적 판단력","정서표현/공감","창의 문제해결","자기성찰/개선","꾸준성"
 ];
 
 const STEPS = [
-  {key:'start',label:'시작'},
-  {key:'consent',label:'동의'},
-  {key:'profile',label:'프로필'},
-  {key:'test',label:'테스트'},
-  {key:'result',label:'결과'}
+  {key:'start',label:'시작'},{key:'consent',label:'동의'},{key:'profile',label:'프로필'},{key:'test',label:'테스트'},{key:'result',label:'결과'}
 ];
 
 const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Questions&tqx=out:json`;
@@ -200,17 +183,17 @@ function updateTopProgress(){
   if(STATE.step==='test' && STATE.questions.length){
     const q = Math.round(STATE.idx/STATE.questions.length*100);
     $('topbar').style.width=q+'%';
-    $('statusline').textContent=`테스트 진행 ${STATE.idx+1}/${STATE.questions.length} (${q}%)`;
+    $('statusline').textContent=\`테스트 진행 \${STATE.idx+1}/\${STATE.questions.length} (\${q}%)\`;
     $('sideLeft').style.display='block'; $('sideRight').style.display='block'; return;
   }
   $('sideLeft').style.display='none'; $('sideRight').style.display='none';
   let pct = (STEPS.findIndex(s=>s.key===STATE.step))/(STEPS.length-1)*100;
   $('topbar').style.width=Math.round(pct)+'%';
-  $('statusline').textContent=`진행률 ${Math.round(pct)}%`;
+  $('statusline').textContent=\`진행률 \${Math.round(pct)}%\`;
 }
 function navGo(step){ STATE.step=step; if(step==='test' && STATE.questions.length===0){ startTest(); return; } render(); }
 
-/* GViz 파서 + 문항 로딩 (15문항 기대) */
+/* GViz 파서 + 문항 로딩(15문항도 모두 반영) */
 function parseGViz(text){
   const s=text.indexOf('{'), e=text.lastIndexOf('}');
   if(s<0||e<0) return [];
@@ -227,136 +210,95 @@ async function loadQuestions(){
   STATE.questions=act.map(r=>({
     id:r.id, order:+r.order, prompt:r.prompt,
     options:['A','B','C','D'].map(k=>{
-      let weights={}; try{ weights=JSON.parse(r[`${k}_weights`]||'{}') }catch(e){}
-      return { key:k, label:r[`${k}_label`]||'', imageUrl:r[`${k}_image`]||'', alt:r[`${k}_label`]||'', weights };
+      let weights={}; try{ weights=JSON.parse(r[\`\${k}_weights\`]||'{}') }catch(e){}
+      return { key:k, label:r[\`\${k}_label\`]||'', imageUrl:r[\`\${k}_image\`]||'', alt:r[\`\${k}_label\`]||'', weights };
     })
   }));
 }
 
-/* START – 큰 버튼, 설명, 12개 기준 안내 (카드는 아래로) */
+/* START – 큰 버튼 + 12개 기준 안내 */
 function startScreen(){
-  const badges = [
-    ['☆','미술적성테스트 Basic'], ['⏱️','약 6–8분'], ['🖨️','즉시 결과·PDF 저장']
-  ].map(([i,t])=>`<span class="badge">${i}&nbsp;${t}</span>`).join('');
   return `
   <div class="hero">
-    <div class="heroBadge">${badges}</div>
     <div class="heroTitle">바른미술학원 · 미술적성테스트</div>
     <p class="heroDesc">
-      아이의 <b>미술 적성·잠재력</b>과 <b>선호 경향</b>을 15개 이미지 문항으로 확인하고,
-      12개 평가영역(8가지 핵심 + 4가지 심화 기준)으로 분석합니다. 결과는 화면에서 즉시 확인/저장할 수 있어요.
+      아이의 <b>미술 적성·잠재력</b>과 <b>선호 경향</b>을 <b>15개 문항</b>으로 확인하고,<br/>
+      <b>12개 평가영역(8 핵심 + 4 심화 + 꾸준성)</b> 기준으로 분석합니다. 결과는 즉시 확인/저장할 수 있어요.
     </p>
-    <div style="height:8px"></div>
-    <button class="btn" style="font-size:22px;padding:22px 36px" onclick="navGo('consent')"
+    <button class="btn" onclick="navGo('consent')"
       onmousemove="this.style.setProperty('--x', event.offsetX+'px'); this.style.setProperty('--y', event.offsetY+'px')">시작하기</button>
-    <div class="small muted" style="margin-top:14px">※ 본 테스트는 <b>교육 가이드</b> 목적이며, 의학/임상 진단이 아닙니다.</div>
+    <div class="small muted" style="margin-top:12px">※ 본 테스트는 <b>교육 가이드</b> 목적이며, 의학/임상 진단이 아닙니다.</div>
   </div>
 
-  <div style="height:14px"></div>
-  <div class="grid-3">
-    <div class="feature">
-      <h3 style="margin:0 0 4px">평가 8가지</h3>
-      <p class="small muted">관찰력 · 색감각 · 서사력 · 공간감 · 디테일 · 도전성 · 꾸준성 · 소통력</p>
-    </div>
-    <div class="feature">
-      <h3 style="margin:0 0 4px">심화 4가지</h3>
-      <p class="small muted">미적 판단력 · 정서표현/공감 · 창의 문제해결 · 자기성찰/개선</p>
-    </div>
-    <div class="feature">
-      <h3 style="margin:0 0 4px">테스트 안내</h3>
-      <p class="small muted">한 문항당 보기 4개 중 1개를 선택해 주세요. PC는 화살표·Enter로도 진행됩니다.</p>
-    </div>
+  <div style="height:12px"></div>
+  <div class="grid" style="grid-template-columns:repeat(3,1fr)">
+    <div class="feature"><h3>평가 8가지</h3><p class="small muted">관찰력 · 색감각 · 서사력 · 공간감 · 디테일 · 도전성 · 꾸준성 · 소통력</p></div>
+    <div class="feature"><h3>심화 4가지</h3><p class="small muted">미적 판단력 · 정서표현/공감 · 창의 문제해결 · 자기성찰/개선</p></div>
+    <div class="feature"><h3>진행 안내</h3><p class="small muted">보기 4개 중 1개 선택(PC: 화살표·Enter), 완료 후 바로 결과/PDF</p></div>
   </div>`;
 }
 function viewStart(){ app().innerHTML=startScreen(); window.scrollTo({top:0,behavior:'smooth'}); }
 
-/* CONSENT – 입력 없이 체크만 */
-function accItem(t,html){
-  return `<div class="acc-item open">
-    <div class="acc-head"><span>${t}</span>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div><div class="acc-body small">${html}</div></div>`;
-}
+/* 동의(체크만) */
 function viewConsent(){
   app().innerHTML=`
   <h2 class="center">개인정보 수집·이용 동의</h2>
   <p class="muted small center">테스트 제공/결과 산출을 위해 최소 정보(이름·나이·학년·연락처)를 Google Forms/Sheets로 처리·보관(12개월)합니다.</p>
-  <div class="acc">
-    ${accItem('1) 목적','테스트 제공 및 결과 리포트 제공, 교육 코칭 가이드 제시')}
-    ${accItem('2) 항목','아동 이름·나이·학년, 보호자 연락처, 문항 응답(선택: 이메일, 관심 캠퍼스)')}
-    ${accItem('3) 보관 기간','수집일로부터 <b>12개월</b> 보관 후 파기')}
-    ${accItem('4) 처리/보관','Google Forms/Sheets 환경에서 처리')}
-    ${accItem('5) 권리','동의 거부 가능(거부 시 서비스 이용 제한 가능)')}
-    ${accItem('문의','barunart1004@gmail.com')}
-  </div>
-  <div class="section" style="margin-top:14px">
+  <div class="section">
     <div class="checkRow">
-      <label class="checkItem"><input type="checkbox" id="chk_required"> (필수) 개인정보 수집·이용에 <u>동의합니다</u></label>
-      <label class="checkItem"><input type="checkbox" id="chk_minor"> (필수) 만 14세 미만 아동의 법정대리인으로서 <u>동의합니다</u></label>
+      <label><input type="checkbox" id="chk_required"> (필수) 개인정보 수집·이용에 동의합니다</label>
+      <label><input type="checkbox" id="chk_minor"> (필수) 만 14세 미만 아동의 법정대리인으로서 동의합니다</label>
     </div>
   </div>
-  <div class="center" style="margin-top:16px">
-    <button class="btn" id="btn_consent" disabled>동의하고 진행</button>
-  </div>`;
+  <div class="center" style="margin-top:16px"><button class="btn" id="btn_consent" disabled>동의하고 진행</button></div>`;
   const validate=()=>{$('btn_consent').disabled=!( $('chk_required').checked && $('chk_minor').checked );};
   ['chk_required','chk_minor'].forEach(id=>$(id).addEventListener('change',validate));
   $('btn_consent').onclick=()=>{ STATE.consent=true; navGo('profile'); };
-  document.querySelectorAll('.acc-head').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
 }
 
-/* PROFILE – 나이→학년 자동, 캠퍼스 datalist */
+/* 프로필 – 파티션 카드 + 나이→학년 자동 + 캠퍼스 datalist */
 const CAMPUS_LIST=['강남','서초','송파','분당','판교','일산','중계','목동','잠실','수지'];
-function gradeByAge(a){
-  const age=Number(a||0);
-  const map={7:1,8:2,9:3,10:4,11:5,12:6};
-  return map[age]?`초등학교 ${map[age]}학년`:'';
-}
+function gradeByAge(a){ const n=Number(a||0); const m={7:1,8:2,9:3,10:4,11:5,12:6}; return m[n]?`초등학교 ${m[n]}학년`:''; }
 function viewProfile(){
   app().innerHTML=`
   <h2 class="center">프로필 정보</h2>
-  <div class="grid grid-2" style="margin-top:8px">
-    <div><label>아동 이름</label><input id="cname" placeholder="예: 홍길동" autofocus></div>
-    <div><label>나이</label>
-      <select id="age">
-        ${[7,8,9,10,11,12].map(n=>`<option value="${n}">${n}</option>`).join('')}
-      </select>
+  <div class="grid" style="grid-template-columns:1fr 1fr">
+    <div class="section">
+      <h3>아동 정보</h3>
+      <div class="grid grid-2">
+        <div><label>아동 이름</label><input id="cname" placeholder="예: 홍길동" autofocus></div>
+        <div><label>나이</label><select id="age">${[7,8,9,10,11,12].map(n=>`<option value="${n}">${n}</option>`).join('')}</select></div>
+        <div><label>학년</label><input id="grade" placeholder="자동 입력" readonly></div>
+      </div>
     </div>
-    <div><label>학년</label><input id="grade" placeholder="자동 입력" readonly></div>
-    <div><label>보호자 이름</label><input id="gname" placeholder="예: 김보호자"></div>
-    <div><label>연락처</label><input id="phone" placeholder="010-0000-0000"></div>
-    <div><label>이메일(선택, 결과지 전송용)</label><input id="email" placeholder="example@email.com"></div>
-    <div><label>관심 캠퍼스(선택)</label>
-      <input id="campus" list="campusList" placeholder="검색 또는 선택">
-      <datalist id="campusList">${CAMPUS_LIST.map(c=>`<option value="${c}">`).join('')}</datalist>
+    <div class="section">
+      <h3>연락/선택</h3>
+      <div class="grid grid-2">
+        <div><label>보호자 이름</label><input id="gname" placeholder="예: 김보호자"></div>
+        <div><label>연락처</label><input id="phone" placeholder="010-0000-0000"></div>
+        <div><label>(선택) 이메일</label><input id="email" placeholder="example@email.com"></div>
+        <div><label>(선택) 관심 캠퍼스</label><input id="campus" list="campusList" placeholder="검색 또는 선택"><datalist id="campusList">${CAMPUS_LIST.map(c=>`<option value="${c}">`).join('')}</datalist></div>
+      </div>
     </div>
   </div>
-  <div class="center" style="margin-top:16px">
-    <button class="btn" onclick="startTest()">테스트 시작</button>
-  </div>`;
+  <div class="center" style="margin-top:16px"><button class="btn" onclick="startTest()">테스트 시작</button></div>`;
   const sync=()=>{$('grade').value=gradeByAge(v('age'));}; sync(); $('age').addEventListener('change',sync);
 }
 
 /* TEST */
 async function startTest(){
-  STATE.profile={
-    child_name:v('cname'), age:v('age'), grade:gradeByAge(v('age')),
-    guardian:v('gname'), phone:v('phone'), email:v('email'), campus:v('campus')
-  };
-  if(!STATE.profile.child_name || !/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(STATE.profile.phone||'')){
-    alert('이름/연락처를 확인해 주세요'); return;
-  }
+  STATE.profile={ child_name:v('cname'), age:v('age'), grade:gradeByAge(v('age')), guardian:v('gname'), phone:v('phone'), email:v('email'), campus:v('campus') };
+  if(!STATE.profile.child_name || !/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(STATE.profile.phone||'')){ alert('이름/연락처를 확인해 주세요'); return; }
   await loadQuestions();
-  if(!STATE.questions.length){ alert('문항을 불러오지 못했습니다. 관리자에게 문의해주세요.'); return; }
+  if(!STATE.questions.length){ alert('문항을 불러오지 못했습니다. 관리자에 문의해 주세요.'); return; }
   STATE.idx=0; STATE.answers=[]; STATE.step='test'; render();
 }
-
 function viewTest(){
   const q=STATE.questions[STATE.idx];
-  if(!q){ app().innerHTML='<h3 class="center">문항을 불러오지 못했습니다.</h3>'; return; }
   const gridCls = (window.matchMedia('(min-width:1024px)').matches?'test-grid':'grid grid-2');
   app().innerHTML=`
-    <div class="center small muted">Q${STATE.idx+1} / ${STATE.questions.length}</div>
-    <h2 class="center" style="margin-top:6px">${q.prompt||''}</h2>
+    <div class="center small muted">Q${STATE.idx+1} / ${STATE.questions.length} · 전체 15문항</div>
+    <h2 class="center" style="margin-top:6px">${q?.prompt||''}</h2>
     <div class="${gridCls}" style="margin-top:10px">
       ${q.options.map(o=>`
         <div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label}"
@@ -369,26 +311,20 @@ function viewTest(){
       <button class="btn-ghost" onclick="prev()" ${STATE.idx===0?'disabled':''}>이전</button>
       <button class="btn" id="nextBtn" onclick="next()" disabled>다음</button>
     </div>`;
-  document.addEventListener('keydown',e=>{
-    if(e.key==='ArrowRight'){ next(); }
-    if(e.key==='ArrowLeft'){ prev(); }
-    if(e.key==='Enter'){ if(!$('nextBtn').disabled) next(); }
-  },{once:true});
+  document.addEventListener('keydown',e=>{ if(e.key==='ArrowRight'){ next(); } if(e.key==='ArrowLeft'){ prev(); } if(e.key==='Enter'){ if(!$('nextBtn').disabled) next(); } },{once:true});
 }
 function choose(key){
   const q=STATE.questions[STATE.idx];
   ['A','B','C','D'].forEach(k=>{const n=$(`opt_${k}`); if(n) n.classList.remove('sel');});
-  const node=$(`opt_${key}`); if(node){ node.classList.add('sel');
-    node.animate([{transform:'scale(1)'},{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:160}); }
+  const node=$(`opt_${key}`); if(node){ node.classList.add('sel'); node.animate([{transform:'scale(1)'},{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:160}); }
   const opt=q.options.find(o=>o.key===key);
   STATE.answers[STATE.idx]={ qid:q.id, key, weights:opt.weights||{} };
   $('nextBtn').disabled=false;
 }
-function next(){ if(!STATE.answers[STATE.idx]){ alert('하나를 선택해 주세요'); return; }
-  if(STATE.idx<STATE.questions.length-1){ STATE.idx++; render(); } else submitAll(); }
+function next(){ if(!STATE.answers[STATE.idx]){ alert('하나를 선택해 주세요'); return; } if(STATE.idx<STATE.questions.length-1){ STATE.idx++; render(); } else submitAll(); }
 function prev(){ if(STATE.idx>0){ STATE.idx--; render(); } }
 
-/* 점수 보정/합산 (최소 2.0~ 최대 4.0로 스케일) */
+/* 점수 보정/합산 */
 function aggregateScores(ans){
   const sum={}; DOMAINS.forEach(d=>sum[d]=0);
   ans.forEach(a=>Object.entries(a.weights||{}).forEach(([k,v])=>sum[k]=(sum[k]||0)+Number(v||0)));
@@ -399,50 +335,51 @@ function aggregateScores(ans){
 const adjust=v=>Math.round((2 + v/2) * 10)/10; // 0→2.0, 4→4.0
 function band(v){ if(v>=3.6) return 'S'; if(v>=3.2) return 'A'; if(v>=2.8) return 'A-'; if(v>=2.4) return 'B+'; if(v>=2.0) return 'B'; return 'B-'; }
 
-/* 결과 문구/루틴(현실적인 15분 루틴) */
+/* 결과 문구/루틴 */
 const DETAIL = {
-  '관찰력':n=>`${n}님은 대상을 오래 바라보고 특징을 뽑아내는 힘이 좋아요. 작은 변화도 잘 찾아내 작품의 밀도가 높아집니다.`,
-  '서사력':n=>`${n}님은 장면 속에 이야기를 심는 데 강점이 있어요. 캐릭터의 감정과 사건의 흐름을 자연스럽게 연결합니다.`,
-  '디테일':n=>`${n}님은 마감과 표현의 섬세함이 돋보여요. 질감·무늬 같은 작은 요소도 놓치지 않습니다.`,
-  '구성력':n=>`${n}님은 화면의 길을 잘 설계합니다. 중심과 여백의 균형이 안정적이에요.`,
-  '색감각':n=>`${n}님은 색의 분위기를 읽는 감각이 뛰어나요. 미묘한 톤 차이도 잘 잡아냅니다.`,
-  '공간감':n=>`${n}님은 원근과 스케일을 활용해 입체감을 살립니다. 장면의 깊이를 안정적으로 만들어요.`,
-  '도전성':n=>`${n}님은 새로운 도구와 방식에 두려움이 적어요. 시도를 즐기며 금방 적응합니다.`,
-  '소통력':n=>`${n}님은 작품의 의도를 말과 글로 잘 설명합니다. 발표·비평 활동에서 자신감이 보여요.`,
-  '미적 판단력':n=>`${n}님은 무엇이 더 어울리고 아름다운지 고르는 눈이 좋아요. 조화와 균형을 직관적으로 파악합니다.`,
-  '정서표현/공감':n=>`${n}님은 감정을 색과 형태로 표현하는 데 탁월해요. 타인의 마음을 작품에 담아낼 줄 압니다.`,
-  '창의 문제해결':n=>`${n}님은 예상치 못한 상황에서 새로운 방법을 잘 찾습니다. 제약 속에서도 길을 만듭니다.`,
-  '자기성찰/개선':n=>`${n}님은 스스로 작품을 돌아보고 더 좋게 바꾸려는 태도가 있어요. 성장 속도가 빠릅니다.`
+  '관찰력':n=>`${n}님은 대상을 오래 바라보고 특징을 뽑아내는 힘이 좋아요.`,
+  '서사력':n=>`${n}님은 장면 속에 이야기를 자연스럽게 엮을 줄 알아요.`,
+  '디테일':n=>`${n}님은 마감과 표현의 섬세함이 돋보여요.`,
+  '구성력':n=>`${n}님은 화면의 균형과 시선 흐름을 설계하는 감각이 탁월해요.`,
+  '색감각':n=>`${n}님은 색의 분위기와 조합을 읽는 감각이 뛰어나요.`,
+  '공간감':n=>`${n}님은 원근·스케일을 활용해 입체감을 살립니다.`,
+  '도전성':n=>`${n}님은 새로운 방법에 두려움이 적고 시도를 즐겨요.`,
+  '소통력':n=>`${n}님은 작품의 의도를 말과 글로 잘 전달해요.`,
+  '미적 판단력':n=>`${n}님은 조화롭고 어울리는 선택을 잘해요.`,
+  '정서표현/공감':n=>`${n}님은 감정을 색과 형태로 표현하는 데 능숙해요.`,
+  '창의 문제해결':n=>`${n}님은 제약 속에서도 새로운 방법을 찾아요.`,
+  '자기성찰/개선':n=>`${n}님은 스스로 점검하고 더 좋게 바꾸려는 태도가 있어요.`,
+  '꾸준성':n=>`${n}님은 포기하지 않고 끝까지 해내려는 힘이 있어요.`
 };
 const PRAISE={
-  'S':k=>`와, <b>${k}</b>에서 타고난 재능이 또렷합니다!`,
-  'A':k=>`<b>${k}</b> 감각이 뛰어나요. 난이도를 올려도 충분히 소화합니다.`,
-  'A-':k=>`<b>${k}</b> 실력이 탄탄해요. 조금만 다듬으면 금방 상위권!`,
-  'B+':k=>`<b>${k}</b>이 안정적이에요. 꾸준히 확장해볼까요?`,
+  'S':k=>`<b>${k}</b>에서 타고난 재능이 또렷합니다!`,
+  'A':k=>`<b>${k}</b> 감각이 뛰어나요.`,
+  'A-':k=>`<b>${k}</b> 실력이 탄탄해요.`,
+  'B+':k=>`<b>${k}</b>이 안정적이에요.`,
   'B-':k=>`<b>${k}</b>의 기본기를 넓히면 금방 성장합니다.`
 };
 const MISSIONS={
-  '관찰력':['과일/장난감 3개를 2분씩 관찰 후 스케치','창문 밖 3가지 모양 찾기'],
-  '서사력':['오늘 있었던 재미있는 순간 4컷 그림','캐릭터 감정 3가지 표정 그리기'],
-  '디테일':['나뭇잎/천 질감 3종 묘사','그림 마무리 체크리스트 5개 만들기'],
-  '구성력':['3×3 썸네일 6장으로 화면 계획','중심/보조 포인트 표시하고 색으로 강조'],
-  '색감각':['파스텔 3색 팔레트로 한 장 완성','따뜻/차가운 색으로 같은 장면 그리기'],
-  '공간감':['박스 5개로 간단한 원근 연습','앞·중·뒤로 물체 크기 달리 배치'],
-  '도전성':['처음 쓰는 재료 1개 섞어보기','한 번도 안 그린 주제 1개 시도'],
-  '소통력':['작가노트 3문장 쓰기','가족에게 30초 발표하기'],
-  '미적 판단력':['좋아하는 작품 1장 따라 그리고 차이 말해보기','두 안 중 더 균형 잡힌 안 고르기'],
-  '정서표현/공감':['오늘 기분을 색 3개로 표현','친구를 응원하는 엽서 만들기'],
-  '창의 문제해결':['실수 표시 1곳을 장점으로 바꾸기','제한 시간 5분 스피드 아이디어'],
-  '자기성찰/개선':['작품 자가점검 5항목 체크','지난 그림 1장 리메이크']
+  '관찰력':['과일/장난감 3개를 2분씩 관찰 후 스케치','창밖 사물 3개 1분 드로잉'],
+  '서사력':['오늘 있었던 재미있는 순간 4컷','처음-중간-끝 썸네일 6장'],
+  '디테일':['나뭇잎/천 질감 3종 묘사','선 두께 3단계로 마감'],
+  '구성력':['3×3 썸네일로 화면 계획','주/부 요소 크기 대비'],
+  '색감각':['파스텔 3색 팔레트 한 장','따뜻/차가운 색 비교'],
+  '공간감':['박스 5개 원근 연습','앞·중·뒤 레이어 배치'],
+  '도전성':['처음 쓰는 도구 1개 실험','익숙치 않은 주제 도전'],
+  '소통력':['작가노트 3문장','가족 앞 30초 발표'],
+  '미적 판단력':['좋은/아쉬운 예시 1개씩 찾기','두 안 중 더 균형 잡힌 안 선택 이유 쓰기'],
+  '정서표현/공감':['오늘 기분을 색 3개로','친구 응원 엽서 만들기'],
+  '창의 문제해결':['실수 1곳을 장점으로 바꾸기','제한시간 5분 아이디어'],
+  '자기성찰/개선':['자가체크 5항목','지난 그림 1장 리메이크'],
+  '꾸준성':['5일 연속 10분 손풀기','시간 정해 루틴 체크']
 };
 
-/* 결과 계산 + 시트 전송 */
 function nowKST(){ const d=new Date(),p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())} KST`; }
 async function submitAll(){
   const raw=aggregateScores(STATE.answers);
-  const scores=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,adjust(v)])); // 2.0~4.0 보정
+  const scores=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,adjust(v)]));
   const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3);
-  const resultId=crypto.randomUUID();
+  const resultId=(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36));
 
   /* Google Form 전송 */
   const form=new FormData();
@@ -455,46 +392,43 @@ async function submitAll(){
   form.append(F.campus,STATE.profile.campus||'');
   form.append(F.answers,JSON.stringify(answersWithMeta));
   form.append(F.scores,JSON.stringify(scores));
-  form.append(F.top3,top3.join(','));            // ← 영역명 3개 저장
-  form.append(F.resultId,resultId);              // ← 별도 결과 ID
+  form.append(F.top3,top3.join(',')); // 영역명 3개
+  form.append(F.resultId,resultId);   // 별도 ID
   form.append(F.timestamp,nowKST());
-  try{ fetch(FORM_ACTION,{method:'POST',mode:'no-cors',body:form}); }catch(e){/* ignore */ }
+  try{ fetch(FORM_ACTION,{method:'POST',mode:'no-cors',body:form}); }catch(e){}
 
-  STATE.result={scores,top3,resultId};
-  STATE.step='result'; render();
+  STATE.result={scores,top3,resultId}; STATE.step='result'; render();
 }
 
-/* RESULT (레이더 + 막대 한 줄) */
+/* 결과 (레이더+막대 한 줄) */
 let CHARTS=[];
 function destroyCharts(){ CHARTS.forEach(c=>c.destroy?.()); CHARTS=[]; }
 function viewResult(){
   const r=STATE.result, s=r?.scores||{};
-  const totalMax = DOMAINS.length*4; // 12*4=48
+  const totalMax = DOMAINS.length*4; // 13*4 = 52 (꾸준성 포함)
   const overall = Math.round((Object.values(s).reduce((a,b)=>a+(+b||0),0))*10)/10 || 0;
-
-  /* 우수 영역 3개에 따른 총평(살짝 다르게) */
-  const best=r.top3[0], best2=r.top3[1], best3=r.top3[2];
-  const summary = `${STATE.profile.child_name}님은 <b>${best}</b> 영역에서 특히 눈에 띄며, <b>${best2}</b>·<b>${best3}</b>도 강점으로 보입니다.
-  호기심을 꾸준한 연습과 연결하면 성장이 빠르게 일어나요. 집에서도 작은 성공 경험을 자주 만들어 보세요.`;
 
   app().innerHTML=`
   <div id="resultCard">
     <div class="block callout" style="text-align:center">
       <div class="chip" style="margin:0 auto 8px;display:inline-block">테스트 완료</div>
       <h2 style="margin:0 0 10px"><b>${STATE.profile.child_name}</b>님, 오늘 멋지게 해냈어요!</h2>
-      <div class="kpi" style="justify-content:center"><div class="num" style="font-size:52px">${overall.toFixed(1)}</div><div class="unit">/ ${totalMax.toFixed(0)} (12영역 합산)</div></div>
-      <p class="small" style="margin-top:10px;color:#0f172a;font-size:15px;line-height:1.7">${summary}</p>
+      <div class="kpi" style="justify-content:center"><div class="num" style="font-size:52px">${overall.toFixed(1)}</div><div class="unit">/ ${totalMax}</div></div>
+      <p class="small" style="margin-top:10px;color:#0f172a;font-size:15px;line-height:1.7">
+        ${STATE.profile.child_name}님은 <b>${r.top3[0]}</b>에서 특히 눈에 띄며, <b>${r.top3[1]}</b>·<b>${r.top3[2]}</b>도 강점으로 보입니다.
+        호기심을 꾸준한 연습과 연결하면 성장 속도가 크게 올라가요.
+      </p>
       <div class="chips" style="margin-top:10px;justify-content:center">${r.top3.map(t=>`<span class="chip">우수: ${t}</span>`).join('')}</div>
     </div>
 
     <div class="chartRow">
-      <div class="block"><h3 class="center">영역별 관심도(레이더)</h3><canvas id="radar" height="300"></canvas></div>
-      <div class="block"><h3 class="center">뛰어난 영역(Top3)</h3><canvas id="bars" height="300"></canvas></div>
+      <div class="block"><h3 class="center">영역별 관심도(레이더)</h3><canvas id="radar" height="260"></canvas></div>
+      <div class="block"><h3 class="center">뛰어난 영역(Top3)</h3><canvas id="bars" height="260"></canvas></div>
     </div>
 
     <div class="block">
       <h3>항목별 해석 & 일일 15분 훈련</h3>
-      <div class="grid grid-2">
+      <div class="grid" style="grid-template-columns:1fr 1fr">
         ${DOMAINS.map(k=>{
           const v=+(s[k]||0), b=band(v), w=Math.min(100,(v/4)*100);
           const miss = (MISSIONS[k]||[])[ v>=3.2?0:1 ] || '짧게라도 매일 손풀기';
@@ -521,17 +455,18 @@ function viewResult(){
   </div>`;
 
   destroyCharts();
+
   const rctx=document.getElementById('radar').getContext('2d');
-  CHARTS.push(new Chart(rctx,{type:'radar',
+  new Chart(rctx,{type:'radar',
     data:{labels:DOMAINS, datasets:[{data:DOMAINS.map(k=>s[k]||0),
       borderColor:'#FFB98A', backgroundColor:'rgba(255,185,138,.22)', borderWidth:2, pointRadius:3, fill:true}]},
     options:{animation:{duration:900}, scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#eef2f7'},angleLines:{color:'#eef2f7'}}}, plugins:{legend:{display:false}}}
-  }));
+  });
   const bctx=document.getElementById('bars').getContext('2d');
-  CHARTS.push(new Chart(bctx,{type:'bar',
+  new Chart(bctx,{type:'bar',
     data:{labels:r.top3, datasets:[{data:r.top3.map(k=>s[k]||0), borderRadius:12, borderSkipped:false, backgroundColor:'#FFE6CF'}]},
     options:{animation:{duration:800}, scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}}, plugins:{legend:{display:false}}}
-  }));
+  });
 }
 
 /* Router */
