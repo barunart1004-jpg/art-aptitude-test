@@ -7,9 +7,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-
 <style>
 :root{
+  /* 컬러 토큰 (오렌지 파스텔 + 민트/바이올렛 하이라이트) */
   --ink:#0f172a; --muted:#6b7280;
   --bg1:#fff7f1; --bg2:#f7f3ff;
   --card:#ffffff; --line:#eef2f7;
@@ -29,9 +29,10 @@ body{
 }
 body::before{
   content:""; position:fixed; inset:0; z-index:-2; pointer-events:none;
-  background:linear-gradient(rgba(255,255,255,.82), rgba(255,255,255,.82)), url("/bg.png") center/cover no-repeat fixed;
+  background:linear-gradient(rgba(255,255,255,.85), rgba(255,255,255,.85)), url("/bg.png") center/cover no-repeat fixed;
   filter:saturate(1.02);
 }
+
 .container{min-height:100dvh; display:flex; flex-direction:column; align-items:center}
 .main{width:100%; max-width:1100px; padding:18px; display:flex; flex-direction:column; gap:16px; margin:0 auto}
 
@@ -60,26 +61,37 @@ body::before{
 /* 카드/타이포/버튼 */
 .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); animation:fade .35s ease both}
 @keyframes fade{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:translateY(0)}}
-h1{font-size:34px; margin:0 0 6px} h2{font-size:24px; margin:0 0 10px} h3{font-size:18px; margin:16px 0 8px}
+h1{font-size:38px; margin:0 0 6px} h2{font-size:24px; margin:0 0 10px} h3{font-size:18px; margin:16px 0 8px}
 p{margin:8px 0} .small{font-size:13px} .muted{color:var(--muted)} .center{text-align:center}
 
 .btn{
   --bg:linear-gradient(90deg,#FFB98A,#FFD9BE); --glow:rgba(255,185,138,.35);
-  background:var(--bg); color:#5a3f2f; border:none; padding:14px 22px; border-radius:16px; font-weight:900; cursor:pointer;
-  box-shadow:0 12px 32px var(--glow); transition:transform .08s, filter .2s, box-shadow .2s; position:relative; overflow:hidden}
+  background:var(--bg); color:#5a3f2f; border:none; padding:18px 28px; border-radius:18px; font-weight:900; cursor:pointer;
+  box-shadow:0 18px 40px var(--glow); transition:transform .08s, filter .2s, box-shadow .2s; position:relative; overflow:hidden; font-size:20px}
 .btn:hover{transform:translateY(-1px); filter:brightness(1.03)}
-.btn:after{content:""; position:absolute; inset:0; background:radial-gradient(120px 120px at var(--x,50%) var(--y,50%), rgba(255,255,255,.6), transparent 40%); opacity:.0; transition:opacity .25s}
+.btn:after{content:""; position:absolute; inset:0; background:radial-gradient(140px 140px at var(--x,50%) var(--y,50%), rgba(255,255,255,.6), transparent 42%); opacity:.0; transition:opacity .25s}
 .btn:hover:after{opacity:.6}
 .btn-ghost{background:#fff; color:#111827; border:1px solid var(--line); padding:12px 14px; border-radius:12px; font-weight:800; cursor:pointer; box-shadow:var(--soft)}
-.btn-mint{--bg:linear-gradient(90deg,#FFE6CF,#FFD9BE); --glow:rgba(255,214,190,.4)}
 
 input,select,textarea{width:100%; background:#fff; color:#111; border:1px solid var(--line); border-radius:12px; padding:12px; outline:none}
 input:focus,select:focus,textarea:focus{border-color:#FFD9BE; box-shadow:0 0 0 6px rgba(255,217,190,.26)}
 label{font-size:14px; color:#374151}
 .section{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
-input[type=checkbox],input[type=radio]{accent-color:#FFB98A}
 
-/* 보기 */
+.grid{display:grid; gap:14px}
+.grid-2{grid-template-columns:1fr 1fr}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+@media (max-width:860px){ .grid-2{grid-template-columns:1fr} .grid-3{grid-template-columns:1fr} }
+
+/* START hero */
+.heroBadge{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
+.badge{background:#fff;border:1px solid var(--line);padding:8px 12px;border-radius:999px;box-shadow:var(--soft);font-weight:800}
+.hero{display:flex;flex-direction:column;align-items:center;gap:16px;padding:10px 4px}
+.heroTitle{font-size:44px;font-weight:900;letter-spacing:.3px;background:linear-gradient(90deg,#FFB98A,#E6E2FF);-webkit-background-clip:text;background-clip:text;color:transparent}
+.heroDesc{color:#334155;font-size:18px;text-align:center;max-width:860px;line-height:1.6}
+.feature{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:0 16px 40px rgba(16,24,40,.10)}
+
+/* 보기 카드 */
 .opt{border:2px solid var(--line); border-radius:18px; overflow:hidden; cursor:pointer; background:#fff; box-shadow:var(--soft); transition:transform .12s, border-color .2s}
 .opt:hover{transform:translateY(-2px)} .opt img{width:100%; display:block; aspect-ratio:3/2; object-fit:cover}
 .opt .cap{padding:10px; color:#374151; font-weight:700} .opt.sel{border-color:#FFD9BE; box-shadow:0 0 0 6px rgba(255,217,190,.25)}
@@ -95,7 +107,12 @@ input[type=checkbox],input[type=radio]{accent-color:#FFB98A}
 }
 @media (max-width:1023px){ .sideNav{display:none} }
 
-/* 공통 블록 */
+/* 아코디언 · 결과 블록 */
+.acc{border-radius:14px; overflow:hidden; border:1px solid var(--line)}
+.acc-item{border-top:1px solid var(--line)}
+.acc-head{padding:14px 16px; background:#FFF4EC; cursor:pointer; display:flex; justify-content:space-between; align-items:center}
+.acc-body{padding:14px 16px; display:none; background:#fff}
+.acc-item.open .acc-body{display:block}
 .block{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 26px rgba(16,24,40,.06);page-break-inside:avoid}
 .block h3{margin:0 0 10px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -107,76 +124,13 @@ input[type=checkbox],input[type=radio]{accent-color:#FFB98A}
 .callout:before{content:"";position:absolute;inset:-1px;border-radius:18px;padding:1px;background:linear-gradient(90deg,#FFD9BE,#E6E2FF,#CFF7EE);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 .credit{font-size:12px;color:#6b7280;text-align:center}
 .skel{border-radius:12px; background:linear-gradient(90deg,#f3f4f6,#eaeef3,#f3f4f6); background-size:200% 100%; animation:sh 1.2s infinite}@keyframes sh{to{background-position:-200% 0}}
-.checkRow{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.checkRow{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.checkItem{display:flex;align-items:center;gap:8px;font-weight:800}
+.checkItem input{width:20px;height:20px}
 
-/* 첫 화면 – 히어로 */
-.heroWrap{position:relative; padding:48px 16px 30px; text-align:center; perspective:1000px;}
-.heroTitle{
-  font-size:40px; font-weight:900; letter-spacing:.2px; margin:6px 0 8px;
-  background:linear-gradient(90deg,#FFB98A 0%, #FFCCAA 35%, #E6E2FF 70%, #CFF7EE 100%);
-  -webkit-background-clip:text; background-clip:text; color:transparent;
-  background-size:200% 100%; animation:shine 6s linear infinite;
-}
-@keyframes shine{0%{background-position:0%}100%{background-position:200%}}
-.heroSub{color:#475467; font-size:15px}
-
-.glows{
-  position:absolute; inset:-40px -20px auto -20px; height:240px; pointer-events:none; opacity:.85; filter:blur(26px);
-  background:
-    radial-gradient(160px 110px at 18% 65%, rgba(255,197,153,.55), transparent 60%),
-    radial-gradient(200px 140px at 84% 35%, rgba(240,220,255,.55), transparent 60%),
-    radial-gradient(280px 180px at 52% 88%, rgba(207,247,238,.55), transparent 60%);
-}
-
-.heroBadges{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:8px}
-.badge{
-  display:inline-flex; align-items:center; gap:6px;
-  background:linear-gradient(90deg,#FFF4EC,#FFFFFF);
-  border:1px solid var(--line); padding:8px 12px; border-radius:999px;
-  font-weight:800; box-shadow:0 10px 28px rgba(16,24,40,.08)
-}
-.badge svg{width:16px;height:16px}
-
-.heroGrid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; max-width:980px; margin:16px auto 0}
-@media(max-width:900px){ .heroGrid{grid-template-columns:1fr} }
-.fcard{
-  position:relative; background:#fff; border:1px solid var(--line); padding:20px 16px; border-radius:20px;
-  box-shadow:0 20px 46px rgba(16,24,40,.12); overflow:hidden; transform-style:preserve-3d;
-  transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateZ(0);
-  transition:transform .15s ease, box-shadow .2s ease;
-}
-.fcard:before{
-  content:""; position:absolute; inset:-1px; border-radius:20px; padding:1px;
-  background:linear-gradient(90deg,#FFE6CF,#FFD9BE,#E6E2FF,#CFF7EE);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor; mask-composite:exclude;
-}
-.fcard:hover{box-shadow:0 26px 60px rgba(255,185,138,.25)}
-.fhead{font-weight:900; font-size:18px; display:flex; align-items:center; gap:8px}
-.fdesc{font-size:13px; color:var(--muted); margin-top:4px}
-.ficon{
-  width:30px;height:30px;border-radius:10px;display:grid;place-items:center;margin-right:4px;
-  background:linear-gradient(180deg,#FFF1E6,#FFFFFF); border:1px solid #ffe3cd; box-shadow:0 10px 20px rgba(255,185,138,.15)
-}
-
-.ctaRow{margin-top:20px; display:flex; justify-content:center}
-.ctaHelp{font-size:12px; color:#6b7280; margin-top:12px}
-.orb{position:absolute; border-radius:50%; filter:blur(10px); opacity:.25; pointer-events:none}
-.orb.a{width:180px;height:180px; left:6%; top:22%; background:#FFD9BE; animation:float 8s ease-in-out infinite}
-.orb.b{width:140px;height:140px; right:10%; top:30%; background:#E6E2FF; animation:float 10s ease-in-out infinite reverse}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(14px)}}
-
-/* 동의 아코디언 + 동의 체크(문장 왼쪽, 체크박스 오른쪽) */
-.acc{border-radius:14px; overflow:hidden; border:1px solid var(--line)}
-.acc-item{border-top:1px solid var(--line)}
-.acc-head{padding:14px 16px; background:#FFF4EC; cursor:pointer; display:flex; justify-content:space-between; align-items:center}
-.acc-body{padding:14px 16px; display:none; background:#fff}
-.acc-item.open .acc-body{display:block}
-.ul{margin:6px 0 0 18px; padding:0} .ul li{margin:4px 0; color:#374151; font-size:14px}
-
-.agreeList{display:flex; flex-direction:column; gap:10px; margin-top:8px}
-.agreeItem{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; background:#fff; border:1px solid var(--line); border-radius:12px}
-.agreeItem input{width:20px;height:20px}
+/* 결과 차트 그리드(한 줄) */
+.chartRow{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
+@media (max-width:900px){ .chartRow{grid-template-columns:1fr} }
 
 /* 인쇄 */
 @media print{
@@ -202,6 +156,7 @@ input[type=checkbox],input[type=radio]{accent-color:#FFB98A}
   </main>
 </div>
 
+<!-- 좌우 네비 (PC) -->
 <div class="sideNav left" id="sideLeft" style="display:none"><button class="sideBtn" onclick="prev()" aria-label="이전">‹</button></div>
 <div class="sideNav right" id="sideRight" style="display:none"><button class="sideBtn" onclick="next()" aria-label="다음">›</button></div>
 
@@ -209,354 +164,340 @@ input[type=checkbox],input[type=radio]{accent-color:#FFB98A}
 /* ===== 연결값(시트/폼) ===== */
 const SHEET_ID   = '14VLQBhDJtduxjCnfr7VEOstZ5ez8-CX3ArXy1OvYCQg';
 const FORM_ACTION= 'https://docs.google.com/forms/d/e/1FAIpQLSeRWq5YKN50zL0simiaQA6EBRsn6VXN__ZmLplAgDz1I1hyQA/formResponse';
+const F = { child_name:'entry.684468179', age:'entry.1066070471', grade:'entry.1812672802', guardian:'entry.1666083184', phone:'entry.89824848', campus:'entry.490719219', answers:'entry.85364862', scores:'entry.1455508168', top3:'entry.1261684833', resultId:'entry.2120338430', timestamp:'entry.532514127' };
+/* ================================= */
 
-/* ⚠️ top3와 resultId가 뒤바뀌지 않도록 아래 매핑을 사용하세요. */
-const F = {
-  child_name:'entry.684468179',
-  age:'entry.1066070471',
-  grade:'entry.1812672802',
-  guardian:'entry.1666083184',
-  phone:'entry.89824848',
-  campus:'entry.490719219',
-  answers:'entry.85364862',
-  scores:'entry.1455508168',
-  /* 기존과 반대로 지정: top3 → 2120338430, resultId → 1261684833 */
-  top3:'entry.2120338430',
-  resultId:'entry.1261684833',
-  timestamp:'entry.532514127'
-};
-/* ========================= */
+/* 12개 영역(8 기존 + 4 신규) */
+const DOMAINS = [
+  "관찰력","서사력","디테일","구성력","색감각","공간감","도전성","소통력",
+  "미적 판단력","정서표현/공감","창의 문제해결","자기성찰/개선"
+];
+
+const STEPS = [
+  {key:'start',label:'시작'},
+  {key:'consent',label:'동의'},
+  {key:'profile',label:'프로필'},
+  {key:'test',label:'테스트'},
+  {key:'result',label:'결과'}
+];
 
 const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Questions&tqx=out:json`;
-const DOMAINS = ["관찰력","서사력","디테일","구성력","색감각","공간감","도전성","소통력"];
-const STEPS = [{key:'start',label:'시작'},{key:'consent',label:'동의'},{key:'profile',label:'프로필'},{key:'test',label:'테스트'},{key:'result',label:'결과'}];
-const STATE = { step:'start', consent:false, consentMeta:null, profile:{}, questions:[], idx:0, answers:[], result:null };
+const STATE = { step:'start', consent:false, profile:{}, questions:[], idx:0, answers:[], result:null };
 
 const $=id=>document.getElementById(id);
 const v=id=>$(id)?.value?.trim()??'';
+const app=()=>$('app');
 
 /* NAV + Progress */
 function renderNav(){
   const cur = STEPS.findIndex(s=>s.key===STATE.step);
-  $('topnav').innerHTML = STEPS.map((s,i)=>`<div class="step ${s.key===STATE.step?'active':''} ${cur>i?'done':''}" onclick="navGo('${s.key}')"><span class="num">${i+1}</span><span>${s.label}</span></div>`).join('')
+  $('topnav').innerHTML = STEPS.map((s,i)=>`
+    <div class="step ${s.key===STATE.step?'active':''} ${cur>i?'done':''}" onclick="navGo('${s.key}')">
+      <span class="num">${i+1}</span><span>${s.label}</span>
+    </div>`).join('');
 }
 function updateTopProgress(){
   if(STATE.step==='test' && STATE.questions.length){
     const q = Math.round(STATE.idx/STATE.questions.length*100);
-    $('topbar').style.width=q+'%'; $('statusline').textContent=`테스트 진행 ${STATE.idx+1}/${STATE.questions.length} (${q}%)`;
+    $('topbar').style.width=q+'%';
+    $('statusline').textContent=`테스트 진행 ${STATE.idx+1}/${STATE.questions.length} (${q}%)`;
     $('sideLeft').style.display='block'; $('sideRight').style.display='block'; return;
   }
   $('sideLeft').style.display='none'; $('sideRight').style.display='none';
   let pct = (STEPS.findIndex(s=>s.key===STATE.step))/(STEPS.length-1)*100;
-  $('topbar').style.width=Math.round(pct)+'%'; $('statusline').textContent=`진행률 ${Math.round(pct)}%`;
+  $('topbar').style.width=Math.round(pct)+'%';
+  $('statusline').textContent=`진행률 ${Math.round(pct)}%`;
 }
 function navGo(step){ STATE.step=step; if(step==='test' && STATE.questions.length===0){ startTest(); return; } render(); }
-const go=navGo;
 
-/* GViz 파서 */
+/* GViz 파서 + 문항 로딩 (15문항 기대) */
 function parseGViz(text){
   const s=text.indexOf('{'), e=text.lastIndexOf('}');
   if(s<0||e<0) return [];
   const obj=JSON.parse(text.slice(s,e+1));
   const cols=obj.table.cols.map(c=>c.label);
-  return obj.table.rows.map(r=>r.c.map(c=>c?(c.f??c.v):'')).map(a=>Object.fromEntries(cols.map((k,i)=>[k,a[i]])));
+  return obj.table.rows.map(r=>r.c.map(c=>c?(c.f??c.v):''))
+            .map(a=>Object.fromEntries(cols.map((k,i)=>[k,a[i]])));
 }
 async function loadQuestions(){
-  const txt=await (await fetch(GVIZ_URL)).text(); const rows=parseGViz(txt)||[];
-  const act=rows.filter(r=>String(r.active).toUpperCase()==='TRUE').sort((a,b)=>(+a.order - +b.order));
-  STATE.questions=act.map(r=>({ id:r.id, order:+r.order, prompt:r.prompt,
-    options:['A','B','C','D'].map(k=>({ key:k, label:r[`${k}_label`]||'', imageUrl:r[`${k}_image`]||'', alt:r[`${k}_label`]||'',
-      weights:(()=>{try{return JSON.parse(r[`${k}_weights`])||{}}catch{return{}}})() })) }));
+  const txt=await (await fetch(GVIZ_URL)).text();
+  const rows=parseGViz(txt)||[];
+  const act=rows.filter(r=>String(r.active).toUpperCase()==='TRUE')
+                .sort((a,b)=>(+a.order - +b.order));
+  STATE.questions=act.map(r=>({
+    id:r.id, order:+r.order, prompt:r.prompt,
+    options:['A','B','C','D'].map(k=>{
+      let weights={}; try{ weights=JSON.parse(r[`${k}_weights`]||'{}') }catch(e){}
+      return { key:k, label:r[`${k}_label`]||'', imageUrl:r[`${k}_image`]||'', alt:r[`${k}_label`]||'', weights };
+    })
+  }));
 }
 
-/* START – 히어로 */
+/* START – 큰 버튼, 설명, 12개 기준 안내 (카드는 아래로) */
 function startScreen(){
+  const badges = [
+    ['☆','미술적성테스트 Basic'], ['⏱️','약 6–8분'], ['🖨️','즉시 결과·PDF 저장']
+  ].map(([i,t])=>`<span class="badge">${i}&nbsp;${t}</span>`).join('');
   return `
-  <div class="heroWrap">
-    <div class="glows"></div>
-    <div class="orb a"></div><div class="orb b"></div>
-
-    <div class="heroBadges">
-      <span class="badge">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3l2.7 5.5 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.8 1-6.1-4.4-4.3 6.1-.9L12 3z" stroke="#FFB98A" stroke-width="1.5" stroke-linejoin="round"/></svg>
-        미술적성테스트 Basic
-      </span>
-      <span class="badge">
-        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#FFB98A" stroke-width="1.5"/><path d="M12 7v6l4 2" stroke="#FFB98A" stroke-width="1.5" stroke-linecap="round"/></svg>
-        약 6–8분
-      </span>
-      <span class="badge">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M7 10h10M7 14h7" stroke="#FFB98A" stroke-width="1.6" stroke-linecap="round"/><rect x="4" y="4" width="16" height="16" rx="3" stroke="#FFB98A" stroke-width="1.5"/></svg>
-        즉시 결과·PDF 저장
-      </span>
-    </div>
-
+  <div class="hero">
+    <div class="heroBadge">${badges}</div>
     <div class="heroTitle">바른미술학원 · 미술적성테스트</div>
-    <p class="heroSub">
-      아이의 <b>미술 적성</b>과 <b>잠재력</b>을 가볍게 확인하고, 항목별 결과를 즉시 확인하는 테스트입니다.
+    <p class="heroDesc">
+      아이의 <b>미술 적성·잠재력</b>과 <b>선호 경향</b>을 15개 이미지 문항으로 확인하고,
+      12개 평가영역(8가지 핵심 + 4가지 심화 기준)으로 분석합니다. 결과는 화면에서 즉시 확인/저장할 수 있어요.
     </p>
+    <div style="height:8px"></div>
+    <button class="btn" style="font-size:22px;padding:22px 36px" onclick="navGo('consent')"
+      onmousemove="this.style.setProperty('--x', event.offsetX+'px'); this.style.setProperty('--y', event.offsetY+'px')">시작하기</button>
+    <div class="small muted" style="margin-top:14px">※ 본 테스트는 <b>교육 가이드</b> 목적이며, 의학/임상 진단이 아닙니다.</div>
+  </div>
 
-    <div class="heroGrid">
-      ${[
-        {head:'부담 없이 빠르게',desc:'12문항으로 핵심만 체크합니다.',icon:'<path d="M3 12h18M12 3v18" stroke="#FFB98A" stroke-width="1.6" stroke-linecap="round"/>'},
-        {head:'정확하고 보기 쉬운 결과',desc:'8개 영역 점수와 영역별 해석을 제공합니다.',icon:'<circle cx="12" cy="12" r="7" stroke="#FFB98A" stroke-width="1.6"/><path d="M12 8v5l3 2" stroke="#FFB98A" stroke-width="1.6" stroke-linecap="round"/>'},
-        {head:'저장·공유 간편',desc:'결과 화면에서 바로 인쇄/PDF 저장.',icon:'<path d="M6 9V5a2 2 0 0 1 2-2h8v6H6z" stroke="#FFB98A" stroke-width="1.6"/><path d="M6 14h12v5H6z" stroke="#FFB98A" stroke-width="1.6"/>'},
-      ].map(c=>`
-        <div class="fcard tilt">
-          <div class="fhead">
-            <span class="ficon"><svg viewBox="0 0 24 24" fill="none">${c.icon}</svg></span>
-            ${c.head}
-          </div>
-          <div class="fdesc">${c.desc}</div>
-        </div>`).join('')}
+  <div style="height:14px"></div>
+  <div class="grid-3">
+    <div class="feature">
+      <h3 style="margin:0 0 4px">평가 8가지</h3>
+      <p class="small muted">관찰력 · 색감각 · 서사력 · 공간감 · 디테일 · 도전성 · 꾸준성 · 소통력</p>
     </div>
-
-    <div class="ctaRow">
-      <button class="btn btn-mint" onclick="go('consent')" 
-        onmousemove="this.style.setProperty('--x', event.offsetX+'px'); this.style.setProperty('--y', event.offsetY+'px')">시작하기</button>
+    <div class="feature">
+      <h3 style="margin:0 0 4px">심화 4가지</h3>
+      <p class="small muted">미적 판단력 · 정서표현/공감 · 창의 문제해결 · 자기성찰/개선</p>
     </div>
-    <div class="ctaHelp">※ 본 테스트는 <b>교육 가이드</b> 목적이며 의학/임상 진단이 아닙니다.</div>
+    <div class="feature">
+      <h3 style="margin:0 0 4px">테스트 안내</h3>
+      <p class="small muted">한 문항당 보기 4개 중 1개를 선택해 주세요. PC는 화살표·Enter로도 진행됩니다.</p>
+    </div>
   </div>`;
 }
-function viewStart(){
-  $('app').innerHTML = startScreen();
-  attachTilt('.tilt');
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function attachTilt(sel){
-  document.querySelectorAll(sel).forEach(el=>{
-    const r=12;
-    el.addEventListener('mousemove',e=>{
-      const b=el.getBoundingClientRect(), x=e.clientX-b.left, y=e.clientY-b.top;
-      const px=(x/b.width-.5)*2, py=(y/b.height-.5)*2;
-      el.style.setProperty('--rx',(-py*r)+'deg');
-      el.style.setProperty('--ry',( px*r)+'deg');
-    });
-    el.addEventListener('mouseleave',()=>{ el.style.setProperty('--rx','0deg'); el.style.setProperty('--ry','0deg'); });
-  });
-}
+function viewStart(){ app().innerHTML=startScreen(); window.scrollTo({top:0,behavior:'smooth'}); }
 
-/* CONSENT – 아코디언 + 동의문장 오른쪽 체크 */
-function accItem(head,body){return `
-  <div class="acc-item open">
-    <div class="acc-head"><span><b>${head}</b></span>
+/* CONSENT – 입력 없이 체크만 */
+function accItem(t,html){
+  return `<div class="acc-item open">
+    <div class="acc-head"><span>${t}</span>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
-    <div class="acc-body small">${body}</div>
-  </div>`}
+    </div><div class="acc-body small">${html}</div></div>`;
+}
 function viewConsent(){
-  $('app').innerHTML=`
-    <h2 class="center">개인정보 수집·이용 동의서</h2>
-    <p class="muted small center" style="margin-top:4px">
-      본 테스트는 <b>교육 가이드</b> 제공을 목적으로 하며, 의학·임상 진단이 아닙니다.
-    </p>
-    <div class="acc">
-      ${accItem('1) 처리 목적',
-        '<ul class="ul"><li>미술적성테스트 제공 및 결과 산출</li><li>영역별 결과 및 코칭 포인트 제공</li><li>서비스 품질 개선을 위한 통계 분석</li></ul>')}
-      ${accItem('2) 수집 항목',
-        '<ul class="ul"><li><b>필수</b>: 아동 이름·나이·학년, 보호자 이름·연락처, 문항 응답</li><li><b>선택</b>: 관심 캠퍼스</li></ul>')}
-      ${accItem('3) 보관 기간',
-        '수집일로부터 <b>12개월</b> 보관 후 안전하게 파기합니다.')}
-      ${accItem('4) 보관/처리',
-        'Google Forms/Sheets에 안전하게 저장·처리합니다.')}
-      ${accItem('5) 권리 및 유의사항',
-        '<ul class="ul"><li>동의는 거부할 수 있으며, 미동의 시 서비스 이용이 제한될 수 있습니다.</li><li>열람·정정·삭제 등 권리 행사가 가능합니다.</li></ul>')}
-      ${accItem('6) 문의',
-        '관리자 이메일: <b>barunart1004@gmail.com</b>')}
+  app().innerHTML=`
+  <h2 class="center">개인정보 수집·이용 동의</h2>
+  <p class="muted small center">테스트 제공/결과 산출을 위해 최소 정보(이름·나이·학년·연락처)를 Google Forms/Sheets로 처리·보관(12개월)합니다.</p>
+  <div class="acc">
+    ${accItem('1) 목적','테스트 제공 및 결과 리포트 제공, 교육 코칭 가이드 제시')}
+    ${accItem('2) 항목','아동 이름·나이·학년, 보호자 연락처, 문항 응답(선택: 이메일, 관심 캠퍼스)')}
+    ${accItem('3) 보관 기간','수집일로부터 <b>12개월</b> 보관 후 파기')}
+    ${accItem('4) 처리/보관','Google Forms/Sheets 환경에서 처리')}
+    ${accItem('5) 권리','동의 거부 가능(거부 시 서비스 이용 제한 가능)')}
+    ${accItem('문의','barunart1004@gmail.com')}
+  </div>
+  <div class="section" style="margin-top:14px">
+    <div class="checkRow">
+      <label class="checkItem"><input type="checkbox" id="chk_required"> (필수) 개인정보 수집·이용에 <u>동의합니다</u></label>
+      <label class="checkItem"><input type="checkbox" id="chk_minor"> (필수) 만 14세 미만 아동의 법정대리인으로서 <u>동의합니다</u></label>
     </div>
-
-    <div class="section" style="margin-top:16px">
-      <div class="grid grid-2">
-        <div><label>보호자 성명(서명)</label><input id="consent_guardian" placeholder="예: 홍길동(서명)"></div>
-        <div><label>연락처</label><input id="consent_phone" placeholder="010-0000-0000"></div>
-        <div><label>아동과의 관계</label>
-          <select id="consent_relation"><option>부모</option><option>법정대리인</option><option>기타</option></select>
-        </div>
-      </div>
-
-      <div class="agreeList">
-        <label class="agreeItem">
-          <span>(필수) 개인정보 수집·이용에 동의합니다.</span>
-          <input type="checkbox" id="chk_required">
-        </label>
-        <label class="agreeItem">
-          <span>(필수) 만 14세 미만 아동의 법정대리인으로서 동의합니다.</span>
-          <input type="checkbox" id="chk_minor">
-        </label>
-      </div>
-    </div>
-
-    <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center">
-      <button class="btn" id="btn_consent" disabled>동의하고 진행</button>
-      <button class="btn-ghost" onclick="document.querySelectorAll('.acc-item').forEach(it=>it.classList.add('open'))">전문 펼치기</button>
-      <button class="btn-ghost" onclick="document.querySelectorAll('.acc-item').forEach(it=>it.classList.remove('open'))">모두 접기</button>
-    </div>`;
-
-  const validate=()=>{
-    const ok=$('chk_required').checked&&$('chk_minor').checked;
-    const g=$('consent_guardian').value.trim();
-    const p=$('consent_phone').value.trim();
-    const okp=/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(p);
-    $('btn_consent').disabled=!(ok&&g.length>=2&&okp);
-  };
-  ['chk_required','chk_minor','consent_guardian','consent_phone'].forEach(id=>{
-    $(id).addEventListener('input',validate); $(id).addEventListener('change',validate);
-  });
-  $('btn_consent').onclick=()=>{
-    STATE.consent=true;
-    STATE.consentMeta={guardian:$('consent_guardian').value.trim(),phone:$('consent_phone').value.trim(),relation:$('consent_relation').value,ver:'v2.2'};
-    go('profile');
-  };
+  </div>
+  <div class="center" style="margin-top:16px">
+    <button class="btn" id="btn_consent" disabled>동의하고 진행</button>
+  </div>`;
+  const validate=()=>{$('btn_consent').disabled=!( $('chk_required').checked && $('chk_minor').checked );};
+  ['chk_required','chk_minor'].forEach(id=>$(id).addEventListener('change',validate));
+  $('btn_consent').onclick=()=>{ STATE.consent=true; navGo('profile'); };
   document.querySelectorAll('.acc-head').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
 }
 
-/* PROFILE */
-function viewProfile(){
-  $('app').innerHTML=`<h2 class="center">프로필 정보</h2>
-  <div class="grid grid-2" style="margin-top:8px">
-    <div><label>아동 이름</label><input id="cname" placeholder="예: 홍길동"></div>
-    <div><label>나이</label><select id="age"><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select></div>
-    <div><label>학년</label><select id="grade">
-      <option>초등학교 1학년</option><option>초등학교 2학년</option><option>초등학교 3학년</option>
-      <option>초등학교 4학년</option><option>초등학교 5학년</option><option>초등학교 6학년</option></select></div>
-    <div><label>보호자 이름</label><input id="gname"></div>
-    <div><label>연락처</label><input id="phone" placeholder="010-0000-0000"></div>
-    <div><label>관심 캠퍼스(선택)</label><input id="campus" placeholder="예: 분당점"></div>
-  </div>
-  <div class="center" style="margin-top:16px"><button class="btn btn-mint" onclick="startTest()">테스트 시작</button></div>`;
+/* PROFILE – 나이→학년 자동, 캠퍼스 datalist */
+const CAMPUS_LIST=['강남','서초','송파','분당','판교','일산','중계','목동','잠실','수지'];
+function gradeByAge(a){
+  const age=Number(a||0);
+  const map={7:1,8:2,9:3,10:4,11:5,12:6};
+  return map[age]?`초등학교 ${map[age]}학년`:'';
 }
-async function startTest(){
-  STATE.profile={child_name:v('cname'),age:v('age'),grade:v('grade'),guardian:v('gname'),phone:v('phone'),campus:v('campus')};
-  if(!STATE.profile.child_name || !/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(STATE.profile.phone||'')){ alert('이름/연락처를 확인해 주세요'); return; }
-  await loadQuestions(); STATE.idx=0; STATE.answers=[]; STATE.step='test'; render();
+function viewProfile(){
+  app().innerHTML=`
+  <h2 class="center">프로필 정보</h2>
+  <div class="grid grid-2" style="margin-top:8px">
+    <div><label>아동 이름</label><input id="cname" placeholder="예: 홍길동" autofocus></div>
+    <div><label>나이</label>
+      <select id="age">
+        ${[7,8,9,10,11,12].map(n=>`<option value="${n}">${n}</option>`).join('')}
+      </select>
+    </div>
+    <div><label>학년</label><input id="grade" placeholder="자동 입력" readonly></div>
+    <div><label>보호자 이름</label><input id="gname" placeholder="예: 김보호자"></div>
+    <div><label>연락처</label><input id="phone" placeholder="010-0000-0000"></div>
+    <div><label>이메일(선택, 결과지 전송용)</label><input id="email" placeholder="example@email.com"></div>
+    <div><label>관심 캠퍼스(선택)</label>
+      <input id="campus" list="campusList" placeholder="검색 또는 선택">
+      <datalist id="campusList">${CAMPUS_LIST.map(c=>`<option value="${c}">`).join('')}</datalist>
+    </div>
+  </div>
+  <div class="center" style="margin-top:16px">
+    <button class="btn" onclick="startTest()">테스트 시작</button>
+  </div>`;
+  const sync=()=>{$('grade').value=gradeByAge(v('age'));}; sync(); $('age').addEventListener('change',sync);
 }
 
 /* TEST */
+async function startTest(){
+  STATE.profile={
+    child_name:v('cname'), age:v('age'), grade:gradeByAge(v('age')),
+    guardian:v('gname'), phone:v('phone'), email:v('email'), campus:v('campus')
+  };
+  if(!STATE.profile.child_name || !/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(STATE.profile.phone||'')){
+    alert('이름/연락처를 확인해 주세요'); return;
+  }
+  await loadQuestions();
+  if(!STATE.questions.length){ alert('문항을 불러오지 못했습니다. 관리자에게 문의해주세요.'); return; }
+  STATE.idx=0; STATE.answers=[]; STATE.step='test'; render();
+}
+
 function viewTest(){
-  const q=STATE.questions[STATE.idx]; if(!q){ $('app').innerHTML='<h3 class="center">문항을 불러오지 못했습니다. 관리자에 문의해 주세요.</h3>'; return; }
+  const q=STATE.questions[STATE.idx];
+  if(!q){ app().innerHTML='<h3 class="center">문항을 불러오지 못했습니다.</h3>'; return; }
   const gridCls = (window.matchMedia('(min-width:1024px)').matches?'test-grid':'grid grid-2');
-  $('app').innerHTML=`<div class="center small muted">Q${STATE.idx+1} / ${STATE.questions.length}</div>
+  app().innerHTML=`
+    <div class="center small muted">Q${STATE.idx+1} / ${STATE.questions.length}</div>
     <h2 class="center" style="margin-top:6px">${q.prompt||''}</h2>
     <div class="${gridCls}" style="margin-top:10px">
-      ${q.options.map(o=>`<div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label}" onclick="choose('${o.key}')" onkeydown="if(event.key==='Enter'||event.key===' '){choose('${o.key}')}">
-        <img src="${o.imageUrl}" alt="${o.label}" onerror="this.style.opacity=.2" loading="lazy"><div class="cap center">${o.label}</div></div>`).join('')}
+      ${q.options.map(o=>`
+        <div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label}"
+             onclick="choose('${o.key}')" onkeydown="if(event.key==='Enter'||event.key===' '){choose('${o.key}')}">
+          <img src="${o.imageUrl}" alt="${o.label}" onerror="this.style.opacity=.2" loading="lazy">
+          <div class="cap center">${o.label}</div>
+        </div>`).join('')}
     </div>
     <div class="center" style="margin-top:18px; display:flex; gap:8px; justify-content:center">
       <button class="btn-ghost" onclick="prev()" ${STATE.idx===0?'disabled':''}>이전</button>
       <button class="btn" id="nextBtn" onclick="next()" disabled>다음</button>
     </div>`;
-  document.addEventListener('keydown',e=>{ if(e.key==='ArrowRight'){ next(); } if(e.key==='ArrowLeft'){ prev(); } if(e.key==='Enter'){ if(!$('nextBtn').disabled) next(); } },{once:true});
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'){ next(); }
+    if(e.key==='ArrowLeft'){ prev(); }
+    if(e.key==='Enter'){ if(!$('nextBtn').disabled) next(); }
+  },{once:true});
 }
 function choose(key){
   const q=STATE.questions[STATE.idx];
-  ['A','B','C','D'].forEach(k=>{const n=document.getElementById(`opt_${k}`); if(n) n.classList.remove('sel');});
-  const node=document.getElementById(`opt_${key}`); if(node){ node.classList.add('sel'); node.animate([{transform:'scale(1)'},{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:160}); }
+  ['A','B','C','D'].forEach(k=>{const n=$(`opt_${k}`); if(n) n.classList.remove('sel');});
+  const node=$(`opt_${key}`); if(node){ node.classList.add('sel');
+    node.animate([{transform:'scale(1)'},{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:160}); }
   const opt=q.options.find(o=>o.key===key);
-  STATE.answers[STATE.idx]={ qid:q.id, key, weights:opt.weights };
-  document.getElementById('nextBtn').disabled=false;
+  STATE.answers[STATE.idx]={ qid:q.id, key, weights:opt.weights||{} };
+  $('nextBtn').disabled=false;
 }
-function next(){ if(!STATE.answers[STATE.idx]){ alert('하나를 선택해 주세요'); return; } if(STATE.idx<STATE.questions.length-1){ STATE.idx++; render(); } else submitAll(); }
+function next(){ if(!STATE.answers[STATE.idx]){ alert('하나를 선택해 주세요'); return; }
+  if(STATE.idx<STATE.questions.length-1){ STATE.idx++; render(); } else submitAll(); }
 function prev(){ if(STATE.idx>0){ STATE.idx--; render(); } }
 
-/* 점수 보정 / 멘트 */
+/* 점수 보정/합산 (최소 2.0~ 최대 4.0로 스케일) */
 function aggregateScores(ans){
   const sum={}; DOMAINS.forEach(d=>sum[d]=0);
   ans.forEach(a=>Object.entries(a.weights||{}).forEach(([k,v])=>sum[k]=(sum[k]||0)+Number(v||0)));
-  const n=ans.length||1; const raw={};
+  const n=ans.length||1, raw={};
   DOMAINS.forEach(d=>{ const v=(sum[d]||0)/n*4; raw[d]=Math.max(0,Math.round(v*10)/10); });
   return raw;
 }
 const adjust=v=>Math.round((2 + v/2) * 10)/10; // 0→2.0, 4→4.0
-function band(v){ if(v>=3.6) return 'S'; if(v>=3.2) return 'A'; if(v>=2.8) return 'A-'; if(v>=2.4) return 'B+'; if(v>=2.0) return 'B'; if(v>=1.6) return 'B-'; if(v>=1.0) return 'C+'; return 'C'; }
+function band(v){ if(v>=3.6) return 'S'; if(v>=3.2) return 'A'; if(v>=2.8) return 'A-'; if(v>=2.4) return 'B+'; if(v>=2.0) return 'B'; return 'B-'; }
 
+/* 결과 문구/루틴(현실적인 15분 루틴) */
 const DETAIL = {
-  '관찰력':(n)=>`${n}님은 대상을 오래 바라보고 특징을 뽑아내는 힘이 뛰어나요. 작은 변화도 놓치지 않아 표현의 밀도가 높아집니다.`,
-  '서사력':(n)=>`${n}님은 장면 속에 이야기를 심는 데 강점이 있어요. 사건의 흐름과 감정을 자연스럽게 연결합니다.`,
-  '디테일':(n)=>`${n}님은 마감과 표현의 섬세함이 돋보여요. 질감·무늬·작은 요소까지 챙기는 집중력이 강점입니다.`,
-  '구성력':(n)=>`${n}님은 화면에서 시선이 흐르는 길을 잘 설계해요. 중심과 여백의 균형을 안정적으로 잡습니다.`,
-  '색감각':(n)=>`${n}님은 색의 분위기를 읽고 조합하는 능력이 뛰어나요. 미묘한 톤 차이도 감각적으로 잡아냅니다.`,
-  '공간감':(n)=>`${n}님은 원근·스케일을 활용해 입체감을 살리는 데 강합니다. 장면의 깊이를 안정적으로 구성합니다.`,
-  '도전성':(n)=>`${n}님은 새로운 도구와 방식에 두려움이 적어요. 실패를 경험으로 바꾸며 시도를 이어갑니다.`,
-  '소통력':(n)=>`${n}님은 자신의 의도를 언어로 설명하는 힘이 좋아요. 작품의 핵심을 또래에게 설득력 있게 전달합니다.`
+  '관찰력':n=>`${n}님은 대상을 오래 바라보고 특징을 뽑아내는 힘이 좋아요. 작은 변화도 잘 찾아내 작품의 밀도가 높아집니다.`,
+  '서사력':n=>`${n}님은 장면 속에 이야기를 심는 데 강점이 있어요. 캐릭터의 감정과 사건의 흐름을 자연스럽게 연결합니다.`,
+  '디테일':n=>`${n}님은 마감과 표현의 섬세함이 돋보여요. 질감·무늬 같은 작은 요소도 놓치지 않습니다.`,
+  '구성력':n=>`${n}님은 화면의 길을 잘 설계합니다. 중심과 여백의 균형이 안정적이에요.`,
+  '색감각':n=>`${n}님은 색의 분위기를 읽는 감각이 뛰어나요. 미묘한 톤 차이도 잘 잡아냅니다.`,
+  '공간감':n=>`${n}님은 원근과 스케일을 활용해 입체감을 살립니다. 장면의 깊이를 안정적으로 만들어요.`,
+  '도전성':n=>`${n}님은 새로운 도구와 방식에 두려움이 적어요. 시도를 즐기며 금방 적응합니다.`,
+  '소통력':n=>`${n}님은 작품의 의도를 말과 글로 잘 설명합니다. 발표·비평 활동에서 자신감이 보여요.`,
+  '미적 판단력':n=>`${n}님은 무엇이 더 어울리고 아름다운지 고르는 눈이 좋아요. 조화와 균형을 직관적으로 파악합니다.`,
+  '정서표현/공감':n=>`${n}님은 감정을 색과 형태로 표현하는 데 탁월해요. 타인의 마음을 작품에 담아낼 줄 압니다.`,
+  '창의 문제해결':n=>`${n}님은 예상치 못한 상황에서 새로운 방법을 잘 찾습니다. 제약 속에서도 길을 만듭니다.`,
+  '자기성찰/개선':n=>`${n}님은 스스로 작품을 돌아보고 더 좋게 바꾸려는 태도가 있어요. 성장 속도가 빠릅니다.`
 };
 const PRAISE={
-  'S':k=>`와, ${k}에서 <b>타고난 재능</b>이 돋보여요! 스스로 기획하는 수준까지 노려볼 수 있어요.`,
-  'A':k=>`${k} 감각이 <b>뛰어납니다</b>. 난이도를 올려도 충분히 소화해요.`,
-  'A-':k=>`${k} 실력이 <b>탄탄</b>해요. 조금만 다듬으면 금방 상위권!`,
-  'B+':k=>`${k}이 안정적이에요. 새로운 시도에도 잘 적응합니다.`,
-  'B':k=>`${k} 기본기가 좋아요. 루틴을 넓히면 <b>성장 속도 가속</b>!`
+  'S':k=>`와, <b>${k}</b>에서 타고난 재능이 또렷합니다!`,
+  'A':k=>`<b>${k}</b> 감각이 뛰어나요. 난이도를 올려도 충분히 소화합니다.`,
+  'A-':k=>`<b>${k}</b> 실력이 탄탄해요. 조금만 다듬으면 금방 상위권!`,
+  'B+':k=>`<b>${k}</b>이 안정적이에요. 꾸준히 확장해볼까요?`,
+  'B-':k=>`<b>${k}</b>의 기본기를 넓히면 금방 성장합니다.`
 };
-/* 실생활 15분 루틴 – 구체/쉽게 */
 const MISSIONS={
-  '관찰력':{'S':'집에 있는 과일 1개를 5분 관찰 → 특징 3가지 말하기 → 10분 스케치','A':'창밖 풍경에서 물체 3개 골라 1분씩 연속 스케치','A-':'가위·빗·컵 등 생활 물건 3개를 윤곽선만 빠르게 그리기','B+':'거울 보고 표정 3가지, 각 2분 드로잉','B':'집안 물건 한 가지를 10개 형태로 단순화해보기'},
-  '서사력':{'S':'오늘 있었던 일로 4컷 이야기 만들기(말풍선 최소 1개)','A':'주인공·장소·문제를 정해 3컷 구성 → 핵심 문장 1개 쓰기','A-':'앞·중간·끝 3장면 썸네일(각 2분)','B+':'그림 속 인물에게 질문 3개 만들고 답 상상하기','B':'좋아하는 동물 하루 일기를 한 문장+그림으로'},
-  '디테일':{'S':'집 주변 재질(나무·금속·천) 중 1개 선택 → 10분 질감 표현','A':'소지품 하나 확대해서 무늬/단추/바느질 등 표현','A-':'라인 두께 3단계로 같은 사물 정리해서 그리기','B+':'지우개로 하이라이트 살리기 연습(동전/과일)','B':'색연필 3색만으로 명암 3단계 만들기'},
-  '구성력':{'S':'잡지/전단지 잘라 A4에 포스터처럼 재배치하기','A':'주제 1개로 썸네일 6장(각 1분) – 시선 흐름 표시','A-':'가장 중요한 것 1개 크게/덜 중요한 것 작게 배치','B+':'3×3 격자 속에 물건 배치해 그리기','B':'여백 1/3 남기는 구성으로 간단한 정물'},
-  '색감각':{'S':'한정 팔레트(2색+화이트)로 장면 색 바꾸기','A':'따뜻한색/차가운색으로 같은 사물 두 번 칠하기','A-':'보색 한 쌍 골라 포인트 한 곳만 강조','B+':'연필로 명암 넣고 마커 1색만 덧칠','B':'원색 3개를 서로 섞어 5가지 파생색 만들기'},
-  '공간감':{'S':'책상 위 물건을 위에서 본 시점으로 배치 후 그리기','A':'방 한쪽을 1점투시로 간단 스케치','A-':'앞/중/뒤 3단 레이어로 거리감 표현','B+':'작은 장난감을 멀/가까이 놓고 크기 차 표시','B':'바닥에 테이프 가로줄 붙이고 박스 올려 그리기'},
-  '도전성':{'S':'안 써본 도구 1개(면봉/스펀지 등)로 10분 실험','A':'평소와 다른 손(왼손)으로 5분 드로잉','A-':'실패작 1장 골라 10분 리터치해서 살리기','B+':'사진 1장을 20개 선으로만 표현하기','B':'다른 종이(영수증/신문)에 그려보기'},
-  '소통력':{'S':'완성작에 제목·설명 2문장 쓰기(의도/느낀점)','A':'그림 보여주고 친구/가족에게 한 문장 설명 연습','A-':'핵심 단어 3개 뽑아 옆에 적기','B+':'작품 바꾸어 칭찬 3가지 적기','B':'그림 속 소리/냄새/감촉 한 단어씩 쓰기'}
+  '관찰력':['과일/장난감 3개를 2분씩 관찰 후 스케치','창문 밖 3가지 모양 찾기'],
+  '서사력':['오늘 있었던 재미있는 순간 4컷 그림','캐릭터 감정 3가지 표정 그리기'],
+  '디테일':['나뭇잎/천 질감 3종 묘사','그림 마무리 체크리스트 5개 만들기'],
+  '구성력':['3×3 썸네일 6장으로 화면 계획','중심/보조 포인트 표시하고 색으로 강조'],
+  '색감각':['파스텔 3색 팔레트로 한 장 완성','따뜻/차가운 색으로 같은 장면 그리기'],
+  '공간감':['박스 5개로 간단한 원근 연습','앞·중·뒤로 물체 크기 달리 배치'],
+  '도전성':['처음 쓰는 재료 1개 섞어보기','한 번도 안 그린 주제 1개 시도'],
+  '소통력':['작가노트 3문장 쓰기','가족에게 30초 발표하기'],
+  '미적 판단력':['좋아하는 작품 1장 따라 그리고 차이 말해보기','두 안 중 더 균형 잡힌 안 고르기'],
+  '정서표현/공감':['오늘 기분을 색 3개로 표현','친구를 응원하는 엽서 만들기'],
+  '창의 문제해결':['실수 표시 1곳을 장점으로 바꾸기','제한 시간 5분 스피드 아이디어'],
+  '자기성찰/개선':['작품 자가점검 5항목 체크','지난 그림 1장 리메이크']
 };
 
+/* 결과 계산 + 시트 전송 */
 function nowKST(){ const d=new Date(),p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())} KST`; }
 async function submitAll(){
   const raw=aggregateScores(STATE.answers);
   const scores=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,adjust(v)])); // 2.0~4.0 보정
-  const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3);   // ["관찰력","색감각","..."]
-  const resultId=(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36));
+  const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3);
+  const resultId=crypto.randomUUID();
 
+  /* Google Form 전송 */
   const form=new FormData();
-  const answersWithMeta={consent:STATE.consentMeta,profile:STATE.profile,questions:STATE.answers};
-  form.append(F.child_name,STATE.profile.child_name); form.append(F.age,STATE.profile.age); form.append(F.grade,STATE.profile.grade);
-  form.append(F.guardian,STATE.profile.guardian); form.append(F.phone,STATE.profile.phone); form.append(F.campus,STATE.profile.campus||'');
-  form.append(F.answers,JSON.stringify(answersWithMeta)); form.append(F.scores,JSON.stringify(scores));
-  form.append(F.top3,top3.join(','));                       // ✅ 영역명 3개가 들어감
-  form.append(F.resultId,resultId);                         // ✅ uuid는 resultId로
+  const answersWithMeta={profile:STATE.profile,questions:STATE.answers};
+  form.append(F.child_name,STATE.profile.child_name);
+  form.append(F.age,STATE.profile.age);
+  form.append(F.grade,STATE.profile.grade);
+  form.append(F.guardian,STATE.profile.guardian);
+  form.append(F.phone,STATE.profile.phone);
+  form.append(F.campus,STATE.profile.campus||'');
+  form.append(F.answers,JSON.stringify(answersWithMeta));
+  form.append(F.scores,JSON.stringify(scores));
+  form.append(F.top3,top3.join(','));            // ← 영역명 3개 저장
+  form.append(F.resultId,resultId);              // ← 별도 결과 ID
   form.append(F.timestamp,nowKST());
-  try{ fetch(FORM_ACTION,{method:'POST',mode:'no-cors',body:form}); }catch(e){}
-  STATE.result={scores,top3,resultId}; STATE.step='result'; render();
+  try{ fetch(FORM_ACTION,{method:'POST',mode:'no-cors',body:form}); }catch(e){/* ignore */ }
+
+  STATE.result={scores,top3,resultId};
+  STATE.step='result'; render();
 }
 
-/* RESULT – 레이더(왼쪽) + 막대(오른쪽) 한 줄 */
+/* RESULT (레이더 + 막대 한 줄) */
 let CHARTS=[];
 function destroyCharts(){ CHARTS.forEach(c=>c.destroy?.()); CHARTS=[]; }
 function viewResult(){
   const r=STATE.result, s=r?.scores||{};
+  const totalMax = DOMAINS.length*4; // 12*4=48
   const overall = Math.round((Object.values(s).reduce((a,b)=>a+(+b||0),0))*10)/10 || 0;
 
-  $('app').innerHTML=`<div id="resultCard">
+  /* 우수 영역 3개에 따른 총평(살짝 다르게) */
+  const best=r.top3[0], best2=r.top3[1], best3=r.top3[2];
+  const summary = `${STATE.profile.child_name}님은 <b>${best}</b> 영역에서 특히 눈에 띄며, <b>${best2}</b>·<b>${best3}</b>도 강점으로 보입니다.
+  호기심을 꾸준한 연습과 연결하면 성장이 빠르게 일어나요. 집에서도 작은 성공 경험을 자주 만들어 보세요.`;
+
+  app().innerHTML=`
+  <div id="resultCard">
     <div class="block callout" style="text-align:center">
-      <div class="chips" style="justify-content:center;gap:6px;margin-bottom:6px">
-        <span class="chip">${STATE.profile.child_name}</span>
-        <span class="chip">${STATE.profile.age}세</span>
-        <span class="chip">${STATE.profile.grade}</span>
-      </div>
-      <h2 style="margin:4px 0 8px"><b>${STATE.profile.child_name}</b>님, 수고 많았어요!</h2>
-      <div class="kpi" style="justify-content:center"><div class="num" style="font-size:50px">${overall.toFixed(1)}</div><div class="unit">/ 32 (8영역 합산)</div></div>
-      <p class="small" style="margin-top:8px;color:#0f172a;font-size:15px">
-        특히 <b>${r.top3.join(', ')}</b> 영역에서 강점이 또렷합니다. 즐거운 일상 15분 루틴으로 잠재력을 크게 키워 볼게요.
-      </p>
+      <div class="chip" style="margin:0 auto 8px;display:inline-block">테스트 완료</div>
+      <h2 style="margin:0 0 10px"><b>${STATE.profile.child_name}</b>님, 오늘 멋지게 해냈어요!</h2>
+      <div class="kpi" style="justify-content:center"><div class="num" style="font-size:52px">${overall.toFixed(1)}</div><div class="unit">/ ${totalMax.toFixed(0)} (12영역 합산)</div></div>
+      <p class="small" style="margin-top:10px;color:#0f172a;font-size:15px;line-height:1.7">${summary}</p>
+      <div class="chips" style="margin-top:10px;justify-content:center">${r.top3.map(t=>`<span class="chip">우수: ${t}</span>`).join('')}</div>
     </div>
 
-    <div class="grid grid-2">
-      <div class="block" style="overflow:hidden"><h3 class="center">영역별 관심도</h3><canvas id="radar" height="240"></canvas></div>
-      <div class="block" style="overflow:hidden"><h3 class="center">뛰어난 영역(Top3)</h3><canvas id="bars" height="240"></canvas></div>
-    </div>
-
-    <div class="block">
-      <h3>총평</h3>
-      <p style="color:#0f172a;font-size:15px;line-height:1.7">
-        아이의 강점이 선명하게 드러난 결과예요. 스스로 선택하고 몰입할 때 성장이 크게 일어납니다.
-        “잘할 수 있다”는 경험을 꾸준히 쌓도록, 집에서도 바로 할 수 있는 15분 루틴을 제안합니다.
-      </p>
-      <div class="chips" style="margin-top:6px">${r.top3.map(t=>`<span class="chip">${t} 우수</span>`).join('')}</div>
+    <div class="chartRow">
+      <div class="block"><h3 class="center">영역별 관심도(레이더)</h3><canvas id="radar" height="300"></canvas></div>
+      <div class="block"><h3 class="center">뛰어난 영역(Top3)</h3><canvas id="bars" height="300"></canvas></div>
     </div>
 
     <div class="block">
       <h3>항목별 해석 & 일일 15분 훈련</h3>
-      <div class="grid" style="grid-template-columns:1fr 1fr">
+      <div class="grid grid-2">
         ${DOMAINS.map(k=>{
           const v=+(s[k]||0), b=band(v), w=Math.min(100,(v/4)*100);
+          const miss = (MISSIONS[k]||[])[ v>=3.2?0:1 ] || '짧게라도 매일 손풀기';
           return `<div style="border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff;box-shadow:0 10px 26px rgba(16,24,40,.06)">
             <div style="display:flex;justify-content:space-between;align-items:flex-end">
               <strong>${k}</strong>
@@ -565,7 +506,7 @@ function viewResult(){
             <div class="topprogress" style="height:10px;margin:8px 0 10px"><div style="width:${w}%;height:100%;background:linear-gradient(90deg,#B9C8FF,#9DE5D5,#FFD9BE)"></div></div>
             <div class="small" style="color:#0f172a">${DETAIL[k](STATE.profile.child_name)}</div>
             <div class="small" style="margin-top:6px;color:#0f172a">${PRAISE[b](k)}</div>
-            <div class="small" style="margin-top:6px"><b>오늘의 15분</b> · ${MISSIONS[k][b]||MISSIONS[k]['B']}</div>
+            <div class="small" style="margin-top:6px"><b>오늘의 15분:</b> ${miss}</div>
           </div>`;
         }).join('')}
       </div>
@@ -576,13 +517,14 @@ function viewResult(){
 
   <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap">
     <button class="btn-ghost" onclick="STATE.step='start'; render()">처음으로</button>
-    <button class="btn btn-mint" onclick="window.print()">PDF 저장</button>
+    <button class="btn" onclick="window.print()">PDF 저장</button>
   </div>`;
 
   destroyCharts();
   const rctx=document.getElementById('radar').getContext('2d');
   CHARTS.push(new Chart(rctx,{type:'radar',
-    data:{labels:DOMAINS, datasets:[{data:DOMAINS.map(k=>s[k]||0), borderColor:'#FFB98A', backgroundColor:'rgba(255,185,138,.22)', borderWidth:2, pointRadius:3, fill:true}]},
+    data:{labels:DOMAINS, datasets:[{data:DOMAINS.map(k=>s[k]||0),
+      borderColor:'#FFB98A', backgroundColor:'rgba(255,185,138,.22)', borderWidth:2, pointRadius:3, fill:true}]},
     options:{animation:{duration:900}, scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#eef2f7'},angleLines:{color:'#eef2f7'}}}, plugins:{legend:{display:false}}}
   }));
   const bctx=document.getElementById('bars').getContext('2d');
@@ -593,8 +535,7 @@ function viewResult(){
 }
 
 /* Router */
-function render(){
-  renderNav(); updateTopProgress();
+function render(){ renderNav(); updateTopProgress();
   if(STATE.step==='start') return viewStart();
   if(STATE.step==='consent') return viewConsent();
   if(STATE.step==='profile') return viewProfile();
