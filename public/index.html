@@ -4,22 +4,19 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>바른미술학원 · 미술적성테스트</title>
-
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
-
 <style>
 :root{
-  --ink:#0f172a; --muted:#6b7280;
-  --bg1:#fff7f1; --bg2:#f7f3ff;
-  --card:#ffffff; --line:#eef2f7;
-  --o1:#FFE6CF; --o2:#FFD9BE;
-  --radius:22px; --shadow:0 18px 60px rgba(16,24,40,.12); --soft:0 12px 30px rgba(16,24,40,.08);
+  --ink:#0f172a;--muted:#6b7280;
+  --bg1:#fff7f1;--bg2:#f7f3ff;
+  --card:#fff;--line:#eef2f7;
+  --radius:22px;--shadow:0 18px 60px rgba(16,24,40,.12);--soft:0 12px 30px rgba(16,24,40,.08);
 }
 *{box-sizing:border-box} html,body{height:100%}
 body{
-  margin:0; color:var(--ink);
+  margin:0;color:var(--ink);
   font-family:"Pretendard",ui-sans-serif,system-ui,"Noto Sans KR",Segoe UI,Roboto,Arial;
   background:
     radial-gradient(900px 600px at 10% -10%, #E6E2FF44, transparent 55%),
@@ -28,99 +25,101 @@ body{
   background-attachment:fixed;
 }
 body::before{
-  content:""; position:fixed; inset:0; z-index:-2; pointer-events:none;
-  background:linear-gradient( rgba(255,255,255,.86), rgba(255,255,255,.86) ), url("/bg.png") center/cover no-repeat fixed;
+  content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:linear-gradient(rgba(255,255,255,.86),rgba(255,255,255,.86)),url("/bg.png") center/cover no-repeat fixed;
   filter:saturate(1.02);
 }
-.container{min-height:100dvh; display:flex; flex-direction:column; align-items:center}
-.main{width:100%; max-width:1100px; padding:18px; display:flex; flex-direction:column; gap:16px; margin:0 auto}
+.container{min-height:100dvh;display:flex;flex-direction:column;align-items:center}
+.main{width:100%;max-width:1100px;padding:18px;display:flex;flex-direction:column;gap:16px;margin:0 auto}
 
-/* Header / Top progress */
-.header{width:100%; display:flex; justify-content:center}
-.brand{width:100%; max-width:1100px; margin-top:10px; display:flex; align-items:center; gap:12px; padding:12px 16px;
-  border-radius:999px; background:rgba(255,255,255,.65); backdrop-filter:blur(8px); border:1px solid var(--line); box-shadow:var(--soft)}
-.logo{width:28px;height:28px;border-radius:50%;background:conic-gradient(from 0deg,#FFB98A,#FFE6CF,#E6E2FF,#CFF7EE,#FFB98A);animation:spin 9s linear infinite paused}
-.brand:hover .logo{animation-play-state:running} @keyframes spin{to{transform:rotate(360deg)}}
-.brand span{font-weight:900; letter-spacing:.2px}
+/* header */
+.header{width:100%;display:flex;justify-content:center}
+.brand{
+  width:100%;max-width:1100px;margin-top:10px;display:flex;align-items:center;gap:12px;padding:12px 16px;
+  border-radius:999px;background:rgba(255,255,255,.65);backdrop-filter:blur(8px);
+  border:1px solid var(--line);box-shadow:var(--soft)
+}
+.logo{width:28px;height:28px;border-radius:50%;
+  background:conic-gradient(from 0deg,#FFB98A,#FFE6CF,#E6E2FF,#CFF7EE,#FFB98A);
+  animation:spin 9s linear infinite paused}
+.brand:hover .logo{animation-play-state:running}@keyframes spin{to{transform:rotate(360deg)}}
+.brand span{font-weight:900;letter-spacing:.2px}
 
-.sticky{position:sticky; top:0; z-index:10; backdrop-filter:blur(8px);
-  background:rgba(255,255,255,.6); border:1px solid var(--line); border-radius:16px; box-shadow:var(--soft);
-  padding:8px 10px; display:flex; flex-direction:column; gap:10px;}
-.navbar{display:flex; flex-wrap:wrap; gap:10px; justify-content:center}
-.step{display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; cursor:pointer;
-  background:#fff; color:#374151; font-weight:850; border:1px solid var(--line); box-shadow:var(--soft); transition:transform .12s}
+/* sticky progress */
+.sticky{position:sticky;top:0;z-index:10;backdrop-filter:blur(8px);background:rgba(255,255,255,.6);
+  border:1px solid var(--line);border-radius:16px;box-shadow:var(--soft);
+  padding:8px 10px;display:flex;flex-direction:column;gap:10px}
+.navbar{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.step{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;cursor:pointer;
+  background:#fff;color:#374151;font-weight:850;border:1px solid var(--line);box-shadow:var(--soft);transition:transform .12s}
 .step:hover{transform:translateY(-1px)}
 .step .num{width:20px;height:20px;border-radius:50%;display:inline-grid;place-items:center;background:#fff;border:1px solid var(--line);font-size:12px}
-.step.active{background:linear-gradient(90deg,#FFE6CF,#E6E2FF); color:#111827; box-shadow:0 12px 30px rgba(255,214,176,.28)}
-.step.done{background:#f2fdf7; border-color:#dff7ef}
-.topprogress{height:10px; background:#f6f7fb; border-radius:999px; overflow:hidden}
-.topprogress>div{height:100%; width:0; background:linear-gradient(90deg,#B9C8FF,#9DE5D5,#FFD9BE); transition:width .35s ease}
-.statusline{font-size:12px; color:var(--muted); text-align:center}
+.step.active{background:linear-gradient(90deg,#FFE6CF,#E6E2FF);color:#111827;box-shadow:0 12px 30px rgba(255,214,176,.28)}
+.step.done{background:#f2fdf7;border-color:#dff7ef}
+.topprogress{height:10px;background:#f6f7fb;border-radius:999px;overflow:hidden}
+.topprogress>div{height:100%;width:0;background:linear-gradient(90deg,#B9C8FF,#9DE5D5,#FFD9BE);transition:width .35s ease}
+.statusline{font-size:12px;color:var(--muted);text-align:center}
 
-/* Cards / Buttons */
-.card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); animation:fade .35s ease both}
-@keyframes fade{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:translateY(0)}}
-h1{font-size:38px; margin:0 0 10px} h2{font-size:24px; margin:0 0 10px} h3{font-size:18px; margin:16px 0 8px}
+/* card / btn */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);animation:fade .35s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:38px;margin:0 0 10px} h2{font-size:24px;margin:0 0 10px} h3{font-size:18px;margin:16px 0 8px}
 p{margin:8px 0} .small{font-size:13px} .muted{color:var(--muted)} .center{text-align:center}
 
 .btn{
-  --bg:linear-gradient(90deg,#FFB98A,#FFD9BE); --glow:rgba(255,185,138,.35);
-  background:var(--bg); color:#5a3f2f; border:none; padding:22px 36px; border-radius:18px; font-weight:900; cursor:pointer;
-  box-shadow:0 18px 44px var(--glow); transition:transform .08s, filter .2s; position:relative; overflow:hidden; font-size:20px; min-width:200px}
-.btn:hover{transform:translateY(-1px); filter:brightness(1.03)}
-.btn:after{content:""; position:absolute; inset:0; background:radial-gradient(140px 140px at var(--x,50%) var(--y,50%), rgba(255,255,255,.6), transparent 42%); opacity:.0; transition:opacity .25s}
+  --bg:linear-gradient(90deg,#FFB98A,#FFD9BE);--glow:rgba(255,185,138,.35);
+  background:var(--bg);color:#5a3f2f;border:none;padding:22px 36px;border-radius:18px;font-weight:900;cursor:pointer;
+  box-shadow:0 18px 44px var(--glow);transition:transform .08s,filter .2s;position:relative;overflow:hidden;font-size:20px;min-width:200px}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.03)}
+.btn:after{content:"";position:absolute;inset:0;background:radial-gradient(140px 140px at var(--x,50%) var(--y,50%), rgba(255,255,255,.6), transparent 42%);opacity:0;transition:opacity .25s}
 .btn:hover:after{opacity:.6}
+.btn-ghost{background:#fff;color:#111827;border:1px solid var(--line);padding:22px 36px;border-radius:18px;font-weight:900;cursor:pointer;box-shadow:var(--soft);font-size:20px;min-width:200px}
 
-.btn-ghost{
-  background:#fff; color:#111827; border:1px solid var(--line);
-  padding:22px 36px; border-radius:18px; font-weight:900; cursor:pointer; box-shadow:var(--soft); font-size:20px; min-width:200px
-}
-
-/* Inputs */
-input,select,textarea{width:100%; background:#fff; color:#111; border:1px solid var(--line); border-radius:12px; padding:12px; outline:none}
-input:focus,select:focus,textarea:focus{border-color:#FFD9BE; box-shadow:0 0 0 6px rgba(255,217,190,.26)}
-label{font-size:14px; color:#374151}
+/* inputs */
+input,select,textarea{width:100%;background:#fff;color:#111;border:1px solid var(--line);border-radius:12px;padding:12px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:#FFD9BE;box-shadow:0 0 0 6px rgba(255,217,190,.26)}
+label{font-size:14px;color:#374151}
 .section{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}
-.grid{display:grid; gap:14px}
+
+.grid{display:grid;gap:14px}
 .grid-2{grid-template-columns:1fr 1fr}
 .grid-3{grid-template-columns:repeat(3,1fr)}
-@media (max-width:860px){ .grid-2{grid-template-columns:1fr} .grid-3{grid-template-columns:1fr} }
+@media (max-width:860px){.grid-2{grid-template-columns:1fr}.grid-3{grid-template-columns:1fr}}
 
-/* Start hero */
+/* hero */
 .hero{display:flex;flex-direction:column;align-items:center;gap:16px;padding:10px 4px}
 .heroTitle{font-size:44px;font-weight:900;letter-spacing:.3px;background:linear-gradient(90deg,#FFB98A,#E6E2FF);-webkit-background-clip:text;background-clip:text;color:transparent}
 .heroDesc{color:#334155;font-size:18px;text-align:center;max-width:860px;line-height:1.7}
-.feature{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px 18px;box-shadow:0 16px 40px rgba(16,24,40,.10)}
-.feature h3{margin:0 0 6px}
 
-/* Options */
-.opt{border:2px solid var(--line); border-radius:18px; overflow:hidden; cursor:pointer; background:#fff; box-shadow:var(--soft); transition:transform .12s, border-color .2s}
-.opt:hover{transform:translateY(-2px)} .opt img{width:100%; display:block; aspect-ratio:3/2; object-fit:cover}
-.opt .cap{padding:10px; color:#374151; font-weight:700} .opt.sel{border-color:#FFD9BE; box-shadow:0 0 0 6px rgba(255,217,190,.25)}
+/* options */
+.opt{border:2px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;background:#fff;box-shadow:var(--soft);transition:transform .12s,border-color .2s}
+.opt:hover{transform:translateY(-2px)}
+.opt img{width:100%;display:block;aspect-ratio:3/2;object-fit:cover}
+.opt .cap{padding:10px;color:#374151;font-weight:700}
+.opt.sel{border-color:#FFD9BE;box-shadow:0 0 0 6px rgba(255,217,190,.25)}
 
-/* Desktop test grid + side buttons */
+/* desktop arrows */
 @media (min-width:1024px){
-  .test-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
+  .test-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
   .opt img{aspect-ratio:4/3}
-  .sideNav{position:fixed; top:50%; transform:translateY(-50%); z-index:20}
+  .sideNav{position:fixed;top:50%;transform:translateY(-50%);z-index:20}
   .sideNav.left{left:18px} .sideNav.right{right:18px}
-  .sideBtn{background:linear-gradient(90deg,#fff,#FFF4EC); border:1px solid var(--line); width:46px; height:46px; border-radius:50%; display:grid; place-items:center; box-shadow:0 12px 26px rgba(16,24,40,.08); cursor:pointer; font-weight:900}
+  .sideBtn{background:linear-gradient(90deg,#fff,#FFF4EC);border:1px solid var(--line);width:46px;height:46px;border-radius:50%;
+    display:grid;place-items:center;box-shadow:0 12px 26px rgba(16,24,40,.08);cursor:pointer;font-weight:900}
   .sideBtn:hover{transform:translateY(-1px)}
 }
-@media (max-width:1023px){ .sideNav{display:none} }
+@media (max-width:1023px){.sideNav{display:none}}
 
-/* Accordion */
-.acc{border-radius:14px; overflow:hidden; border:1px solid var(--line)}
+/* accordion & agree */
+.acc{border-radius:14px;overflow:hidden;border:1px solid var(--line)}
 .acc-item{border-top:1px solid var(--line)}
-.acc-head{padding:14px 16px; background:#FFF4EC; cursor:pointer; display:flex; justify-content:space-between; align-items:center}
-.acc-body{padding:14px 16px; display:none; background:#fff; line-height:1.7}
+.acc-head{padding:14px 16px;background:#FFF4EC;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.acc-body{padding:14px 16px;display:none;background:#fff;line-height:1.7}
 .acc-item.open .acc-body{display:block}
+.agreeRow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.agreeRow input[type="checkbox"]{width:22px;height:22px}
 
-/* Consent agree rows */
-.agreeRow{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:#fff}
-.agreeRow input[type="checkbox"]{width:22px; height:22px}
-
-/* Result */
+/* result */
 .block{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 26px rgba(16,24,40,.06);page-break-inside:avoid}
 .block h3{margin:0 0 10px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -129,22 +128,22 @@ label{font-size:14px; color:#374151}
 .kpi .num{font-size:44px;font-weight:900;line-height:1}
 .kpi .unit{font-size:14px;color:#6b7280}
 .callout{position:relative;background:linear-gradient(135deg,#FFF2E6,#F8FBFF);padding:22px;border-radius:18px;border:1px solid var(--line);box-shadow:0 12px 34px rgba(255,185,138,.25)}
-.callout:before{content:"";position:absolute;inset:-1px;border-radius:18px;padding:1px;background:linear-gradient(90deg,#FFD9BE,#E6E2FF,#CFF7EE);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.callout:before{content:"";position:absolute;inset:-1px;border-radius:18px;padding:1px;background:linear-gradient(90deg,#FFD9BE,#E6E2FF,#CFF7EE);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 .credit{font-size:12px;color:#6b7280;text-align:center}
 
-/* Charts row – one line */
+/* charts in one row */
 .chartRow{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
-@media (max-width:900px){ .chartRow{grid-template-columns:1fr} }
+@media (max-width:900px){.chartRow{grid-template-columns:1fr}}
 
-/* Print */
+/* print */
 @media print{
-  .header,.sticky,.btn,.btn-ghost,.sideNav{display:none !important}
+  .header,.sticky,.btn,.btn-ghost,.sideNav{display:none!important}
   .card{box-shadow:none;border:1px solid #ddd}
   .block{break-inside:avoid-page}
 }
 </style>
 </head>
-
 <body>
 <div class="container">
   <div class="header">
@@ -161,27 +160,26 @@ label{font-size:14px; color:#374151}
   </main>
 </div>
 
-<!-- side arrows (PC) -->
+<!-- 데스크톱 좌우 버튼 -->
 <div class="sideNav left" id="sideLeft" style="display:none"><button class="sideBtn" onclick="prev()" aria-label="이전">‹</button></div>
-<div class="sideNav right" id="sideRight" style="display:none"><button class="sideBtn" onclick="next()" aria-label="다음">›</button></div>
+<div class="sideNav right" id="sideRight" style="display:none"><button class="sideBtn" onclick="nextOrSubmit()" aria-label="다음">›</button></div>
 
 <script>
-/* ====== 연결 값 ====== */
+/* ───────────────── 설정(시트/폼) ───────────────── */
 const SHEET_ID='14VLQBhDJtduxjCnfr7VEOstZ5ez8-CX3ArXy1OvYCQg';
 const FORM_ACTION='https://docs.google.com/forms/d/e/1FAIpQLSeRWq5YKN50zL0simiaQA6EBRsn6VXN__ZmLplAgDz1I1hyQA/formResponse';
 const F={child_name:'entry.684468179',age:'entry.1066070471',grade:'entry.1812672802',guardian:'entry.1666083184',phone:'entry.89824848',campus:'entry.490719219',answers:'entry.85364862',scores:'entry.1455508168',top3:'entry.1261684833',resultId:'entry.2120338430',timestamp:'entry.532514127'};
 const GVIZ_URL=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Questions&tqx=out:json`;
 
-/* 평가 영역 */
+/* ───────────────── 상수/상태 ───────────────── */
 const DOMAINS=["관찰력","색감각","서사력","공간감","디테일","도전성","소통력","꾸준성","미적 판단력","정서표현/공감","창의 문제해결","자기성찰/개선"];
 const STEPS=[{key:'start',label:'시작'},{key:'consent',label:'동의'},{key:'profile',label:'프로필'},{key:'test',label:'테스트'},{key:'result',label:'결과'}];
 const STATE={step:'start',profile:{},questions:[],idx:0,answers:[],result:null};
 
 const $=id=>document.getElementById(id);
 const v=id=>$(id)?$(id).value.trim():'';
-const app=()=>$('app');
 
-/* ---------- NAV/PROGRESS ---------- */
+/* ───────────────── 내비/상단 진행률 ───────────────── */
 function renderNav(){
   const cur=STEPS.findIndex(s=>s.key===STATE.step);
   $('topnav').innerHTML=STEPS.map((s,i)=>`<div class="step ${s.key===STATE.step?'active':''} ${cur>i?'done':''}" onclick="navGo('${s.key}')"><span class="num">${i+1}</span><span>${s.label}</span></div>`).join('');
@@ -189,299 +187,295 @@ function renderNav(){
 function updateTop(){
   if(STATE.step==='test'&&STATE.questions.length){
     const q=Math.round(STATE.idx/STATE.questions.length*100);
-    $('topbar').style.width=q+'%'; $('statusline').textContent=`테스트 진행 ${STATE.idx+1}/${STATE.questions.length} (${q}%)`;
-    $('sideLeft').style.display='block'; $('sideRight').style.display='block'; return;
+    $('topbar').style.width=q+'%';
+    $('statusline').textContent=`테스트 진행 ${STATE.idx+1}/${STATE.questions.length} (${q}%)`;
+    $('sideLeft').style.display='block';$('sideRight').style.display='block';
+    return;
   }
-  $('sideLeft').style.display='none'; $('sideRight').style.display='none';
+  $('sideLeft').style.display='none';$('sideRight').style.display='none';
   const pct=(STEPS.findIndex(s=>s.key===STATE.step))/(STEPS.length-1)*100;
-  $('topbar').style.width=Math.round(pct)+'%'; $('statusline').textContent=`진행률 ${Math.round(pct)}%`;
+  $('topbar').style.width=Math.round(pct)+'%';
+  $('statusline').textContent=`진행률 ${Math.round(pct)}%`;
 }
 function navGo(step){
-  if(step==='test' && !STATE.profile.child_name){ STATE.step='profile'; render(); return; }
+  if(step==='test'&&!STATE.profile.child_name){STATE.step='profile';render();return;}
   STATE.step=step;
-  if(step==='test' && STATE.questions.length===0){ startTest(); return; }
+  if(step==='test'&&STATE.questions.length===0){startTest();return;}
   render();
 }
 
-/* ---------- GViz 로더 + 폴백 ---------- */
-function parseGViz(text){ const s=text.indexOf('{'),e=text.lastIndexOf('}'); if(s<0||e<0) return []; const obj=JSON.parse(text.slice(s,e+1)); const cols=obj.table.cols.map(c=>c.label); const rows=obj.table.rows.map(r=>r.c.map(c=>c?(c.f??c.v):'')); return rows.map(a=>Object.fromEntries(cols.map((k,i)=>[k,a[i]]))); }
+/* ───────────────── GViz 로드시트 ───────────────── */
+function parseGViz(text){
+  const s=text.indexOf('{'),e=text.lastIndexOf('}');
+  if(s<0||e<0) return [];
+  const obj=JSON.parse(text.slice(s,e+1));
+  const cols=obj.table.cols.map(c=>c.label);
+  const rows=obj.table.rows.map(r=>r.c.map(c=>c?(c.f??c.v):''));
+  return rows.map(a=>Object.fromEntries(cols.map((k,i)=>[k,a[i]])));
+}
 async function loadQuestions(){
-  const res=await fetch(GVIZ_URL,{cache:'no-store'}); const txt=await res.text();
-  const rows=parseGViz(txt)||[]; const act=rows.filter(r=>String(r.active).toUpperCase()==='TRUE').sort((a,b)=>(+a.order-+b.order));
-  if(act.length){ STATE.questions=act.map(r=>({ id:r.id, order:+r.order, prompt:r.prompt,
-    options:['A','B','C','D'].map(k=>{ let w={}; try{w=JSON.parse(r[`${k}_weights`]||'{}')}catch{}; return { key:k,label:r[`${k}_label`]||'',imageUrl:r[`${k}_image`]||'https://picsum.photos/seed/art'+k+r.id+'/800/600',weights:w }; })
-  })); return; }
-
-  // --- 폴백(15문항) ---
+  const res=await fetch(GVIZ_URL,{cache:'no-store'});
+  const txt=await res.text();
+  const rows=parseGViz(txt)||[];
+  const act=rows.filter(r=>String(r.active).toUpperCase()==='TRUE').sort((a,b)=>(+a.order-+b.order));
+  if(act.length){
+    STATE.questions=act.map(r=>({
+      id:r.id,order:+r.order,prompt:r.prompt,
+      options:['A','B','C','D'].map(k=>{
+        let w={};try{w=JSON.parse(r[`${k}_weights`]||'{}')}catch{}
+        return {key:k,label:r[`${k}_label`]||'',imageUrl:r[`${k}_image`]||'https://picsum.photos/seed/art'+k+r.id+'/800/600',weights:w};
+      })
+    }));
+    return;
+  }
+  // 시트 비어있을 경우를 대비한 내장 15문항 (가중치 포함)
   const P=(p)=>({id:p.id,order:p.order,prompt:p.q,options:[
-    {key:'A',label:p.A,img:'https://picsum.photos/seed/a'+p.order+'/800/600',w:p.wA},
-    {key:'B',label:p.B,img:'https://picsum.photos/seed/b'+p.order+'/800/600',w:p.wB},
-    {key:'C',label:p.C,img:'https://picsum.photos/seed/c'+p.order+'/800/600',w:p.wC},
-    {key:'D',label:p.D,img:'https://picsum.photos/seed/d'+p.order+'/800/600',w:p.wD},
+    {key:'A',label:p.A,imageUrl:'https://images.unsplash.com/photo-1608889175123-8b5f7c9c7a41?q=80&w=800&auto=format&fit=crop',weights:p.wA},
+    {key:'B',label:p.B,imageUrl:'https://images.unsplash.com/photo-1526318472351-c75fcf070305?q=80&w=800&auto=format&fit=crop',weights:p.wB},
+    {key:'C',label:p.C,imageUrl:'https://images.unsplash.com/photo-1604335399103-51a8a1c57ac0?q=80&w=800&auto=format&fit=crop',weights:p.wC},
+    {key:'D',label:p.D,imageUrl:'https://images.unsplash.com/photo-1560439513-74b037a25d8b?q=80&w=800&auto=format&fit=crop',weights:p.wD},
   ]});
-  const Q=[ /* …(생략 없이 15문항, 이전 답변과 동일 가중치)… */
-    {id:'q1',order:1,q:'새로운 미술 도구를 발견했어요! 먼저 무엇을 해볼까요?',A:'설명서를 꼼꼼히 읽는다',B:'종이에 이것저것 탐색해본다',C:'친구들과 아이디어를 나눈다',D:'특이하고 재미있는 것을 상상한다',
-      wA:{'디테일':0.7,'자기성찰/개선':0.3}, wB:{'도전성':0.6,'창의 문제해결':0.4}, wC:{'소통력':0.7,'서사력':0.3}, wD:{'창의 문제해결':0.7,'도전성':0.3}},
-    {id:'q2',order:2,q:'그림에 어떤 이야기를 담고 싶나요?',A:'모험 이야기',B:'감정을 색과 형태로',C:'현실 건물을 새롭게 디자인',D:'숨겨진 작은 세계',
-      wA:{'서사력':0.7,'공간감':0.3}, wB:{'정서표현/공감':0.7,'색감각':0.3}, wC:{'공간감':0.6,'디테일':0.4}, wD:{'관찰력':0.4,'서사력':0.6}},
-    {id:'q3',order:3,q:'두 그림 중 더 조화로운 색은?',A:'명도/채도 균형',B:'강한 대비',C:'파스텔 부드러움',D:'다채로운 원색',
-      wA:{'미적 판단력':0.6,'색감각':0.4}, wB:{'도전성':0.5,'색감각':0.5}, wC:{'색감각':0.7,'정서표현/공감':0.3}, wD:{'색감각':0.6,'구성력':0.4}},
-    {id:'q4',order:4,q:'그리다 실수했어요. 어떻게 할까요?',A:'지우고 다시',B:'실수를 살려본다',C:'쉬었다가 완성',D:'피드백 받기',
-      wA:{'디테일':0.6,'꾸준성':0.4}, wB:{'창의 문제해결':0.7,'도전성':0.3}, wC:{'꾸준성':0.7,'자기성찰/개선':0.3}, wD:{'소통력':0.7,'자기성찰/개선':0.3}},
-    {id:'q5',order:5,q:'미술관에서 가장 오래 보는 것은?',A:'빛과 그림자 분위기',B:'숨겨진 작은 요소',C:'작가의 마음 상상',D:'재료/기법 관찰',
-      wA:{'공간감':0.5,'색감각':0.5}, wB:{'관찰력':0.6,'디테일':0.4}, wC:{'서사력':0.5,'정서표현/공감':0.5}, wD:{'관찰력':0.5,'디테일':0.5}},
-    {id:'q6',order:6,q:'미래의 도시를 그린다면 시작은?',A:'레퍼런스 조사/계획',B:'아무도 못 본 건물 상상',C:'팀 아이디어 모으기',D:'재료 실험',
-      wA:{'디테일':0.5,'구성력':0.5}, wB:{'도전성':0.5,'창의 문제해결':0.5}, wC:{'소통력':0.7,'서사력':0.3}, wD:{'색감각':0.3,'창의 문제해결':0.7}},
-    {id:'q7',order:7,q:'슬픈 친구를 위해 어떤 그림?',A:'귀여운 동물',B:'감정 추상',C:'즐거운 추억',D:'밝고 희망',
-      wA:{'정서표현/공감':0.6,'색감각':0.4}, wB:{'정서표현/공감':0.7,'미적 판단력':0.3}, wC:{'서사력':0.6,'소통력':0.4}, wD:{'색감각':0.5,'서사력':0.5}},
-    {id:'q8',order:8,q:'편안한 느낌의 색 조합은?',A:'따뜻한 계열',B:'차가운 계열',C:'강한 보색',D:'파스텔',
-      wA:{'색감각':0.6,'정서표현/공감':0.4}, wB:{'색감각':0.6,'미적 판단력':0.4}, wC:{'도전성':0.6,'색감각':0.4}, wD:{'색감각':0.7,'미적 판단력':0.3}},
-    {id:'q9',order:9,q:'잘 안 될 때 어떻게 해요?',A:'쉬운 과제로 변경',B:'몇 번 더 후 포기',C:'될 때까지 + 도움',D:'원인 분석/새 방법',
-      wA:{'도전성':0.3,'꾸준성':0.2}, wB:{'꾸준성':0.3,'자기성찰/개선':0.2}, wC:{'꾸준성':0.6,'소통력':0.4}, wD:{'자기성찰/개선':0.6,'창의 문제해결':0.4}},
-    {id:'q10',order:10,q:'이 그림에서 가장 눈에 띄는 것은?',A:'전체 구도',B:'작은 패턴/질감',C:'인물의 감정',D:'독특한 재료/기법',
-      wA:{'구성력':0.7,'공간감':0.3}, wB:{'디테일':0.6,'관찰력':0.4}, wC:{'정서표현/공감':0.6,'서사력':0.4}, wD:{'관찰력':0.5,'도전성':0.5}},
-    {id:'q11',order:11,q:'내 그림 제목을 붙인다면?',A:'보이는 대로',B:'상상하게 만드는 제목',C:'기분 좋아지는 제목',D:'색/형태 강조',
-      wA:{'관찰력':0.6,'디테일':0.4}, wB:{'서사력':0.6,'창의 문제해결':0.4}, wC:{'정서표현/공감':0.6,'소통력':0.4}, wD:{'색감각':0.6,'미적 판단력':0.4}},
-    {id:'q12',order:12,q:'세상에 없는 동물, 어떤가요?',A:'실제 동물 조합',B:'완전히 새로운 형태',C:'감정/말하는 동물',D:'특별 재료로 꾸미기',
-      wA:{'관찰력':0.5,'디테일':0.5}, wB:{'창의 문제해결':0.7,'도전성':0.3}, wC:{'서사력':0.6,'정서표현/공감':0.4}, wD:{'색감각':0.5,'디테일':0.5}},
-    {id:'q13',order:13,q:'내 그림을 보여줄 때 듣고 싶은 말?',A:'칭찬',B:'구체적 조언',C:'이야기가 떠올라',D:'어떤 재료야?',
-      wA:{'소통력':0.6,'정서표현/공감':0.4}, wB:{'자기성찰/개선':0.6,'소통력':0.4}, wC:{'서사력':0.6,'소통력':0.4}, wD:{'관찰력':0.6,'소통력':0.4}},
-    {id:'q14',order:14,q:'두 풍경 중 더 안정적인 구도는?',A:'균형 잡힌 구도',B:'치우친 구도',
-      wA:{'구성력':0.7,'미적 판단력':0.3}, wB:{'도전성':0.4,'구성력':0.6}},
-    {id:'q15',order:15,q:'그림이 안 그려져 답답할 때 생각은?',A:'재능 없나 봐',B:'조금만 더!',C:'다른 방법?',D:'완성 상상',
-      wA:{'자기성찰/개선':0.4}, wB:{'꾸준성':0.6,'도전성':0.4}, wC:{'창의 문제해결':0.6,'자기성찰/개선':0.4}, wD:{'서사력':0.4,'정서표현/공감':0.6}}
+  STATE.questions=[
+    P({id:'q1',order:1,q:'새로운 미술 도구를 발견했어요! 먼저 무엇을 해볼까요?',A:'설명서를 꼼꼼히 읽는다',B:'종이에 이것저것 탐색해본다',C:'친구들과 아이디어를 나눈다',D:'특이하고 재미있는 것을 상상한다',wA:{'디테일':0.7,'자기성찰/개선':0.3},wB:{'도전성':0.6,'창의 문제해결':0.4},wC:{'소통력':0.7,'서사력':0.3},wD:{'창의 문제해결':0.7,'도전성':0.3}}),
+    P({id:'q2',order:2,q:'그림에 어떤 이야기를 담고 싶나요?',A:'모험 이야기',B:'감정을 색과 형태로',C:'현실 건물 새 디자인',D:'숨겨진 작은 세계',wA:{'서사력':0.7,'공간감':0.3},wB:{'정서표현/공감':0.7,'색감각':0.3},wC:{'공간감':0.6,'디테일':0.4},wD:{'관찰력':0.4,'서사력':0.6}}),
+    P({id:'q3',order:3,q:'두 그림 중 더 조화로운 색은?',A:'명도·채도 균형',B:'강한 대비',C:'파스텔 부드러움',D:'다채로운 원색',wA:{'미적 판단력':0.6,'색감각':0.4},wB:{'도전성':0.5,'색감각':0.5},wC:{'색감각':0.7,'정서표현/공감':0.3},wD:{'색감각':0.6,'구성력':0.4}}),
+    P({id:'q4',order:4,q:'그리다 실수했어요. 어떻게 할까요?',A:'지우고 다시',B:'실수를 살려본다',C:'쉬었다가 완성',D:'피드백 받기',wA:{'디테일':0.6,'꾸준성':0.4},wB:{'창의 문제해결':0.7,'도전성':0.3},wC:{'꾸준성':0.7,'자기성찰/개선':0.3},wD:{'소통력':0.7,'자기성찰/개선':0.3}}),
+    P({id:'q5',order:5,q:'미술관에서 가장 오래 보는 것은?',A:'빛과 그림자 분위기',B:'숨겨진 작은 요소',C:'작가의 마음 상상',D:'재료/기법 관찰',wA:{'공간감':0.5,'색감각':0.5},wB:{'관찰력':0.6,'디테일':0.4},wC:{'서사력':0.5,'정서표현/공감':0.5},wD:{'관찰력':0.5,'디테일':0.5}}),
+    P({id:'q6',order:6,q:'미래의 도시를 그린다면 시작은?',A:'레퍼런스 조사/계획',B:'아무도 못 본 건물 상상',C:'팀 아이디어 모으기',D:'재료 실험',wA:{'디테일':0.5,'구성력':0.5},wB:{'도전성':0.5,'창의 문제해결':0.5},wC:{'소통력':0.7,'서사력':0.3},wD:{'색감각':0.3,'창의 문제해결':0.7}}),
+    P({id:'q7',order:7,q:'슬픈 친구를 위해 어떤 그림?',A:'귀여운 동물',B:'감정 추상',C:'즐거운 추억',D:'밝고 희망',wA:{'정서표현/공감':0.6,'색감각':0.4},wB:{'정서표현/공감':0.7,'미적 판단력':0.3},wC:{'서사력':0.6,'소통력':0.4},wD:{'색감각':0.5,'서사력':0.5}}),
+    P({id:'q8',order:8,q:'편안한 느낌의 색 조합은?',A:'따뜻한 계열',B:'차가운 계열',C:'강한 보색',D:'파스텔',wA:{'색감각':0.6,'정서표현/공감':0.4},wB:{'색감각':0.6,'미적 판단력':0.4},wC:{'도전성':0.6,'색감각':0.4},wD:{'색감각':0.7,'미적 판단력':0.3}}),
+    P({id:'q9',order:9,q:'잘 안 될 때 어떻게 해요?',A:'쉬운 과제로 변경',B:'몇 번 더 후 포기',C:'될 때까지+도움',D:'원인 분석/새 방법',wA:{'도전성':0.3,'꾸준성':0.2},wB:{'꾸준성':0.3,'자기성찰/개선':0.2},wC:{'꾸준성':0.6,'소통력':0.4},wD:{'자기성찰/개선':0.6,'창의 문제해결':0.4}}),
+    P({id:'q10',order:10,q:'이 그림에서 가장 눈에 띄는 것은?',A:'전체 구도',B:'작은 패턴/질감',C:'인물의 감정',D:'독특한 재료/기법',wA:{'구성력':0.7,'공간감':0.3},wB:{'디테일':0.6,'관찰력':0.4},wC:{'정서표현/공감':0.6,'서사력':0.4},wD:{'관찰력':0.5,'도전성':0.5}}),
+    P({id:'q11',order:11,q:'내 그림 제목을 붙인다면?',A:'보이는 대로',B:'상상하게 만드는 제목',C:'기분 좋아지는 제목',D:'색/형태 강조',wA:{'관찰력':0.6,'디테일':0.4},wB:{'서사력':0.6,'창의 문제해결':0.4},wC:{'정서표현/공감':0.6,'소통력':0.4},wD:{'색감각':0.6,'미적 판단력':0.4}}),
+    P({id:'q12',order:12,q:'세상에 없는 동물, 어떤가요?',A:'실제 동물 조합',B:'완전히 새로운 형태',C:'감정/말하는 동물',D:'특별 재료로 꾸미기',wA:{'관찰력':0.5,'디테일':0.5},wB:{'창의 문제해결':0.7,'도전성':0.3},wC:{'서사력':0.6,'정서표현/공감':0.4},wD:{'색감각':0.5,'디테일':0.5}}),
+    P({id:'q13',order:13,q:'내 그림을 보여줄 때 듣고 싶은 말?',A:'칭찬',B:'구체적 조언',C:'이야기가 떠올라',D:'어떤 재료야?',wA:{'소통력':0.6,'정서표현/공감':0.4},wB:{'자기성찰/개선':0.6,'소통력':0.4},wC:{'서사력':0.6,'소통력':0.4},wD:{'관찰력':0.6,'소통력':0.4}}),
+    P({id:'q14',order:14,q:'두 풍경 중 더 안정적인 구도는?',A:'균형 잡힌 구도',B:'치우친 구도',wA:{'구성력':0.7,'미적 판단력':0.3},wB:{'도전성':0.4,'구성력':0.6}}),
+    P({id:'q15',order:15,q:'그림이 안 그려져 답답할 때 생각은?',A:'재능 없나 봐',B:'조금만 더!',C:'다른 방법?',D:'완성 상상',wA:{'자기성찰/개선':0.4},wB:{'꾸준성':0.6,'도전성':0.4},wC:{'창의 문제해결':0.6,'자기성찰/개선':0.4},wD:{'서사력':0.4,'정서표현/공감':0.6}})
   ];
-  STATE.questions=Q.map(q=>({id:q.id,order:q.order,prompt:q.q,
-    options:[
-      {key:'A',label:q.A,imageUrl:'https://picsum.photos/seed/a'+q.order+'/800/600',weights:q.wA},
-      {key:'B',label:q.B,imageUrl:'https://picsum.photos/seed/b'+q.order+'/800/600',weights:q.wB},
-      {key:'C',label:q.C,imageUrl:'https://picsum.photos/seed/c'+q.order+'/800/600',weights:q.wC},
-      {key:'D',label:q.D,imageUrl:'https://picsum.photos/seed/d'+q.order+'/800/600',weights:q.wD}
-    ]
-  }));
 }
 
-/* ---------- START ---------- */
+/* ───────────────── START ───────────────── */
 function viewStart(){
-  app().innerHTML=`
+  $('app').innerHTML=`
     <div class="hero">
       <div class="heroTitle">바른미술학원 · 미술적성테스트</div>
-      <p class="heroDesc">
-        아이가 그림을 대할 때 <b>무엇을 즐기고</b> <b>어디서 강점이 드러나는지</b> 15문항으로 가볍게 확인합니다.<br/>
-        분석은 <b>핵심 8가지 역량</b>(관찰·색채·서사·공간·디테일·도전·소통·꾸준성)과<br/>
-        <b>심화 4가지 기준</b>(미적 판단·정서표현/공감·창의 문제해결·자기성찰/개선)으로 세밀하게 진행돼요.<br/>
-        선택만 하면 즉시 결과를 보고, PDF로 저장할 수 있습니다.
-      </p>
-      <button class="btn" onclick="navGo('consent')" onmousemove="this.style.setProperty('--x', event.offsetX+'px'); this.style.setProperty('--y', event.offsetY+'px')">시작하기</button>
+      <p class="heroDesc">15문항으로 아이의 흥미와 강점을 빠르게 확인하고, <b>8개 핵심 역량</b>(관찰·색채·서사·공간·디테일·도전·소통·꾸준성)과 <b>4개 심화 기준</b>(미적 판단·정서표현/공감·창의 문제해결·자기성찰/개선)으로 분석합니다. 완료 즉시 결과 확인과 PDF 저장이 가능해요.</p>
+      <button class="btn" onclick="navGo('consent')" onmousemove="this.style.setProperty('--x',event.offsetX+'px');this.style.setProperty('--y',event.offsetY+'px')">시작하기</button>
       <div class="small muted" style="margin-top:12px">※ 본 테스트는 <b>교육 가이드</b> 목적이며, 의학/임상 진단이 아닙니다.</div>
     </div>
-    <div style="height:12px"></div>
-    <div class="grid-3">
-      <div class="feature">
-        <h3>평가 8가지</h3>
-        <p class="small muted">관찰력·색감각·서사력·공간감·디테일·도전성·소통력·꾸준성 — 수업 설계의 핵심 축으로 사용됩니다.</p>
-      </div>
-      <div class="feature">
-        <h3>심화 4가지</h3>
-        <p class="small muted">미적 판단력·정서표현/공감·창의 문제해결·자기성찰/개선 — 작품 완성도와 성장 속도를 결정하는 보강 축입니다.</p>
-      </div>
-      <div class="feature">
-        <h3>진행 안내</h3>
-        <p class="small muted">각 문항마다 보기 4개 중 1개를 선택하세요. (PC: 화살표/Enter) 완료 즉시 결과 확인 및 PDF 저장이 가능합니다.</p>
-      </div>
+    <div class="grid-3" style="margin-top:10px">
+      <div class="section"><h3>평가 8가지</h3><p class="small muted">관찰력·색감각·서사력·공간감·디테일·도전성·소통력·꾸준성</p></div>
+      <div class="section"><h3>심화 4가지</h3><p class="small muted">미적 판단력·정서표현/공감·창의 문제해결·자기성찰/개선</p></div>
+      <div class="section"><h3>진행 안내</h3><p class="small muted">보기 4개 중 1개 선택(PC 화살표/Enter) → 완료 즉시 결과·PDF</p></div>
     </div>`;
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-/* ---------- CONSENT (체크만) ---------- */
+/* ───────────────── CONSENT ───────────────── */
 function viewConsent(){
-  app().innerHTML=`<h2 class="center">개인정보 수집·이용 동의서</h2>
-  <p class="muted small center">본 테스트는 <b>교육 가이드</b> 목적이며, 의학/임상 진단이 아닙니다.</p>
-
-  <div class="acc" style="margin-top:10px">
-    ${['1) 수집·이용 목적','2) 수집 항목','3) 보관 기간','4) 처리·보관','5) 권리','6) 문의'].map((t,i)=>`
-      <div class="acc-item ${i<2?'open':''}">
-        <div class="acc-head"><span>${t}</span><span>▾</span></div>
-        <div class="acc-body small">${
-          [
-            '① 테스트 제공·결과 산출 ② 결과지·코칭 가이드 제공 ③ 상담 품질 개선 ④ (선택) 결과지 이메일 전송',
-            '<b>필수</b>: 아동 이름·나이·학년 / 보호자 이름·연락처 / 문항 응답<br><b>선택</b>: 이메일, 관심 캠퍼스',
-            '수집일로부터 <b>12개월</b> 보관 후 지체 없이 파기합니다.',
-            'Google Forms/Sheets에 저장·처리(국내·외 서버).',
-            '동의 거부 가능(거부 시 서비스 제한 가능). 열람·정정·삭제 요청 가능.',
-            '관리자 이메일: <b>barunart1004@gmail.com</b>'
-          ][i]
-        }</div>
-      </div>`).join('')}
-  </div>
-
-  <div class="section" style="margin-top:14px">
-    <div class="agreeRow"><span>(필수) 개인정보 수집·이용에 <b>동의합니다.</b></span><input type="checkbox" id="agree1"></div>
-    <div class="agreeRow"><span>(필수) 만 14세 미만 아동의 법정대리인으로서 <b>동의합니다.</b></span><input type="checkbox" id="agree2"></div>
-  </div>
-
-  <div class="center" style="margin-top:16px; display:flex; gap:10px; justify-content:center">
-    <button class="btn-ghost" id="btn_open">전문 펼치기</button>
-    <button class="btn-ghost" id="btn_close">모두 접기</button>
-    <button class="btn" id="btn_consent" disabled>다음</button>
-  </div>`;
-
+  $('app').innerHTML=`
+    <h2 class="center">개인정보 수집·이용 동의서</h2>
+    <p class="muted small center">본 테스트는 <b>교육 가이드</b> 목적이며, 의학/임상 진단이 아닙니다.</p>
+    <div class="acc" style="margin-top:10px">
+      ${['1) 수집·이용 목적','2) 수집 항목','3) 보관 기간','4) 처리·보관','5) 권리','6) 문의'].map((t,i)=>`
+        <div class="acc-item ${i<2?'open':''}">
+          <div class="acc-head"><span>${t}</span><span>▾</span></div>
+          <div class="acc-body small">${
+            [
+              '① 테스트 제공·결과 산출 ② 결과지·코칭 가이드 제공 ③ 상담 품질 개선 ④ (선택) 결과 이메일 전송',
+              '<b>필수</b>: 아동 이름·나이·학년 / 보호자 이름·연락처 / 문항 응답 · <b>선택</b>: 이메일, 관심 캠퍼스',
+              '수집일로부터 <b>12개월</b> 보관 후 파기',
+              'Google Forms/Sheets에 저장·처리(국내/외 서버)',
+              '동의 거부 가능(거부 시 서비스 제한 가능). 열람·정정·삭제 요청 가능',
+              '관리자 이메일: <b>barunart1004@gmail.com</b>'
+            ][i]
+          }</div>
+        </div>`).join('')}
+    </div>
+    <div class="section" style="margin-top:14px">
+      <div class="agreeRow"><span>(필수) 개인정보 수집·이용에 <b>동의합니다.</b></span><input type="checkbox" id="agree1"></div>
+      <div class="agreeRow"><span>(필수) 만 14세 미만 아동의 법정대리인으로서 <b>동의합니다.</b></span><input type="checkbox" id="agree2"></div>
+    </div>
+    <div class="center" style="margin-top:16px;display:flex;gap:10px;justify-content:center">
+      <button class="btn-ghost" id="btn_open">전문 펼치기</button>
+      <button class="btn-ghost" id="btn_close">모두 접기</button>
+      <button class="btn" id="btn_consent" disabled>다음</button>
+    </div>`;
   document.querySelectorAll('.acc-head').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
-  $('#btn_open').onclick=()=>document.querySelectorAll('.acc-item').forEach(it=>it.classList.add('open'));
-  $('#btn_close').onclick=()=>document.querySelectorAll('.acc-item').forEach(it=>it.classList.remove('open'));
-
-  const validate=()=>{$('#btn_consent').disabled=!( $('#agree1').checked && $('#agree2').checked );};
-  ['agree1','agree2'].forEach(id=>$(id).addEventListener('change',validate));
-  $('#btn_consent').onclick=()=>{ if(!$('#btn_consent').disabled){ STATE.step='profile'; render(); } };
-  document.addEventListener('keydown',e=>{ if(e.key==='Enter' && !$('#btn_consent').disabled){ STATE.step='profile'; render(); } },{once:true});
+  const btnO=$('btn_open'),btnC=$('btn_close'),btnN=$('btn_consent');
+  if(btnO) btnO.onclick=()=>document.querySelectorAll('.acc-item').forEach(it=>it.classList.add('open'));
+  if(btnC) btnC.onclick=()=>document.querySelectorAll('.acc-item').forEach(it=>it.classList.remove('open'));
+  const validate=()=>{ if(btnN) btnN.disabled=!( $('agree1')?.checked && $('agree2')?.checked ); };
+  ['agree1','agree2'].forEach(id=>$(id)?.addEventListener('change',validate));
+  validate();
+  if(btnN) btnN.onclick=()=>{ if(!btnN.disabled){ STATE.step='profile'; render(); } };
+  document.addEventListener('keydown',e=>{ if(e.key==='Enter' && btnN && !btnN.disabled){ STATE.step='profile'; render(); } },{once:true});
 }
 
-/* ---------- PROFILE ---------- */
+/* ───────────────── PROFILE ───────────────── */
 const CAMPUS_LIST=['강남','서초','송파','분당','판교','일산','중계','목동','잠실','수지'];
-function gradeByAge(a){ const n=Number(a||0), m={7:1,8:2,9:3,10:4,11:5,12:6}; return m[n]?`초등학교 ${m[n]}학년`:''; }
+function gradeByAge(a){const m={7:1,8:2,9:3,10:4,11:5,12:6};return m[+a]?`초등학교 ${m[+a]}학년`:''}
 function viewProfile(){
-  app().innerHTML=`<h2 class="center">프로필 정보</h2>
-  <div class="grid grid-2">
-    <div class="section">
-      <h3>아동 정보</h3>
-      <div class="grid grid-2">
-        <div><label>아동 이름</label><input id="cname" placeholder="예: 홍길동" autofocus></div>
-        <div><label>나이</label><select id="age">${[7,8,9,10,11,12].map(n=>`<option value="${n}">${n}</option>`).join('')}</select></div>
-        <div><label>학년</label><input id="grade" placeholder="자동 입력" readonly></div>
+  $('app').innerHTML=`
+    <h2 class="center">프로필 정보</h2>
+    <div class="grid grid-2">
+      <div class="section">
+        <h3>아동 정보</h3>
+        <div class="grid grid-2">
+          <div><label>아동 이름</label><input id="cname" autofocus placeholder="예: 홍길동"></div>
+          <div><label>나이</label><select id="age">${[7,8,9,10,11,12].map(n=>`<option>${n}</option>`).join('')}</select></div>
+          <div><label>학년</label><input id="grade" placeholder="자동 입력" readonly></div>
+        </div>
+      </div>
+      <div class="section">
+        <h3>연락/선택</h3>
+        <div class="grid grid-2">
+          <div><label>보호자 이름</label><input id="gname"></div>
+          <div><label>연락처</label><input id="phone" placeholder="010-0000-0000"></div>
+          <div><label>(선택) 이메일</label><input id="email" placeholder="example@email.com"></div>
+          <div><label>(선택) 관심 캠퍼스</label>
+            <input id="campus" list="campusList" placeholder="검색 또는 선택">
+            <datalist id="campusList">${CAMPUS_LIST.map(c=>`<option value="${c}">`).join('')}</datalist>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="section">
-      <h3>연락/선택</h3>
-      <div class="grid grid-2">
-        <div><label>보호자 이름</label><input id="gname" placeholder="예: 김보호자"></div>
-        <div><label>연락처</label><input id="phone" placeholder="010-0000-0000"></div>
-        <div><label>(선택) 이메일</label><input id="email" placeholder="example@email.com"></div>
-        <div><label>(선택) 관심 캠퍼스</label><input id="campus" list="campusList" placeholder="검색 또는 선택"><datalist id="campusList">${CAMPUS_LIST.map(c=>`<option value="${c}">`).join('')}</datalist></div>
-      </div>
-    </div>
-  </div>
-  <div class="center" style="margin-top:16px"><button class="btn" onclick="startTest()">테스트 시작</button></div>`;
-  const sync=()=>{$('grade').value=gradeByAge(v('age'));}; sync(); $('age').addEventListener('change',sync);
+    <div class="center" style="margin-top:16px"><button class="btn" onclick="startTest()">테스트 시작</button></div>`;
+  const sync=()=>{ $('grade').value=gradeByAge(v('age')); }; sync(); $('age').addEventListener('change',sync);
 }
 
-/* ---------- TEST ---------- */
+/* ───────────────── TEST ───────────────── */
 async function startTest(){
-  STATE.profile={ child_name:v('cname'), age:v('age'), grade:gradeByAge(v('age')), guardian:v('gname'), phone:v('phone'), email:v('email'), campus:v('campus') };
-  if(!STATE.profile.child_name || !/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(STATE.profile.phone||'')){ alert('이름/연락처를 확인해 주세요'); return; }
-  try{ await loadQuestions(); }catch(e){ console.error(e); }
-  if(!STATE.questions.length){ alert('문항을 불러오지 못했습니다. 폴백 문항으로 진행합니다.'); await loadQuestions().catch(()=>{}); }
-  STATE.idx=0; STATE.answers=[]; STATE.step='test'; render();
+  STATE.profile={child_name:v('cname'),age:v('age'),grade:gradeByAge(v('age')),guardian:v('gname'),phone:v('phone'),email:v('email'),campus:v('campus')};
+  if(!STATE.profile.child_name||!/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(STATE.profile.phone||'')){alert('이름/연락처를 확인해 주세요');return;}
+  try{await loadQuestions()}catch(e){console.error(e)}
+  if(!STATE.questions.length){await loadQuestions().catch(()=>{})}
+  STATE.idx=0;STATE.answers=[];STATE.step='test';render();
 }
 function viewTest(){
   const q=STATE.questions[STATE.idx];
   const gridCls=(window.matchMedia('(min-width:1024px)').matches?'test-grid':'grid grid-2');
-  app().innerHTML=`
+  $('app').innerHTML=`
     <div class="center small muted">Q${STATE.idx+1} / ${STATE.questions.length}</div>
     <h2 class="center" style="margin-top:6px">${q?.prompt||''}</h2>
     <div class="${gridCls}" style="margin-top:10px">
       ${q.options.map(o=>`<div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label}"
-          onclick="choose('${o.key}')" ontouchend="choose('${o.key}')"
-          onkeydown="if(event.key==='Enter'||event.key===' '){choose('${o.key}')}">
-          <img src="${o.imageUrl}" alt="${o.label}" onerror="this.style.opacity=.2" loading="lazy"><div class="cap center">${o.label}</div>
+        onclick="choose('${o.key}')" ontouchend="choose('${o.key}')"
+        onkeydown="if(event.key==='Enter'||event.key===' '){choose('${o.key}')}">
+        <img src="${o.imageUrl}" alt="${o.label}" onerror="this.style.opacity=.2" loading="lazy"><div class="cap center">${o.label}</div>
       </div>`).join('')}
     </div>
-    <div class="center" style="margin-top:18px; display:flex; gap:8px; justify-content:center">
+    <div class="center" style="margin-top:18px;display:flex;gap:8px;justify-content:center">
       <button class="btn-ghost" onclick="prev()" ${STATE.idx===0?'disabled':''}>이전</button>
-      <button class="btn" id="nextBtn" onclick="safeNext()" disabled>다음</button>
+      <button class="btn" id="nextBtn" onclick="nextOrSubmit()" disabled>다음</button>
     </div>`;
-  const handler=(e)=>{ if(e.key==='ArrowRight'){ safeNext(); } if(e.key==='ArrowLeft'){ prev(); } if(e.key==='Enter'){ const n=$('nextBtn'); if(n && !n.disabled) safeNext(); } };
-  document.addEventListener('keydown',handler,{once:true});
+  const handler=(e)=>{if(e.key==='ArrowRight'){nextOrSubmit()}if(e.key==='ArrowLeft'){prev()}if(e.key==='Enter'){const n=$('nextBtn');if(n&&!n.disabled)nextOrSubmit()}};document.addEventListener('keydown',handler,{once:true});
 }
 function choose(key){
   const q=STATE.questions[STATE.idx];
-  ['A','B','C','D'].forEach(k=>{ const n=$(`opt_${k}`); if(n) n.classList.remove('sel'); });
-  const node=$(`opt_${key}`); if(node){ node.classList.add('sel'); node.animate([{transform:'scale(1)'},{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:160}); }
+  ['A','B','C','D'].forEach(k=>{$(`opt_${k}`)?.classList.remove('sel')});
+  const node=$(`opt_${key}`); if(node){node.classList.add('sel'); node.animate([{transform:'scale(1)'},{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:160});}
   const opt=q.options.find(o=>o.key===key);
-  STATE.answers[STATE.idx]={ qid:q.id, key, weights:opt.weights||{} };
+  STATE.answers[STATE.idx]={qid:q.id,key,weights:opt.weights||{}};
   const n=$('nextBtn'); if(n) n.disabled=false;
 }
-function safeNext(){
-  try{
-    if(!STATE.answers[STATE.idx]){ alert('하나를 선택해 주세요'); return; }
-    if(STATE.idx<STATE.questions.length-1){ STATE.idx++; render(); }
-    else { submitAllSafe(); }
-  }catch(e){ console.error(e); submitAllSafe(); }
+function nextOrSubmit(){
+  if(!STATE.answers[STATE.idx]){alert('하나를 선택해 주세요');return;}
+  if(STATE.idx<STATE.questions.length-1){STATE.idx++;render();}
+  else{submitAll();}
 }
-function prev(){ if(STATE.idx>0){ STATE.idx--; render(); } }
+function prev(){if(STATE.idx>0){STATE.idx--;render();}}
 
-/* ---------- SCORE / SUMMARY ---------- */
+/* ───────────────── 점수/총평 ───────────────── */
 function aggregateScores(ans){
   const sum={}; DOMAINS.forEach(d=>sum[d]=0);
   ans.forEach(a=>Object.entries(a.weights||{}).forEach(([k,v])=>sum[k]=(sum[k]||0)+Number(v||0)));
-  const n=ans.length||1, raw={}; DOMAINS.forEach(d=>{ const v=(sum[d]||0)/n*4; raw[d]=Math.max(0,Math.round(v*10)/10); }); return raw;
+  const n=ans.length||1, raw={};
+  DOMAINS.forEach(d=>{const v=(sum[d]||0)/n*4; raw[d]=Math.max(0,Math.round(v*10)/10)});
+  return raw;
 }
-const adjust=v=>Math.round((2 + v/2) * 10)/10;
-function band(v){ if(v>=3.6) return 'S'; if(v>=3.2) return 'A'; if(v>=2.8) return 'A-'; if(v>=2.4) return 'B+'; if(v>=2.0) return 'B'; return 'B-'; }
-const DETAIL={
- '관찰력':n=>`${n}님은 대상을 오래 바라보고 특징을 뽑아내는 힘이 좋아요.`,
- '색감각':n=>`${n}님은 색의 분위기와 조합을 읽는 감각이 뛰어나요.`,
- '서사력':n=>`${n}님은 장면 속 이야기를 자연스럽게 엮어내요.`,
- '공간감':n=>`${n}님은 원근과 스케일로 입체감을 안정적으로 구성해요.`,
- '디테일':n=>`${n}님은 마감과 표현의 섬세함이 돋보여요.`,
- '도전성':n=>`${n}님은 새로운 방법을 두려워하지 않고 시도합니다.`,
- '소통력':n=>`${n}님은 작품의 의도를 말과 글로 설득력 있게 전해요.`,
- '꾸준성':n=>`${n}님은 계획을 밀고 나가는 힘이 있어요.`,
- '미적 판단력':n=>`${n}님은 조화롭고 어울리는 선택을 잘합니다.`,
- '정서표현/공감':n=>`${n}님은 감정을 색과 형태로 섬세하게 표출해요.`,
- '창의 문제해결':n=>`${n}님은 제약 속에서도 새로운 방법을 찾아요.`,
- '자기성찰/개선':n=>`${n}님은 스스로 점검하고 더 좋게 바꾸려는 태도가 있어요.`
-};
-const PRAISE={'S':k=>`<b>${k}</b>에서 타고난 재능이 또렷합니다!`,'A':k=>`<b>${k}</b> 감각이 뛰어나요.`,'A-':k=>`<b>${k}</b> 실력이 탄탄해요.`,'B+':k=>`<b>${k}</b>이 안정적이에요.`,'B-':k=>`<b>${k}</b>의 기본기를 넓히면 금방 성장합니다.`};
-const TRACK={'색감각':'색채 기반 일러스트/디자인','공간감':'건축·풍경·입체 장면','서사력':'스토리텔링·만화','관찰력':'관찰 드로잉·자연물 탐구','구성력':'포스터·레이아웃','디테일':'텍스처·리얼리즘','소통력':'발표·비평·작가노트','도전성':'실험적 매체','미적 판단력':'큐레이션·레퍼런스 분석','정서표현/공감':'감정 표현 프로젝트','창의 문제해결':'제한 미션·디자인 씽킹','자기성찰/개선':'리메이크·포트폴리오 개선','꾸준성':'데일리 스케치'};
-function buildSummary(s, top3, name){
-  const f1=TRACK[top3[0]]||'', f2=TRACK[top3[1]]||'', f3=TRACK[top3[2]]||'';
+const adjust=v=>Math.round((2+v/2)*10)/10; // 2.0~4.0 보정
+function band(v){if(v>=3.6)return'S';if(v>=3.2)return'A';if(v>=2.8)return'A-';if(v>=2.4)return'B+';if(v>=2.0)return'B';return'B-'}
+const DETAIL={'관찰력':n=>`${n}님은 대상을 오래 관찰해 특징을 뽑아내는 힘이 좋아요.`,
+'색감각':n=>`${n}님은 색의 분위기와 조합을 읽는 감각이 뛰어나요.`,
+'서사력':n=>`${n}님은 장면 속 이야기를 자연스럽게 엮어냅니다.`,
+'공간감':n=>`${n}님은 원근과 스케일을 활용해 입체감 있는 화면을 구성해요.`,
+'디테일':n=>`${n}님은 마감과 표현의 섬세함이 돋보입니다.`,
+'도전성':n=>`${n}님은 새로운 방법을 두려워하지 않고 시도합니다.`,
+'소통력':n=>`${n}님은 작품 의도를 말과 글로 설득력 있게 전해요.`,
+'꾸준성':n=>`${n}님은 계획을 밀고 나가는 힘이 있어요.`,
+'미적 판단력':n=>`${n}님은 조화롭고 어울리는 선택을 잘 합니다.`,
+'정서표현/공감':n=>`${n}님은 감정을 색과 형태로 섬세하게 표출합니다.`,
+'창의 문제해결':n=>`${n}님은 제약 속에서도 새로운 해결을 찾아요.`,
+'자기성찰/개선':n=>`${n}님은 스스로 점검하고 더 좋게 바꾸려는 태도가 있어요.`};
+const PRAISE={'S':k=>`<b>${k}</b>에서 타고난 재능이 또렷합니다!`,
+'A':k=>`<b>${k}</b> 감각이 뛰어나요.`,
+'A-':k=>`<b>${k}</b> 실력이 탄탄해요.`,
+'B+':k=>`<b>${k}</b>이 안정적입니다.`,
+'B':k=>`<b>${k}</b>의 기초가 좋아 더 빠르게 성장할 수 있어요.`,
+'B-':k=>`<b>${k}</b>은(는) 루틴과 연습으로 금방 끌어올릴 수 있어요.`};
+const TRACK={'색감각':'색채 기반 일러스트/디자인','공간감':'건축·풍경·입체 장면','서사력':'스토리텔링·만화','관찰력':'관찰 드로잉·자연물 탐구','구성력':'포스터·레이아웃',
+'디테일':'텍스처·리얼리즘','소통력':'발표·비평·작가노트','도전성':'실험적 매체','미적 판단력':'큐레이션·레퍼런스 분석','정서표현/공감':'감정 표현 프로젝트','창의 문제해결':'제한 미션·디자인 씽킹','자기성찰/개선':'리메이크·포트폴리오 개선','꾸준성':'데일리 스케치'};
+function buildSummary(s,top3,name){
+  top3=top3||[];
+  const f=(k)=>TRACK[k]||'핵심 트랙';
   const hi=Object.values(s).filter(v=>v>=3.0).length;
-  const breadth = hi>=7 ? '여러 영역이 고르게 높아 폭넓은 잠재력을 보여줍니다'
-                : hi>=4 ? '핵심 축이 뚜렷하면서도 보조 역량이 안정적입니다'
-                        : '강점이 선명해 집중 훈련에 유리한 유형입니다';
-  return `${name}님은 <b>${top3.join('·')}</b>에서 두드러진 강점을 보였습니다. ${breadth}. 특히 <b>${top3[0]}</b>은(는) <b>${f1}</b>에 적합하며, <b>${top3[1]}</b>·<b>${top3[2]}</b>는 <b>${f2}</b>, <b>${f3}</b>로 확장하면 좋습니다. 수업은 상위 3개 역량을 메인 축으로, 나머지는 루틴·과제에서 보조로 연결하면 몰입도와 완성도가 빠르게 올라갑니다.`;
+  const breadth=hi>=7?'여러 영역이 고르게 높아 폭넓은 잠재력을 보여줍니다.'
+    :hi>=4?'핵심 축이 뚜렷하면서 보조 역량도 안정적입니다.'
+    :'강점이 선명해 집중 훈련에 유리한 유형입니다.';
+  return `${name}님은 <b>${top3.join('·')||'강점 영역'}</b>에서 특히 우수했습니다. ${breadth} 
+  상위 영역을 바탕으로 <b>${f(top3[0]||top3[1]||top3[2])}</b> 중심의 프로젝트를 권장하며, 
+  <b>${top3[1]||''}</b>${top3[1]?', ':''}${top3[2]||''}는 <b>${[f(top3[1]),f(top3[2])].filter(Boolean).join(', ')}</b>로 자연스럽게 확장할 수 있습니다.`;
 }
-function nowKST(){ const d=new Date(),p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())} KST`; }
+function nowKST(){const d=new Date(),p=n=>String(n).padStart(2,'0');return`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())} KST`}
 
-/* submit with strong guards */
-async function submitAllSafe(){
+/* ───────────────── 제출(시트 저장) ───────────────── */
+async function submitAll(){
   try{
     const raw=aggregateScores(STATE.answers);
     const scores=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,adjust(v)]));
     const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3);
     const resultId=(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36));
 
-    try{ // 저장 실패해도 무시
+    // 시트 저장
+    try{
       const form=new FormData();
       const answersWithMeta={profile:STATE.profile,questions:STATE.answers};
-      form.append(F.child_name,STATE.profile.child_name); form.append(F.age,STATE.profile.age); form.append(F.grade,STATE.profile.grade);
-      form.append(F.guardian,STATE.profile.guardian); form.append(F.phone,STATE.profile.phone); form.append(F.campus,STATE.profile.campus||'');
-      form.append(F.answers,JSON.stringify(answersWithMeta)); form.append(F.scores,JSON.stringify(scores));
-      form.append(F.top3,top3.join(',')); form.append(F.resultId,resultId); form.append(F.timestamp,nowKST());
+      form.append(F.child_name,STATE.profile.child_name);
+      form.append(F.age,STATE.profile.age);
+      form.append(F.grade,STATE.profile.grade);
+      form.append(F.guardian,STATE.profile.guardian);
+      form.append(F.phone,STATE.profile.phone);
+      form.append(F.campus,STATE.profile.campus||'');
+      form.append(F.answers,JSON.stringify(answersWithMeta));
+      form.append(F.scores,JSON.stringify(scores));
+      form.append(F.top3,top3.join(','));           // ← top3 영역명 저장
+      form.append(F.resultId,resultId);
+      form.append(F.timestamp,nowKST());
       fetch(FORM_ACTION,{method:'POST',mode:'no-cors',body:form}).catch(()=>{});
-    }catch(e){ console.warn('폼 저장 실패(무시):',e); }
+    }catch(e){console.warn('폼 저장 실패(무시):',e)}
 
     STATE.result={scores,top3,resultId};
   }catch(e){
-    console.error('점수 계산 오류(그래도 결과 화면 진입):',e);
+    console.error('점수 오류:',e);
     STATE.result={scores:{},top3:[],resultId:Date.now().toString(36)};
   }
   STATE.step='result'; render();
 }
 
-/* ---------- RESULT ---------- */
-let CHARTS=[]; function destroyCharts(){ CHARTS.forEach(c=>c.destroy?.()); CHARTS=[]; }
+/* ───────────────── RESULT ───────────────── */
+let CHARTS=[]; function destroyCharts(){CHARTS.forEach(c=>c.destroy?.());CHARTS=[]}
 function viewResult(){
   const r=STATE.result, s=r?.scores||{};
-  const totalMax = DOMAINS.length*4;
-  const overall = Math.round((Object.values(s).reduce((a,b)=>a+(+b||0),0))*10)/10 || 0;
+  const totalMax=DOMAINS.length*4;
+  const overall=Math.round((Object.values(s).reduce((a,b)=>a+(+b||0),0))*10)/10||0;
 
-  app().innerHTML=`
+  $('app').innerHTML=`
     <div class="block callout" style="text-align:center">
       <div class="chip" style="margin:0 auto 8px;display:inline-block">테스트 완료</div>
-      <h2 style="margin:0 0 10px"><b>${STATE.profile.child_name}</b>님, 오늘 멋지게 해냈어요!</h2>
+      <h2 style="margin:0 0 10px"><b>${STATE.profile.child_name}</b>님, 오늘 정말 멋졌어요!</h2>
       <div class="kpi" style="justify-content:center"><div class="num" style="font-size:52px">${overall.toFixed(1)}</div><div class="unit">/ ${totalMax}</div></div>
-      <p class="small" style="margin-top:10px;color:#0f172a;font-size:15px;line-height:1.8">${buildSummary(s, r.top3, STATE.profile.child_name)}</p>
+      <p class="small" style="margin-top:10px;color:#0f172a;font-size:15px;line-height:1.8">${buildSummary(s,r.top3,STATE.profile.child_name)}</p>
       <div class="chips" style="margin-top:10px;justify-content:center">${(r.top3||[]).map(t=>`<span class="chip">우수: ${t}</span>`).join('')}</div>
     </div>
 
@@ -493,48 +487,49 @@ function viewResult(){
     <div class="block">
       <h3>항목별 해석 & 일일 15분 훈련</h3>
       <div class="grid grid-2">
-        ${DOMAINS.map(k=>{ const v=+(s[k]||0), b=band(v), w=Math.min(100,(v/4)*100);
+        ${DOMAINS.map(k=>{
+          const v=+(s[k]||0), b=band(v), w=Math.min(100,(v/4)*100);
           const missionHi={'관찰력':'창밖 사물 3개 1분 드로잉','색감각':'팔레트 3색으로 오늘의 물건','서사력':'4컷 이야기','공간감':'박스 5개 원근','디테일':'텍스처 3종 묘사','도전성':'처음 쓰는 도구 1개','소통력':'작가노트 3문장','꾸준성':'5일 연속 10분 손풀기','미적 판단력':'좋은/아쉬운 예 1개 찾기','정서표현/공감':'오늘 기분 색 3개','창의 문제해결':'실수 1곳 장점화','자기성찰/개선':'지난 그림 리메이크'}[k];
           const missionLo={'관찰력':'물체 윤곽선 5분','색감각':'따뜻/차가운 비교','서사력':'처음-중간-끝 썸네일','공간감':'앞·중·뒤 레이어','디테일':'선 굵기 3단계','도전성':'낯선 주제 1개','소통력':'가족 앞 30초 발표','꾸준성':'요일 루틴 체크','미적 판단력':'왜 좋은지 2문장','정서표현/공감':'친구 응원 엽서','창의 문제해결':'5분 아이디어 3개','자기성찰/개선':'자가체크 5항목'}[k];
-          const miss = v>=3.2 ? missionHi : missionLo;
-          return `<div style="border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff;box-shadow:0 10px 26px rgba(16,24,40,.06)">
-            <div style="display:flex;justify-content:space-between;align-items:flex-end">
-              <strong>${k}</strong>
-              <div class="kpi"><div class="num" style="font-size:28px">${v.toFixed(1)}</div><div class="unit">/ 4.0</div></div>
-            </div>
-            <div class="topprogress" style="height:10px;margin:8px 0 10px"><div style="width:${w}%;height:100%;background:linear-gradient(90deg,#B9C8FF,#9DE5D5,#FFD9BE)"></div></div>
-            <div class="small" style="color:#0f172a">${DETAIL[k](STATE.profile.child_name)}</div>
-            <div class="small" style="margin-top:6px;color:#0f172a">${PRAISE[b](k)}</div>
-            <div class="small" style="margin-top:6px"><b>오늘의 15분:</b> ${miss}</div>
-          </div>`; }).join('')}
+          const miss=(v>=3.2?missionHi:missionLo);
+          return `
+            <div style="border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff;box-shadow:0 10px 26px rgba(16,24,40,.06)">
+              <div style="display:flex;justify-content:space-between;align-items:flex-end">
+                <strong>${k}</strong>
+                <div class="kpi"><div class="num" style="font-size:28px">${v.toFixed(1)}</div><div class="unit">/ 4.0</div></div>
+              </div>
+              <div class="topprogress" style="height:10px;margin:8px 0 10px"><div style="width:${w}%;height:100%;background:linear-gradient(90deg,#B9C8FF,#9DE5D5,#FFD9BE)"></div></div>
+              <div class="small" style="color:#0f172a">${DETAIL[k](STATE.profile.child_name)}</div>
+              <div class="small" style="margin-top:6px;color:#0f172a">${PRAISE[b](k)}</div>
+              <div class="small" style="margin-top:6px"><b>오늘의 15분:</b> ${miss}</div>
+            </div>`;
+        }).join('')}
       </div>
     </div>
 
     <p class="credit">※ 본 결과는 교육 가이드 목적이며 의학·임상 진단이 아닙니다.</p>
-
-    <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap">
-      <button class="btn-ghost" onclick="STATE.step='start'; render()">처음으로</button>
+    <div class="center" style="margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+      <button class="btn-ghost" onclick="STATE.step='start';render()">처음으로</button>
       <button class="btn" onclick="window.print()">PDF 저장</button>
     </div>`;
-
   destroyCharts();
   if(window.Chart){
     try{
-      const rctx=$('#radar').getContext('2d');
+      const rctx=$('radar').getContext('2d');
       CHARTS.push(new Chart(rctx,{type:'radar',
-        data:{labels:DOMAINS, datasets:[{data:DOMAINS.map(k=>s[k]||0), borderColor:'#FFB98A', backgroundColor:'rgba(255,185,138,.22)', borderWidth:2, pointRadius:3, fill:true}]},
-        options:{animation:{duration:900}, scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#eef2f7'},angleLines:{color:'#eef2f7'}}}, plugins:{legend:{display:false}}}
-      }));
-      const bctx=$('#bars').getContext('2d');
+        data:{labels:DOMAINS,datasets:[{data:DOMAINS.map(k=>s[k]||0),borderColor:'#FFB98A',backgroundColor:'rgba(255,185,138,.22)',borderWidth:2,pointRadius:3,fill:true}]},
+        options:{animation:{duration:900},scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#eef2f7'},angleLines:{color:'#eef2f7'}}},plugins:{legend:{display:false}}}
+      ));
+      const bctx=$('bars').getContext('2d');
       CHARTS.push(new Chart(bctx,{type:'bar',
-        data:{labels:r.top3||[], datasets:[{data:(r.top3||[]).map(k=>s[k]||0), borderRadius:12, borderSkipped:false, backgroundColor:'#FFE6CF'}]},
-        options:{animation:{duration:800}, scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}}, plugins:{legend:{display:false}}}
-      }));
-    }catch(e){ console.warn('차트 렌더 오류(무시):',e); }
+        data:{labels:r.top3||[],datasets:[{data:(r.top3||[]).map(k=>s[k]||0),borderRadius:12,borderSkipped:false,backgroundColor:'#FFE6CF'}]},
+        options:{animation:{duration:800},scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}},plugins:{legend:{display:false}}}
+      ));
+    }catch(e){console.warn('차트 오류:',e)}
   }
 }
 
-/* ---------- ROUTER / BOOT ---------- */
+/* ───────────────── Router ───────────────── */
 function render(){
   renderNav(); updateTop();
   if(STATE.step==='start') return viewStart();
@@ -543,9 +538,8 @@ function render(){
   if(STATE.step==='test') return viewTest();
   if(STATE.step==='result') return viewResult();
 }
-function boot(){ try{ render(); } catch(e){ console.error(e); if($('app')) $('app').innerHTML=`<div class="center"><h3>시작 화면 로딩 중 오류</h3><div class="small muted">${e.message||e}</div></div>`; } }
-if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot); } else { boot(); }
-window.addEventListener('error', e=>{ if(STATE.step==='start' && $('app')) $('app').innerHTML=`<div class="center"><h3>시작 화면 로딩 중 오류</h3><div class="small muted">${e.message||''}</div></div>`; });
+function boot(){ try{ render(); } catch(e){ console.error(e); $('app').innerHTML=`<div class="center"><h3>시작 화면 로딩 중 오류</h3><div class="small muted">${e.message||e}</div></div>`; } }
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',boot)} else {boot()}
 </script>
 </body>
 </html>
