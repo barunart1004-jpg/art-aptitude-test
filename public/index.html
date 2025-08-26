@@ -174,7 +174,7 @@ const FORM_ACTION= 'https://docs.google.com/forms/d/e/1FAIpQLSeRWq5YKN50zL0simia
 const F = { child_name:'entry.684468179', age:'entry.1066070471', grade:'entry.1812672802', guardian:'entry.1666083184', phone:'entry.89824848', campus:'entry.490719219', answers:'entry.85364862', scores:'entry.1455508168', top3:'entry.1261684833', resultId:'entry.2120338430', timestamp:'entry.532514127' };
 /* ========================= */
 
-const ASSET_BASE = '/public/img'; // 시트에 이미지 공란이면 /public/img/1-A.png 형식으로 자동 사용
+const ASSET_BASE = '/public/img'; // 시트 이미지 공란이면 /public/img/1-A.png 형식 사용
 const DOMAINS = ["관찰력","색감각","서사력","공간감","디테일","도전성","소통력","꾸준성"];
 const STEPS = [{key:'start',label:'시작'},{key:'consent',label:'동의'},{key:'profile',label:'프로필'},{key:'test',label:'테스트'},{key:'result',label:'결과'}];
 const STATE = { step:'start', consent:false, profile:{}, questions:[], idx:0, answers:[], result:null };
@@ -214,26 +214,18 @@ async function loadQuestions(){
           imageUrl:(r[`${k}_image`]||'').trim(),
           weights: mkWeights(k)
         });
-        // 원자료에서 유효한 보기만 추림 (라벨/이미지/가중치 중 하나라도 존재)
         const opts = ['A','B','C','D'].map(mkOpt).filter(o=>{
           const hasLabel = o.label.length>0;
           const hasImage = o.imageUrl.length>0;
           const hasWeight = Object.values(o.weights||{}).some(v=>Number(v||0)!==0);
           return hasLabel || hasImage || hasWeight;
         });
-        // 최소 2개 유도 (혹시 1개 이하인 데이터 방지)
         const safeOpts = opts.length>=2 ? opts : ['A','B'].map(mkOpt);
-        return {
-          id: r.id || `q${r.order}`,
-          order: +r.order,
-          prompt: r.prompt || '',
-          options: safeOpts
-        };
+        return { id: r.id || `q${r.order}`, order:+r.order, prompt:r.prompt || '', options:safeOpts };
       });
       return;
     }
   }catch(e){}
-  // ====== Fallback(로컬 15문항) ======
   STATE.questions = localQuestions();
 }
 
@@ -312,9 +304,15 @@ function viewConsent(){
 }
 
 /* ===== 프로필 ===== */
-const CAMPUS = ['분당정자','분당수내','판교백현','서현','야탑','미금','용인수지','광교','죽전','동탄'];
 const AGE_TO_GRADE = {7:'초등학교 1학년',8:'초등학교 2학년',9:'초등학교 3학년',10:'초등학교 4학년',11:'초등학교 5학년',12:'초등학교 6학년'};
 const GRADE_TO_AGE = Object.fromEntries(Object.entries(AGE_TO_GRADE).map(([a,g])=>[g,a]));
+
+// 캠퍼스(선택만 가능)
+const CAMPUSES = [
+  '압구정[본원]','반포 캠퍼스','한남 캠퍼스','방배 캠퍼스','목동 캠퍼스',
+  '송파 캠퍼스','서대문 캠퍼스','일산 캠퍼스','탄현 캠퍼스','김포 캠퍼스',
+  '송도 캠퍼스','부산 캠퍼스'
+];
 
 function viewProfile(){
   app().innerHTML=`<h2 class="center">프로필 정보</h2>
@@ -331,19 +329,30 @@ function viewProfile(){
     </div>
     <div class="section"><label>연락처</label><input id="phone" placeholder="010-0000-0000"></div>
     <div class="section"><label>이메일(선택, 결과지 전송용)</label><input id="email" placeholder="example@email.com"></div>
-    <div class="section"><label>관심 캠퍼스(검색)</label>
-      <input list="campusList" id="campus" placeholder="캠퍼스명 입력/선택">
-      <datalist id="campusList">${CAMPUS.map(c=>`<option value="${c}">`).join('')}</datalist>
+    <div class="section">
+      <label>캠퍼스</label>
+      <select id="campus">
+        ${CAMPUSES.map(c=>`<option value="${c}">${c}</option>`).join('')}
+      </select>
     </div>
   </div>
   <div class="center" style="margin-top:16px"><button class="btn btn-mint" id="btn_starttest">테스트 시작</button></div>`;
+
   $('age').addEventListener('change',e=>{ $('grade').value = AGE_TO_GRADE[e.target.value]; });
   $('grade').addEventListener('change',e=>{ $('age').value = GRADE_TO_AGE[e.target.value]; });
   $('btn_starttest').onclick=startTest;
 }
 
 async function startTest(){
-  STATE.profile={child_name:$('cname').value.trim(), guardian:$('gname').value.trim(), age:$('age').value, grade:$('grade').value, phone:$('phone').value.trim(), email:$('email').value.trim(), campus:$('campus').value.trim()};
+  STATE.profile={
+    child_name:$('cname').value.trim(),
+    guardian:$('gname').value.trim(),
+    age:$('age').value,
+    grade:$('grade').value,
+    phone:$('phone').value.trim(),
+    email:$('email').value.trim(),
+    campus:$('campus').value
+  };
   if(!STATE.profile.child_name){ alert('아동 이름을 입력해 주세요'); return; }
   if(!/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(STATE.profile.phone||'')){ alert('연락처 형식(010-0000-0000)을 확인해 주세요'); return; }
   await loadQuestions(); STATE.idx=0; STATE.answers=[]; STATE.step='test'; render();
@@ -357,7 +366,6 @@ function pcGridClassFor(optsCount){
   return 'grid grid-2';
 }
 function optionImageUrl(q, o){
-  // 시트 이미지가 비었으면 /public/img/1-A.png 형식으로 대체
   if (o.imageUrl) return o.imageUrl;
   const num = Number(q.order)|| (STATE.idx+1);
   return `${ASSET_BASE}/${num}-${o.key}.png`;
@@ -375,7 +383,6 @@ function viewTest(){
       <button class="btn-ghost" id="btn_prev" ${STATE.idx===0?'disabled':''}>이전</button>
       <button class="btn" id="btn_next" disabled>다음</button>
     </div>`;
-  // 선택 핸들러
   q.options.forEach(o=>{
     const el = document.getElementById(`opt_${o.key}`);
     el.onclick = ()=>choose(o.key);
@@ -400,7 +407,6 @@ function next(){
 }
 function prev(){ if(STATE.idx>0){ STATE.idx--; render(); } }
 
-// 전역 키보드 내비게이션(테스트 단계에서만 동작)
 document.addEventListener('keydown', (e)=>{
   if(STATE.step!=='test') return;
   if(e.key==='ArrowRight'){ next(); }
@@ -451,7 +457,7 @@ function nowKST(){ const d=new Date(),p=n=>String(n).padStart(2,'0'); return `${
 
 async function submitAllSafe(){
   const raw=aggregateScores(STATE.answers);
-  const scores=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,adjust(v)])); // 2.0~4.0 보정
+  const scores=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,adjust(v)]));
   const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3);
   const resultId=crypto.randomUUID();
 
@@ -547,7 +553,7 @@ function render(){ renderNav(); updateTopProgress();
 }
 render();
 
-/* ===== Fallback용 15문항 정의 (라벨/가중치 예시·이미지 샘플) ===== */
+/* ===== Fallback용 15문항 정의 ===== */
 function W(w){ const o={}; DOMAINS.forEach(k=>o[k]=0); Object.entries(w).forEach(([k,v])=>o[k]=v); return o; }
 function localQuestions(){
   const S=(q,p,a,b,c,d)=>({id:q,order:+q.replace('q',''),prompt:p,options:[
@@ -571,7 +577,6 @@ function localQuestions(){
       ['현실 건물 새로 디자인', IMG('architecture'), {공간감:1, 디테일:0.4}],
       ['작은 생명체의 숨은 세계', IMG('mini world'), {관찰력:0.8, 서사력:0.6}]
     ),
-    // ... (나머지는 기존 예시와 동일)
     S('q3','두 그림 중 색이 더 조화로운 것은?',
       ['조화로운 팔레트', IMG('palette'), {색감각:1}],
       ['대비 강한 팔레트', IMG('contrast'), {도전성:0.6}],
@@ -651,9 +656,8 @@ function localQuestions(){
       ['완성 상상으로 동기', IMG('finish'), {서사력:0.5, 꾸준성:0.7}]
     )
   ].map(q=>{
-    // Fallback에서도 2지선다 테스트 가능하도록 빈 보기 제외
     q.options = q.options.filter(o=> (o.label||o.imageUrl) );
-    if(q.options.length<2) q.options = q.options.slice(0,2); // 안전장치
+    if(q.options.length<2) q.options = q.options.slice(0,2);
     return q;
   });
 }
