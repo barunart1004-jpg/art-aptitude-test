@@ -6,120 +6,103 @@
 <title>바른미술학원 · 미술적성테스트</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 :root{
-  --ink:#0f172a;--muted:#6b7280;
-  --bg1:#fff7f1;--bg2:#f7f3ff;
-  --card:#fff;--line:#eef2f7;
-  --radius:22px;--shadow:0 18px 60px rgba(16,24,40,.12);--soft:0 12px 30px rgba(16,24,40,.08);
+  --ink:#0f172a; --muted:#6b7280;
+  --bg1:#fff7f1; --bg2:#f7f3ff;
+  --card:#ffffff; --line:#eef2f7;
+  --o1:#FFE6CF; --o2:#FFD9BE; --o3:#FFC9A3; --o4:#FFB98A;
+  --mint:#CFF7EE; --vio:#E6E2FF;
+  --radius:22px; --shadow:0 18px 60px rgba(16,24,40,.12); --soft:0 12px 30px rgba(16,24,40,.08);
 }
 *{box-sizing:border-box} html,body{height:100%}
 body{
-  margin:0;color:var(--ink);
+  margin:0; color:var(--ink);
   font-family:"Pretendard",ui-sans-serif,system-ui,"Noto Sans KR",Segoe UI,Roboto,Arial;
   background:
-    radial-gradient(900px 600px at 10% -10%, #E6E2FF44, transparent 55%),
-    radial-gradient(900px 600px at 90% 110%, #CFF7EE55, transparent 55%),
-    linear-gradient(180deg,var(--bg1),var(--bg2));
+   radial-gradient(900px 600px at 10% -10%, var(--vio), transparent 55%),
+   radial-gradient(900px 600px at 90% 110%, var(--mint), transparent 55%),
+   linear-gradient(180deg,var(--bg1),var(--bg2));
   background-attachment:fixed;
 }
 body::before{
-  content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
-  background:linear-gradient(rgba(255,255,255,.86),rgba(255,255,255,.86)),url("/bg.png") center/cover no-repeat fixed;
+  content:""; position:fixed; inset:0; z-index:-2; pointer-events:none;
+  background:linear-gradient(rgba(255,255,255,.86), rgba(255,255,255,.86)), url("/bg.png") center/cover no-repeat fixed;
   filter:saturate(1.02);
 }
-.container{min-height:100dvh;display:flex;flex-direction:column;align-items:center}
-.main{width:100%;max-width:1100px;padding:18px;display:flex;flex-direction:column;gap:16px;margin:0 auto}
+.container{min-height:100dvh; display:flex; flex-direction:column; align-items:center}
+.main{width:100%; max-width:1100px; padding:18px; display:flex; flex-direction:column; gap:16px; margin:0 auto}
 
-/* header */
-.header{width:100%;display:flex;justify-content:center}
-.brand{
-  width:100%;max-width:1100px;margin-top:10px;display:flex;align-items:center;gap:12px;padding:12px 16px;
-  border-radius:999px;background:rgba(255,255,255,.65);backdrop-filter:blur(8px);
-  border:1px solid var(--line);box-shadow:var(--soft)
-}
-.logo{width:28px;height:28px;border-radius:50%;
-  background:conic-gradient(from 0deg,#FFB98A,#FFE6CF,#E6E2FF,#CFF7EE,#FFB98A);
-  animation:spin 9s linear infinite paused}
-.brand:hover .logo{animation-play-state:running}@keyframes spin{to{transform:rotate(360deg)}}
-.brand span{font-weight:900;letter-spacing:.2px}
+/* 헤더 & 네비 */
+.header{width:100%; display:flex; justify-content:center}
+.brand{width:100%; max-width:1100px; margin-top:10px; display:flex; align-items:center; gap:12px; padding:12px 16px;
+  border-radius:999px; background:rgba(255,255,255,.65); backdrop-filter:blur(8px); border:1px solid var(--line); box-shadow:var(--soft)}
+.logo{width:28px;height:28px;border-radius:50%;background:conic-gradient(from 0deg,#FFB98A,#FFE6CF,#E6E2FF,#CFF7EE,#FFB98A);animation:spin 9s linear infinite paused}
+.brand:hover .logo{animation-play-state:running} @keyframes spin{to{transform:rotate(360deg)}}
+.brand span{font-weight:900; letter-spacing:.2px}
 
-/* sticky progress */
-.sticky{position:sticky;top:0;z-index:10;backdrop-filter:blur(8px);background:rgba(255,255,255,.6);
-  border:1px solid var(--line);border-radius:16px;box-shadow:var(--soft);
-  padding:8px 10px;display:flex;flex-direction:column;gap:10px}
-.navbar{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
-.step{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;cursor:pointer;
-  background:#fff;color:#374151;font-weight:850;border:1px solid var(--line);box-shadow:var(--soft);transition:transform .12s}
+.sticky{position:sticky; top:0; z-index:10; backdrop-filter:blur(8px);
+  background:rgba(255,255,255,.6); border:1px solid var(--line); border-radius:16px; box-shadow:var(--soft);
+  padding:8px 10px; display:flex; flex-direction:column; gap:10px;}
+.navbar{display:flex; flex-wrap:wrap; gap:10px; justify-content:center}
+.step{display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; cursor:pointer;
+  background:#fff; color:#374151; font-weight:850; border:1px solid var(--line); box-shadow:var(--soft); transition:transform .12s}
 .step:hover{transform:translateY(-1px)}
 .step .num{width:20px;height:20px;border-radius:50%;display:inline-grid;place-items:center;background:#fff;border:1px solid var(--line);font-size:12px}
-.step.active{background:linear-gradient(90deg,#FFE6CF,#E6E2FF);color:#111827;box-shadow:0 12px 30px rgba(255,214,176,.28)}
-.step.done{background:#f2fdf7;border-color:#dff7ef}
-.topprogress{height:10px;background:#f6f7fb;border-radius:999px;overflow:hidden}
-.topprogress>div{height:100%;width:0;background:linear-gradient(90deg,#B9C8FF,#9DE5D5,#FFD9BE);transition:width .35s ease}
-.statusline{font-size:12px;color:var(--muted);text-align:center}
+.step.active{background:linear-gradient(90deg,var(--o1),var(--vio)); color:#111827; box-shadow:0 12px 30px rgba(255,214,176,.28)}
+.step.done{background:#f2fffa; border-color:#dff7ef}
+.topprogress{height:10px; background:#f6f7fb; border-radius:999px; overflow:hidden}
+.topprogress>div{height:100%; width:0; background:linear-gradient(90deg,#B9C8FF,#9DE5D5,#FFD9BE); transition:width .35s ease}
+.statusline{font-size:12px; color:#6b7280; text-align:center}
 
-/* card / btn */
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);animation:fade .35s ease both}
-@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-h1{font-size:38px;margin:0 0 10px} h2{font-size:24px;margin:0 0 10px} h3{font-size:18px;margin:16px 0 8px}
+/* 카드/타이포/버튼 */
+.card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); animation:fade .35s ease both}
+@keyframes fade{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:translateY(0)}}
+h1{font-size:34px; margin:0 0 6px} h2{font-size:24px; margin:0 0 10px} h3{font-size:18px; margin:16px 0 8px}
 p{margin:8px 0} .small{font-size:13px} .muted{color:var(--muted)} .center{text-align:center}
 
 .btn{
-  --bg:linear-gradient(90deg,#FFB98A,#FFD9BE);--glow:rgba(255,185,138,.35);
-  background:var(--bg);color:#5a3f2f;border:none;padding:22px 36px;border-radius:18px;font-weight:900;cursor:pointer;
-  box-shadow:0 18px 44px var(--glow);transition:transform .08s,filter .2s;position:relative;overflow:hidden;font-size:20px;min-width:200px}
-.btn:hover{transform:translateY(-1px);filter:brightness(1.03)}
-.btn:after{content:"";position:absolute;inset:0;background:radial-gradient(140px 140px at var(--x,50%) var(--y,50%), rgba(255,255,255,.6), transparent 42%);opacity:0;transition:opacity .25s}
+  --bg:linear-gradient(90deg,#FFB98A,#FFD9BE); --glow:rgba(255,185,138,.35);
+  background:var(--bg); color:#5a3f2f; border:none; padding:18px 28px; border-radius:18px; font-weight:900; cursor:pointer;
+  box-shadow:0 16px 40px var(--glow); transition:transform .08s, filter .2s, box-shadow .2s; position:relative; overflow:hidden; font-size:20px}
+.btn:hover{transform:translateY(-1px); filter:brightness(1.03)}
+.btn:after{content:""; position:absolute; inset:0; background:radial-gradient(120px 120px at var(--x,50%) var(--y,50%), rgba(255,255,255,.6), transparent 40%); opacity:.0; transition:opacity .25s}
 .btn:hover:after{opacity:.6}
-.btn-ghost{background:#fff;color:#111827;border:1px solid var(--line);padding:22px 36px;border-radius:18px;font-weight:900;cursor:pointer;box-shadow:var(--soft);font-size:20px;min-width:200px}
+.btn-ghost{background:#fff; color:#111827; border:1px solid var(--line); padding:12px 14px; border-radius:12px; font-weight:800; cursor:pointer; box-shadow:var(--soft)}
+.btn-mint{--bg:linear-gradient(90deg,#FFE6CF,#FFD9BE); --glow:rgba(255,214,190,.4)}
 
-/* inputs */
-input,select,textarea{width:100%;background:#fff;color:#111;border:1px solid var(--line);border-radius:12px;padding:12px;outline:none}
-input:focus,select:focus,textarea:focus{border-color:#FFD9BE;box-shadow:0 0 0 6px rgba(255,217,190,.26)}
-label{font-size:14px;color:#374151}
-.section{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}
+input,select,textarea{width:100%; background:#fff; color:#111; border:1px solid var(--line); border-radius:12px; padding:12px; outline:none}
+input:focus,select:focus,textarea:focus{border-color:#FFD9BE; box-shadow:0 0 0 6px rgba(255,217,190,.26)}
+label{font-size:14px; color:#374151}
+.section{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
 
-.grid{display:grid;gap:14px}
+.grid{display:grid; gap:14px}
 .grid-2{grid-template-columns:1fr 1fr}
-.grid-3{grid-template-columns:repeat(3,1fr)}
-@media (max-width:860px){.grid-2{grid-template-columns:1fr}.grid-3{grid-template-columns:1fr}}
+@media (max-width:860px){ .grid-2{grid-template-columns:1fr} }
 
-/* hero */
-.hero{display:flex;flex-direction:column;align-items:center;gap:16px;padding:10px 4px}
-.heroTitle{font-size:44px;font-weight:900;letter-spacing:.3px;background:linear-gradient(90deg,#FFB98A,#E6E2FF);-webkit-background-clip:text;background-clip:text;color:transparent}
-.heroDesc{color:#334155;font-size:18px;text-align:center;max-width:860px;line-height:1.7}
+/* 보기 */
+.opt{border:2px solid var(--line); border-radius:18px; overflow:hidden; cursor:pointer; background:#fff; box-shadow:var(--soft); transition:transform .12s, border-color .2s}
+.opt:hover{transform:translateY(-2px)} .opt img{width:100%; display:block; aspect-ratio:3/2; object-fit:cover}
+.opt .cap{padding:10px; color:#374151; font-weight:700} .opt.sel{border-color:#FFD9BE; box-shadow:0 0 0 6px rgba(255,217,190,.25)}
 
-/* options */
-.opt{border:2px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;background:#fff;box-shadow:var(--soft);transition:transform .12s,border-color .2s}
-.opt:hover{transform:translateY(-2px)}
-.opt img{width:100%;display:block;aspect-ratio:3/2;object-fit:cover}
-.opt .cap{padding:10px;color:#374151;font-weight:700}
-.opt.sel{border-color:#FFD9BE;box-shadow:0 0 0 6px rgba(255,217,190,.25)}
-
-/* desktop arrows */
+/* PC - 한 화면 4개 + 사이드 버튼 */
 @media (min-width:1024px){
-  .test-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .test-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
   .opt img{aspect-ratio:4/3}
-  .sideNav{position:fixed;top:50%;transform:translateY(-50%);z-index:20}
+  .sideNav{position:fixed; top:50%; transform:translateY(-50%); z-index:20}
   .sideNav.left{left:18px} .sideNav.right{right:18px}
-  .sideBtn{background:linear-gradient(90deg,#fff,#FFF4EC);border:1px solid var(--line);width:46px;height:46px;border-radius:50%;
-    display:grid;place-items:center;box-shadow:0 12px 26px rgba(16,24,40,.08);cursor:pointer;font-weight:900}
+  .sideBtn{background:linear-gradient(90deg,#fff,#FFF4EC); border:1px solid var(--line); width:46px; height:46px; border-radius:50%; display:grid; place-items:center; box-shadow:0 12px 26px rgba(16,24,40,.08); cursor:pointer; font-weight:900}
   .sideBtn:hover{transform:translateY(-1px)}
 }
-@media (max-width:1023px){.sideNav{display:none}}
+@media (max-width:1023px){ .sideNav{display:none} }
 
-/* accordion & agree */
-.acc{border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+/* 아코디언 · 결과 블록 */
+.acc{border-radius:14px; overflow:hidden; border:1px solid var(--line)}
 .acc-item{border-top:1px solid var(--line)}
-.acc-head{padding:14px 16px;background:#FFF4EC;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
-.acc-body{padding:14px 16px;display:none;background:#fff;line-height:1.7}
+.acc-head{padding:14px 16px; background:#FFF4EC; cursor:pointer; display:flex; justify-content:space-between; align-items:center}
+.acc-body{padding:14px 16px; display:none; background:#fff}
 .acc-item.open .acc-body{display:block}
-.agreeRow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
-.agreeRow input[type="checkbox"]{width:22px;height:22px}
-
-/* result */
 .block{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 26px rgba(16,24,40,.06);page-break-inside:avoid}
 .block h3{margin:0 0 10px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -128,17 +111,19 @@ label{font-size:14px;color:#374151}
 .kpi .num{font-size:44px;font-weight:900;line-height:1}
 .kpi .unit{font-size:14px;color:#6b7280}
 .callout{position:relative;background:linear-gradient(135deg,#FFF2E6,#F8FBFF);padding:22px;border-radius:18px;border:1px solid var(--line);box-shadow:0 12px 34px rgba(255,185,138,.25)}
-.callout:before{content:"";position:absolute;inset:-1px;border-radius:18px;padding:1px;background:linear-gradient(90deg,#FFD9BE,#E6E2FF,#CFF7EE);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.callout:before{content:"";position:absolute;inset:-1px;border-radius:18px;padding:1px;background:linear-gradient(90deg,#FFD9BE,#E6E2FF,#CFF7EE);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 .credit{font-size:12px;color:#6b7280;text-align:center}
+.skel{border-radius:12px; background:linear-gradient(90deg,#f3f4f6,#eaeef3,#f3f4f6); background-size:200% 100%; animation:sh 1.2s infinite}@keyframes sh{to{background-position:-200% 0}}
 
-/* charts in one row */
-.chartRow{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
-@media (max-width:900px){.chartRow{grid-template-columns:1fr}}
+.checkRow{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
 
-/* print */
+/* 결과 그래프 행: 레이더+막대 한 줄 */
+.result-row{display:grid; grid-template-columns:1.2fr .8fr; gap:16px}
+@media (max-width:900px){ .result-row{grid-template-columns:1fr} }
+
+/* 인쇄 */
 @media print{
-  .header,.sticky,.btn,.btn-ghost,.sideNav{display:none!important}
+  .header,.sticky,.btn,.btn-ghost,.sideNav{display:none !important}
   .card{box-shadow:none;border:1px solid #ddd}
   .block{break-inside:avoid-page}
 }
@@ -160,386 +145,449 @@ label{font-size:14px;color:#374151}
   </main>
 </div>
 
-<!-- 데스크톱 좌우 버튼 -->
 <div class="sideNav left" id="sideLeft" style="display:none"><button class="sideBtn" onclick="prev()" aria-label="이전">‹</button></div>
-<div class="sideNav right" id="sideRight" style="display:none"><button class="sideBtn" onclick="nextOrSubmit()" aria-label="다음">›</button></div>
+<div class="sideNav right" id="sideRight" style="display:none"><button class="sideBtn" onclick="next()" aria-label="다음">›</button></div>
 
 <script>
-/* ───────────────── 설정(시트/폼) ───────────────── */
-const SHEET_ID='14VLQBhDJtduxjCnfr7VEOstZ5ez8-CX3ArXy1OvYCQg';
-const FORM_ACTION='https://docs.google.com/forms/d/e/1FAIpQLSeRWq5YKN50zL0simiaQA6EBRsn6VXN__ZmLplAgDz1I1hyQA/formResponse';
-const F={child_name:'entry.684468179',age:'entry.1066070471',grade:'entry.1812672802',guardian:'entry.1666083184',phone:'entry.89824848',campus:'entry.490719219',answers:'entry.85364862',scores:'entry.1455508168',top3:'entry.1261684833',resultId:'entry.2120338430',timestamp:'entry.532514127'};
-const GVIZ_URL=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Questions&tqx=out:json`;
+/* ===== 연결값(시트/폼) ===== */
+const SHEET_ID   = '14VLQBhDJtduxjCnfr7VEOstZ5ez8-CX3ArXy1OvYCQg';
+const GVIZ_URL   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Questions&tqx=out:json`;
+const FORM_ACTION= 'https://docs.google.com/forms/d/e/1FAIpQLSeRWq5YKN50zL0simiaQA6EBRsn6VXN__ZmLplAgDz1I1hyQA/formResponse';
+const F = { child_name:'entry.684468179', age:'entry.1066070471', grade:'entry.1812672802', guardian:'entry.1666083184', phone:'entry.89824848', campus:'entry.490719219', answers:'entry.85364862', scores:'entry.1455508168', top3:'entry.1261684833', resultId:'entry.2120338430', timestamp:'entry.532514127' };
+/* ========================= */
 
-/* ───────────────── 상수/상태 ───────────────── */
-const DOMAINS=["관찰력","색감각","서사력","공간감","디테일","도전성","소통력","꾸준성","미적 판단력","정서표현/공감","창의 문제해결","자기성찰/개선"];
-const STEPS=[{key:'start',label:'시작'},{key:'consent',label:'동의'},{key:'profile',label:'프로필'},{key:'test',label:'테스트'},{key:'result',label:'결과'}];
-const STATE={step:'start',profile:{},questions:[],idx:0,answers:[],result:null};
+const DOMAINS = ["관찰력","색감각","서사력","공간감","디테일","도전성","소통력","꾸준성"];
+const STEPS = [{key:'start',label:'시작'},{key:'consent',label:'동의'},{key:'profile',label:'프로필'},{key:'test',label:'테스트'},{key:'result',label:'결과'}];
+const STATE = { step:'start', consent:false, profile:{}, questions:[], idx:0, answers:[], result:null };
 
 const $=id=>document.getElementById(id);
-const v=id=>$(id)?$(id).value.trim():'';
+const app=()=>$('app');
 
-/* ───────────────── 내비/상단 진행률 ───────────────── */
+/* NAV + Progress */
 function renderNav(){
-  const cur=STEPS.findIndex(s=>s.key===STATE.step);
-  $('topnav').innerHTML=STEPS.map((s,i)=>`<div class="step ${s.key===STATE.step?'active':''} ${cur>i?'done':''}" onclick="navGo('${s.key}')"><span class="num">${i+1}</span><span>${s.label}</span></div>`).join('');
+  const cur = STEPS.findIndex(s=>s.key===STATE.step);
+  $('topnav').innerHTML = STEPS.map((s,i)=>`<div class="step ${s.key===STATE.step?'active':''} ${cur>i?'done':''}" onclick="navGo('${s.key}')"><span class="num">${i+1}</span><span>${s.label}</span></div>`).join('');
 }
-function updateTop(){
-  if(STATE.step==='test'&&STATE.questions.length){
-    const q=Math.round(STATE.idx/STATE.questions.length*100);
-    $('topbar').style.width=q+'%';
-    $('statusline').textContent=`테스트 진행 ${STATE.idx+1}/${STATE.questions.length} (${q}%)`;
-    $('sideLeft').style.display='block';$('sideRight').style.display='block';
-    return;
+function updateTopProgress(){
+  if(STATE.step==='test' && STATE.questions.length){
+    const q = Math.round((STATE.idx)/STATE.questions.length*100);
+    $('topbar').style.width=q+'%'; $('statusline').textContent=`테스트 진행 ${STATE.idx+1}/${STATE.questions.length} (${q}%)`;
+    $('sideLeft').style.display='block'; $('sideRight').style.display='block'; return;
   }
-  $('sideLeft').style.display='none';$('sideRight').style.display='none';
-  const pct=(STEPS.findIndex(s=>s.key===STATE.step))/(STEPS.length-1)*100;
-  $('topbar').style.width=Math.round(pct)+'%';
-  $('statusline').textContent=`진행률 ${Math.round(pct)}%`;
+  $('sideLeft').style.display='none'; $('sideRight').style.display='none';
+  let pct = (STEPS.findIndex(s=>s.key===STATE.step))/(STEPS.length-1)*100;
+  $('topbar').style.width=Math.round(pct)+'%'; $('statusline').textContent=`진행률 ${Math.round(pct)}%`;
 }
-function navGo(step){
-  if(step==='test'&&!STATE.profile.child_name){STATE.step='profile';render();return;}
-  STATE.step=step;
-  if(step==='test'&&STATE.questions.length===0){startTest();return;}
-  render();
-}
+function navGo(step){ STATE.step=step; if(step==='test' && STATE.questions.length===0){ startTest(); return; } render(); }
 
-/* ───────────────── GViz 로드시트 ───────────────── */
-function parseGViz(text){
-  const s=text.indexOf('{'),e=text.lastIndexOf('}');
-  if(s<0||e<0) return [];
-  const obj=JSON.parse(text.slice(s,e+1));
-  const cols=obj.table.cols.map(c=>c.label);
-  const rows=obj.table.rows.map(r=>r.c.map(c=>c?(c.f??c.v):''));
-  return rows.map(a=>Object.fromEntries(cols.map((k,i)=>[k,a[i]])));
-}
+/* GViz 파서 */
+function parseGViz(text){ const s=text.indexOf('{'), e=text.lastIndexOf('}'); if(s<0||e<0) return []; const obj=JSON.parse(text.slice(s,e+1)); const cols=obj.table.cols.map(c=>c.label); return obj.table.rows.map(r=>r.c.map(c=>c?(c.f??c.v):'')).map(a=>Object.fromEntries(cols.map((k,i)=>[k,a[i]]))); }
 async function loadQuestions(){
-  const res=await fetch(GVIZ_URL,{cache:'no-store'});
-  const txt=await res.text();
-  const rows=parseGViz(txt)||[];
-  const act=rows.filter(r=>String(r.active).toUpperCase()==='TRUE').sort((a,b)=>(+a.order-+b.order));
-  if(act.length){
-    STATE.questions=act.map(r=>({
-      id:r.id,order:+r.order,prompt:r.prompt,
-      options:['A','B','C','D'].map(k=>{
-        let w={};try{w=JSON.parse(r[`${k}_weights`]||'{}')}catch{}
-        return {key:k,label:r[`${k}_label`]||'',imageUrl:r[`${k}_image`]||'https://picsum.photos/seed/art'+k+r.id+'/800/600',weights:w};
-      })
-    }));
-    return;
-  }
-  // 시트 비어있을 경우를 대비한 내장 15문항 (가중치 포함)
-  const P=(p)=>({id:p.id,order:p.order,prompt:p.q,options:[
-    {key:'A',label:p.A,imageUrl:'https://images.unsplash.com/photo-1608889175123-8b5f7c9c7a41?q=80&w=800&auto=format&fit=crop',weights:p.wA},
-    {key:'B',label:p.B,imageUrl:'https://images.unsplash.com/photo-1526318472351-c75fcf070305?q=80&w=800&auto=format&fit=crop',weights:p.wB},
-    {key:'C',label:p.C,imageUrl:'https://images.unsplash.com/photo-1604335399103-51a8a1c57ac0?q=80&w=800&auto=format&fit=crop',weights:p.wC},
-    {key:'D',label:p.D,imageUrl:'https://images.unsplash.com/photo-1560439513-74b037a25d8b?q=80&w=800&auto=format&fit=crop',weights:p.wD},
-  ]});
-  STATE.questions=[
-    P({id:'q1',order:1,q:'새로운 미술 도구를 발견했어요! 먼저 무엇을 해볼까요?',A:'설명서를 꼼꼼히 읽는다',B:'종이에 이것저것 탐색해본다',C:'친구들과 아이디어를 나눈다',D:'특이하고 재미있는 것을 상상한다',wA:{'디테일':0.7,'자기성찰/개선':0.3},wB:{'도전성':0.6,'창의 문제해결':0.4},wC:{'소통력':0.7,'서사력':0.3},wD:{'창의 문제해결':0.7,'도전성':0.3}}),
-    P({id:'q2',order:2,q:'그림에 어떤 이야기를 담고 싶나요?',A:'모험 이야기',B:'감정을 색과 형태로',C:'현실 건물 새 디자인',D:'숨겨진 작은 세계',wA:{'서사력':0.7,'공간감':0.3},wB:{'정서표현/공감':0.7,'색감각':0.3},wC:{'공간감':0.6,'디테일':0.4},wD:{'관찰력':0.4,'서사력':0.6}}),
-    P({id:'q3',order:3,q:'두 그림 중 더 조화로운 색은?',A:'명도·채도 균형',B:'강한 대비',C:'파스텔 부드러움',D:'다채로운 원색',wA:{'미적 판단력':0.6,'색감각':0.4},wB:{'도전성':0.5,'색감각':0.5},wC:{'색감각':0.7,'정서표현/공감':0.3},wD:{'색감각':0.6,'구성력':0.4}}),
-    P({id:'q4',order:4,q:'그리다 실수했어요. 어떻게 할까요?',A:'지우고 다시',B:'실수를 살려본다',C:'쉬었다가 완성',D:'피드백 받기',wA:{'디테일':0.6,'꾸준성':0.4},wB:{'창의 문제해결':0.7,'도전성':0.3},wC:{'꾸준성':0.7,'자기성찰/개선':0.3},wD:{'소통력':0.7,'자기성찰/개선':0.3}}),
-    P({id:'q5',order:5,q:'미술관에서 가장 오래 보는 것은?',A:'빛과 그림자 분위기',B:'숨겨진 작은 요소',C:'작가의 마음 상상',D:'재료/기법 관찰',wA:{'공간감':0.5,'색감각':0.5},wB:{'관찰력':0.6,'디테일':0.4},wC:{'서사력':0.5,'정서표현/공감':0.5},wD:{'관찰력':0.5,'디테일':0.5}}),
-    P({id:'q6',order:6,q:'미래의 도시를 그린다면 시작은?',A:'레퍼런스 조사/계획',B:'아무도 못 본 건물 상상',C:'팀 아이디어 모으기',D:'재료 실험',wA:{'디테일':0.5,'구성력':0.5},wB:{'도전성':0.5,'창의 문제해결':0.5},wC:{'소통력':0.7,'서사력':0.3},wD:{'색감각':0.3,'창의 문제해결':0.7}}),
-    P({id:'q7',order:7,q:'슬픈 친구를 위해 어떤 그림?',A:'귀여운 동물',B:'감정 추상',C:'즐거운 추억',D:'밝고 희망',wA:{'정서표현/공감':0.6,'색감각':0.4},wB:{'정서표현/공감':0.7,'미적 판단력':0.3},wC:{'서사력':0.6,'소통력':0.4},wD:{'색감각':0.5,'서사력':0.5}}),
-    P({id:'q8',order:8,q:'편안한 느낌의 색 조합은?',A:'따뜻한 계열',B:'차가운 계열',C:'강한 보색',D:'파스텔',wA:{'색감각':0.6,'정서표현/공감':0.4},wB:{'색감각':0.6,'미적 판단력':0.4},wC:{'도전성':0.6,'색감각':0.4},wD:{'색감각':0.7,'미적 판단력':0.3}}),
-    P({id:'q9',order:9,q:'잘 안 될 때 어떻게 해요?',A:'쉬운 과제로 변경',B:'몇 번 더 후 포기',C:'될 때까지+도움',D:'원인 분석/새 방법',wA:{'도전성':0.3,'꾸준성':0.2},wB:{'꾸준성':0.3,'자기성찰/개선':0.2},wC:{'꾸준성':0.6,'소통력':0.4},wD:{'자기성찰/개선':0.6,'창의 문제해결':0.4}}),
-    P({id:'q10',order:10,q:'이 그림에서 가장 눈에 띄는 것은?',A:'전체 구도',B:'작은 패턴/질감',C:'인물의 감정',D:'독특한 재료/기법',wA:{'구성력':0.7,'공간감':0.3},wB:{'디테일':0.6,'관찰력':0.4},wC:{'정서표현/공감':0.6,'서사력':0.4},wD:{'관찰력':0.5,'도전성':0.5}}),
-    P({id:'q11',order:11,q:'내 그림 제목을 붙인다면?',A:'보이는 대로',B:'상상하게 만드는 제목',C:'기분 좋아지는 제목',D:'색/형태 강조',wA:{'관찰력':0.6,'디테일':0.4},wB:{'서사력':0.6,'창의 문제해결':0.4},wC:{'정서표현/공감':0.6,'소통력':0.4},wD:{'색감각':0.6,'미적 판단력':0.4}}),
-    P({id:'q12',order:12,q:'세상에 없는 동물, 어떤가요?',A:'실제 동물 조합',B:'완전히 새로운 형태',C:'감정/말하는 동물',D:'특별 재료로 꾸미기',wA:{'관찰력':0.5,'디테일':0.5},wB:{'창의 문제해결':0.7,'도전성':0.3},wC:{'서사력':0.6,'정서표현/공감':0.4},wD:{'색감각':0.5,'디테일':0.5}}),
-    P({id:'q13',order:13,q:'내 그림을 보여줄 때 듣고 싶은 말?',A:'칭찬',B:'구체적 조언',C:'이야기가 떠올라',D:'어떤 재료야?',wA:{'소통력':0.6,'정서표현/공감':0.4},wB:{'자기성찰/개선':0.6,'소통력':0.4},wC:{'서사력':0.6,'소통력':0.4},wD:{'관찰력':0.6,'소통력':0.4}}),
-    P({id:'q14',order:14,q:'두 풍경 중 더 안정적인 구도는?',A:'균형 잡힌 구도',B:'치우친 구도',wA:{'구성력':0.7,'미적 판단력':0.3},wB:{'도전성':0.4,'구성력':0.6}}),
-    P({id:'q15',order:15,q:'그림이 안 그려져 답답할 때 생각은?',A:'재능 없나 봐',B:'조금만 더!',C:'다른 방법?',D:'완성 상상',wA:{'자기성찰/개선':0.4},wB:{'꾸준성':0.6,'도전성':0.4},wC:{'창의 문제해결':0.6,'자기성찰/개선':0.4},wD:{'서사력':0.4,'정서표현/공감':0.6}})
-  ];
+  try{
+    const txt=await (await fetch(GVIZ_URL)).text(); const rows=parseGViz(txt)||[];
+    const act=rows.filter(r=>String(r.active).toUpperCase()==='TRUE').sort((a,b)=>(+a.order - +b.order));
+    if(act.length){ 
+      STATE.questions=act.map(r=>({ id:r.id, order:+r.order, prompt:r.prompt,
+        options:['A','B','C','D'].map(k=>({ key:k, label:r[`${k}_label`]||'', imageUrl:r[`${k}_image`]||'', alt:r[`${k}_label`]||'',
+          weights:(()=>{try{return JSON.parse(r[`${k}_weights`])||{}}catch{return{}}})() })) }));
+      return;
+    }
+  }catch(e){}
+  // ====== Fallback(로컬 15문항) ======
+  STATE.questions = localQuestions();
 }
 
-/* ───────────────── START ───────────────── */
-function viewStart(){
-  $('app').innerHTML=`
-    <div class="hero">
-      <div class="heroTitle">바른미술학원 · 미술적성테스트</div>
-      <p class="heroDesc">15문항으로 아이의 흥미와 강점을 빠르게 확인하고, <b>8개 핵심 역량</b>(관찰·색채·서사·공간·디테일·도전·소통·꾸준성)과 <b>4개 심화 기준</b>(미적 판단·정서표현/공감·창의 문제해결·자기성찰/개선)으로 분석합니다. 완료 즉시 결과 확인과 PDF 저장이 가능해요.</p>
-      <button class="btn" onclick="navGo('consent')" onmousemove="this.style.setProperty('--x',event.offsetX+'px');this.style.setProperty('--y',event.offsetY+'px')">시작하기</button>
-      <div class="small muted" style="margin-top:12px">※ 본 테스트는 <b>교육 가이드</b> 목적이며, 의학/임상 진단이 아닙니다.</div>
+/* ===== 시작 화면 ===== */
+function startScreen(){
+  return `<div class="center">
+    <h1 style="margin-top:8px;font-size:42px">바른미술학원 · 미술적성테스트</h1>
+    <p class="muted" style="font-size:16px">아이의 미술 적성과 잠재력을 간단히 확인하고, 바로 결과를 확인·저장할 수 있는 테스트입니다.</p>
+    <div style="height:10px"></div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:1000px;margin:0 auto">
+      ${[
+        {title:'평가 8가지',desc:'관찰력·색감각·서사력·공간감·디테일·도전성·소통력·꾸준성'},
+        {title:'심화 4가지',desc:'미적 판단력 · 정서표현/공감 · 창의 문제해결 · 자기성찰/개선'},
+        {title:'진행 안내',desc:'보기 4개 중 1개 선택(PC: 화살표/Enter), 완료 즉시 결과·PDF 저장'}
+      ].map((f)=>`
+        <div style="background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 14px 36px rgba(16,24,40,.08);position:relative;overflow:hidden">
+          <div style="position:absolute; inset:-1px; padding:1px; border-radius:18px; background:linear-gradient(90deg,#FFE6CF,#E6E2FF,#CFF7EE); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude"></div>
+          <div style="font-size:20px;font-weight:900">${f.title}</div>
+          <div class="small" style="color:#4b5563;margin-top:6px;line-height:1.6">${f.desc}</div>
+        </div>`).join('')}
     </div>
-    <div class="grid-3" style="margin-top:10px">
-      <div class="section"><h3>평가 8가지</h3><p class="small muted">관찰력·색감각·서사력·공간감·디테일·도전성·소통력·꾸준성</p></div>
-      <div class="section"><h3>심화 4가지</h3><p class="small muted">미적 판단력·정서표현/공감·창의 문제해결·자기성찰/개선</p></div>
-      <div class="section"><h3>진행 안내</h3><p class="small muted">보기 4개 중 1개 선택(PC 화살표/Enter) → 완료 즉시 결과·PDF</p></div>
-    </div>`;
+
+    <div style="height:18px"></div>
+    <button class="btn btn-mint" id="startBtn">시작하기</button>
+    <div class="small muted" style="margin-top:12px">※ 본 테스트는 <b>교육 가이드</b> 목적이며, 의학/임상 진단이 아닙니다.</div>
+  </div>`;
+}
+function viewStart(){
+  app().innerHTML=startScreen();
+  // 시작 버튼 바인딩 (렌더 후!)
+  $('startBtn').onclick=()=>navGo('consent');
+  $('startBtn').onmousemove=(e)=>{ e.currentTarget.style.setProperty('--x', e.offsetX+'px'); e.currentTarget.style.setProperty('--y', e.offsetY+'px'); };
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-/* ───────────────── CONSENT ───────────────── */
+/* ===== 동의서 ===== */
+function accItem(t,html){ return `<div class="acc-item open"><div class="acc-head"><span>${t}</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="acc-body small">${html}</div></div>`;}
 function viewConsent(){
-  $('app').innerHTML=`
-    <h2 class="center">개인정보 수집·이용 동의서</h2>
-    <p class="muted small center">본 테스트는 <b>교육 가이드</b> 목적이며, 의학/임상 진단이 아닙니다.</p>
-    <div class="acc" style="margin-top:10px">
-      ${['1) 수집·이용 목적','2) 수집 항목','3) 보관 기간','4) 처리·보관','5) 권리','6) 문의'].map((t,i)=>`
-        <div class="acc-item ${i<2?'open':''}">
-          <div class="acc-head"><span>${t}</span><span>▾</span></div>
-          <div class="acc-body small">${
-            [
-              '① 테스트 제공·결과 산출 ② 결과지·코칭 가이드 제공 ③ 상담 품질 개선 ④ (선택) 결과 이메일 전송',
-              '<b>필수</b>: 아동 이름·나이·학년 / 보호자 이름·연락처 / 문항 응답 · <b>선택</b>: 이메일, 관심 캠퍼스',
-              '수집일로부터 <b>12개월</b> 보관 후 파기',
-              'Google Forms/Sheets에 저장·처리(국내/외 서버)',
-              '동의 거부 가능(거부 시 서비스 제한 가능). 열람·정정·삭제 요청 가능',
-              '관리자 이메일: <b>barunart1004@gmail.com</b>'
-            ][i]
-          }</div>
-        </div>`).join('')}
+  app().innerHTML=`<h2 class="center">개인정보 수집·이용 동의서</h2>
+  <p class="muted small center">본 테스트는 <b>교육 가이드</b> 목적이며, 의학/임상 진단이 아닙니다.</p>
+  <div class="acc">
+    ${accItem('1) 목적','① 테스트 제공 및 결과 산출 ② 결과 안내·PDF 저장 지원 ③ 상담 품질 개선')}
+    ${accItem('2) 수집 항목','아동 이름·나이·학년 / 보호자 이름·연락처 / 응답 내용 (이메일은 선택)')}
+    ${accItem('3) 보관 기간','수집일로부터 <b>12개월</b> 보관 후 파기')}
+    ${accItem('4) 보관/처리','Google Forms/Sheets에 저장·처리')}
+    ${accItem('5) 권리','동의 거부 가능(거부 시 서비스 제한 가능)')}
+    ${accItem('6) 문의','barunart1004@gmail.com')}
+  </div>
+  <div class="section" style="margin-top:16px">
+    <div class="checkRow">
+      <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="chk_required"> <span>(필수) 개인정보 수집·이용에 <b>동의합니다.</b></span></label>
+      <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="chk_minor"> <span>(필수) 만 14세 미만 아동의 법정대리인으로서 <b>동의합니다.</b></span></label>
     </div>
-    <div class="section" style="margin-top:14px">
-      <div class="agreeRow"><span>(필수) 개인정보 수집·이용에 <b>동의합니다.</b></span><input type="checkbox" id="agree1"></div>
-      <div class="agreeRow"><span>(필수) 만 14세 미만 아동의 법정대리인으로서 <b>동의합니다.</b></span><input type="checkbox" id="agree2"></div>
-    </div>
-    <div class="center" style="margin-top:16px;display:flex;gap:10px;justify-content:center">
-      <button class="btn-ghost" id="btn_open">전문 펼치기</button>
-      <button class="btn-ghost" id="btn_close">모두 접기</button>
-      <button class="btn" id="btn_consent" disabled>다음</button>
-    </div>`;
+  </div>
+  <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center">
+    <button class="btn" id="btn_consent" disabled>동의하고 진행</button>
+    <button class="btn-ghost" id="btn_expand">전문 펼치기</button>
+    <button class="btn-ghost" id="btn_collapse">모두 접기</button>
+  </div>`;
+  const validate=()=>{ $('btn_consent').disabled=!( $('chk_required').checked && $('chk_minor').checked ); };
+  $('chk_required').addEventListener('change',validate);
+  $('chk_minor').addEventListener('change',validate);
+  $('btn_consent').onclick=()=>{ STATE.consent=true; navGo('profile'); };
+  $('btn_expand').onclick=()=>document.querySelectorAll('.acc-item').forEach(it=>it.classList.add('open'));
+  $('btn_collapse').onclick=()=>document.querySelectorAll('.acc-item').forEach(it=>it.classList.remove('open'));
   document.querySelectorAll('.acc-head').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
-  const btnO=$('btn_open'),btnC=$('btn_close'),btnN=$('btn_consent');
-  if(btnO) btnO.onclick=()=>document.querySelectorAll('.acc-item').forEach(it=>it.classList.add('open'));
-  if(btnC) btnC.onclick=()=>document.querySelectorAll('.acc-item').forEach(it=>it.classList.remove('open'));
-  const validate=()=>{ if(btnN) btnN.disabled=!( $('agree1')?.checked && $('agree2')?.checked ); };
-  ['agree1','agree2'].forEach(id=>$(id)?.addEventListener('change',validate));
-  validate();
-  if(btnN) btnN.onclick=()=>{ if(!btnN.disabled){ STATE.step='profile'; render(); } };
-  document.addEventListener('keydown',e=>{ if(e.key==='Enter' && btnN && !btnN.disabled){ STATE.step='profile'; render(); } },{once:true});
 }
 
-/* ───────────────── PROFILE ───────────────── */
-const CAMPUS_LIST=['강남','서초','송파','분당','판교','일산','중계','목동','잠실','수지'];
-function gradeByAge(a){const m={7:1,8:2,9:3,10:4,11:5,12:6};return m[+a]?`초등학교 ${m[+a]}학년`:''}
+/* ===== 프로필 ===== */
+const CAMPUS = ['분당정자','분당수내','판교백현','서현','야탑','미금','용인수지','광교','죽전','동탄'];
+const AGE_TO_GRADE = {7:'초등학교 1학년',8:'초등학교 2학년',9:'초등학교 3학년',10:'초등학교 4학년',11:'초등학교 5학년',12:'초등학교 6학년'};
+const GRADE_TO_AGE = Object.fromEntries(Object.entries(AGE_TO_GRADE).map(([a,g])=>[g,a]));
+
 function viewProfile(){
-  $('app').innerHTML=`
-    <h2 class="center">프로필 정보</h2>
-    <div class="grid grid-2">
-      <div class="section">
-        <h3>아동 정보</h3>
-        <div class="grid grid-2">
-          <div><label>아동 이름</label><input id="cname" autofocus placeholder="예: 홍길동"></div>
-          <div><label>나이</label><select id="age">${[7,8,9,10,11,12].map(n=>`<option>${n}</option>`).join('')}</select></div>
-          <div><label>학년</label><input id="grade" placeholder="자동 입력" readonly></div>
-        </div>
-      </div>
-      <div class="section">
-        <h3>연락/선택</h3>
-        <div class="grid grid-2">
-          <div><label>보호자 이름</label><input id="gname"></div>
-          <div><label>연락처</label><input id="phone" placeholder="010-0000-0000"></div>
-          <div><label>(선택) 이메일</label><input id="email" placeholder="example@email.com"></div>
-          <div><label>(선택) 관심 캠퍼스</label>
-            <input id="campus" list="campusList" placeholder="검색 또는 선택">
-            <datalist id="campusList">${CAMPUS_LIST.map(c=>`<option value="${c}">`).join('')}</datalist>
-          </div>
-        </div>
-      </div>
+  app().innerHTML=`<h2 class="center">프로필 정보</h2>
+  <div class="grid grid-2" style="margin-top:8px">
+    <div class="section"><label>아동 이름</label><input id="cname" placeholder="예: 홍길동"></div>
+    <div class="section"><label>보호자 이름</label><input id="gname" placeholder="예: 김보호자"></div>
+    <div class="section">
+      <label>나이</label>
+      <select id="age">${[7,8,9,10,11,12].map(a=>`<option value="${a}">${a}</option>`).join('')}</select>
     </div>
-    <div class="center" style="margin-top:16px"><button class="btn" onclick="startTest()">테스트 시작</button></div>`;
-  const sync=()=>{ $('grade').value=gradeByAge(v('age')); }; sync(); $('age').addEventListener('change',sync);
+    <div class="section">
+      <label>학년</label>
+      <select id="grade">${Object.values(AGE_TO_GRADE).map(g=>`<option>${g}</option>`).join('')}</select>
+    </div>
+    <div class="section"><label>연락처</label><input id="phone" placeholder="010-0000-0000"></div>
+    <div class="section"><label>이메일(선택, 결과지 전송용)</label><input id="email" placeholder="example@email.com"></div>
+    <div class="section"><label>관심 캠퍼스(검색)</label>
+      <input list="campusList" id="campus" placeholder="캠퍼스명 입력/선택">
+      <datalist id="campusList">${CAMPUS.map(c=>`<option value="${c}">`).join('')}</datalist>
+    </div>
+  </div>
+  <div class="center" style="margin-top:16px"><button class="btn btn-mint" id="btn_starttest">테스트 시작</button></div>`;
+  // 나이 ↔ 학년 연동
+  $('age').addEventListener('change',e=>{ $('grade').value = AGE_TO_GRADE[e.target.value]; });
+  $('grade').addEventListener('change',e=>{ $('age').value = GRADE_TO_AGE[e.target.value]; });
+  $('btn_starttest').onclick=startTest;
 }
 
-/* ───────────────── TEST ───────────────── */
 async function startTest(){
-  STATE.profile={child_name:v('cname'),age:v('age'),grade:gradeByAge(v('age')),guardian:v('gname'),phone:v('phone'),email:v('email'),campus:v('campus')};
-  if(!STATE.profile.child_name||!/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(STATE.profile.phone||'')){alert('이름/연락처를 확인해 주세요');return;}
-  try{await loadQuestions()}catch(e){console.error(e)}
-  if(!STATE.questions.length){await loadQuestions().catch(()=>{})}
-  STATE.idx=0;STATE.answers=[];STATE.step='test';render();
+  STATE.profile={child_name:$('cname').value.trim(), guardian:$('gname').value.trim(), age:$('age').value, grade:$('grade').value, phone:$('phone').value.trim(), email:$('email').value.trim(), campus:$('campus').value.trim()};
+  if(!STATE.profile.child_name){ alert('아동 이름을 입력해 주세요'); return; }
+  if(!/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(STATE.profile.phone||'')){ alert('연락처 형식(010-0000-0000)을 확인해 주세요'); return; }
+  await loadQuestions(); STATE.idx=0; STATE.answers=[]; STATE.step='test'; render();
 }
+
+/* ===== 테스트 ===== */
 function viewTest(){
-  const q=STATE.questions[STATE.idx];
-  const gridCls=(window.matchMedia('(min-width:1024px)').matches?'test-grid':'grid grid-2');
-  $('app').innerHTML=`
-    <div class="center small muted">Q${STATE.idx+1} / ${STATE.questions.length}</div>
-    <h2 class="center" style="margin-top:6px">${q?.prompt||''}</h2>
+  const q=STATE.questions[STATE.idx]; if(!q){ app().innerHTML='<h3 class="center">문항을 불러오지 못했습니다. 관리자에 문의해 주세요.</h3>'; return; }
+  const gridCls = (window.matchMedia('(min-width:1024px)').matches?'test-grid':'grid grid-2');
+  app().innerHTML=`<div class="center small muted">Q${STATE.idx+1} / ${STATE.questions.length}</div>
+    <h2 class="center" style="margin-top:6px">${q.prompt||''}</h2>
     <div class="${gridCls}" style="margin-top:10px">
-      ${q.options.map(o=>`<div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label}"
-        onclick="choose('${o.key}')" ontouchend="choose('${o.key}')"
-        onkeydown="if(event.key==='Enter'||event.key===' '){choose('${o.key}')}">
-        <img src="${o.imageUrl}" alt="${o.label}" onerror="this.style.opacity=.2" loading="lazy"><div class="cap center">${o.label}</div>
-      </div>`).join('')}
+      ${q.options.map(o=>`<div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label}" data-key="${o.key}">
+        <img src="${o.imageUrl}" alt="${o.label}" onerror="this.style.opacity=.2" loading="lazy"><div class="cap center">${o.label}</div></div>`).join('')}
     </div>
-    <div class="center" style="margin-top:18px;display:flex;gap:8px;justify-content:center">
-      <button class="btn-ghost" onclick="prev()" ${STATE.idx===0?'disabled':''}>이전</button>
-      <button class="btn" id="nextBtn" onclick="nextOrSubmit()" disabled>다음</button>
+    <div class="center" style="margin-top:18px; display:flex; gap:10px; justify-content:center">
+      <button class="btn-ghost" id="btn_prev" ${STATE.idx===0?'disabled':''}>이전</button>
+      <button class="btn" id="btn_next" disabled>다음</button>
     </div>`;
-  const handler=(e)=>{if(e.key==='ArrowRight'){nextOrSubmit()}if(e.key==='ArrowLeft'){prev()}if(e.key==='Enter'){const n=$('nextBtn');if(n&&!n.disabled)nextOrSubmit()}};document.addEventListener('keydown',handler,{once:true});
+  // 선택 핸들러
+  q.options.forEach(o=>{
+    const el = document.getElementById(`opt_${o.key}`);
+    el.onclick = ()=>choose(o.key);
+    el.onkeydown = (e)=>{ if(e.key==='Enter' || e.key===' ') choose(o.key); };
+  });
+  $('btn_prev').onclick=prev;
+  $('btn_next').onclick=next;
+  document.addEventListener('keydown',keyHandler,{once:true});
 }
+function keyHandler(e){ if(e.key==='ArrowRight'){ next(); } if(e.key==='ArrowLeft'){ prev(); } if(e.key==='Enter'){ if(!$('btn_next').disabled) next(); } }
 function choose(key){
   const q=STATE.questions[STATE.idx];
-  ['A','B','C','D'].forEach(k=>{$(`opt_${k}`)?.classList.remove('sel')});
-  const node=$(`opt_${key}`); if(node){node.classList.add('sel'); node.animate([{transform:'scale(1)'},{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:160});}
+  ['A','B','C','D'].forEach(k=>{const n=document.getElementById(`opt_${k}`); if(n) n.classList.remove('sel');});
+  const node=document.getElementById(`opt_${key}`); if(node){ node.classList.add('sel'); node.animate([{transform:'scale(1)'},{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:160}); }
   const opt=q.options.find(o=>o.key===key);
-  STATE.answers[STATE.idx]={qid:q.id,key,weights:opt.weights||{}};
-  const n=$('nextBtn'); if(n) n.disabled=false;
+  STATE.answers[STATE.idx]={ qid:q.id, key, weights:opt.weights };
+  $('btn_next').disabled=false;
 }
-function nextOrSubmit(){
-  if(!STATE.answers[STATE.idx]){alert('하나를 선택해 주세요');return;}
-  if(STATE.idx<STATE.questions.length-1){STATE.idx++;render();}
-  else{submitAll();}
+function next(){
+  if(STATE.step!=='test') return;
+  if(!STATE.answers[STATE.idx]){ alert('하나를 선택해 주세요'); return; }
+  if(STATE.idx<STATE.questions.length-1){ STATE.idx++; render(); }
+  else{ submitAllSafe(); }
 }
-function prev(){if(STATE.idx>0){STATE.idx--;render();}}
+function prev(){ if(STATE.idx>0){ STATE.idx--; render(); } }
 
-/* ───────────────── 점수/총평 ───────────────── */
+/* ===== 점수/멘트 ===== */
 function aggregateScores(ans){
   const sum={}; DOMAINS.forEach(d=>sum[d]=0);
   ans.forEach(a=>Object.entries(a.weights||{}).forEach(([k,v])=>sum[k]=(sum[k]||0)+Number(v||0)));
-  const n=ans.length||1, raw={};
-  DOMAINS.forEach(d=>{const v=(sum[d]||0)/n*4; raw[d]=Math.max(0,Math.round(v*10)/10)});
+  const n=ans.length||1; const raw={};
+  DOMAINS.forEach(d=>{ const v=(sum[d]||0)/n*4; raw[d]=Math.max(0,Math.round(v*10)/10); });
   return raw;
 }
-const adjust=v=>Math.round((2+v/2)*10)/10; // 2.0~4.0 보정
-function band(v){if(v>=3.6)return'S';if(v>=3.2)return'A';if(v>=2.8)return'A-';if(v>=2.4)return'B+';if(v>=2.0)return'B';return'B-'}
-const DETAIL={'관찰력':n=>`${n}님은 대상을 오래 관찰해 특징을 뽑아내는 힘이 좋아요.`,
-'색감각':n=>`${n}님은 색의 분위기와 조합을 읽는 감각이 뛰어나요.`,
-'서사력':n=>`${n}님은 장면 속 이야기를 자연스럽게 엮어냅니다.`,
-'공간감':n=>`${n}님은 원근과 스케일을 활용해 입체감 있는 화면을 구성해요.`,
-'디테일':n=>`${n}님은 마감과 표현의 섬세함이 돋보입니다.`,
-'도전성':n=>`${n}님은 새로운 방법을 두려워하지 않고 시도합니다.`,
-'소통력':n=>`${n}님은 작품 의도를 말과 글로 설득력 있게 전해요.`,
-'꾸준성':n=>`${n}님은 계획을 밀고 나가는 힘이 있어요.`,
-'미적 판단력':n=>`${n}님은 조화롭고 어울리는 선택을 잘 합니다.`,
-'정서표현/공감':n=>`${n}님은 감정을 색과 형태로 섬세하게 표출합니다.`,
-'창의 문제해결':n=>`${n}님은 제약 속에서도 새로운 해결을 찾아요.`,
-'자기성찰/개선':n=>`${n}님은 스스로 점검하고 더 좋게 바꾸려는 태도가 있어요.`};
-const PRAISE={'S':k=>`<b>${k}</b>에서 타고난 재능이 또렷합니다!`,
-'A':k=>`<b>${k}</b> 감각이 뛰어나요.`,
-'A-':k=>`<b>${k}</b> 실력이 탄탄해요.`,
-'B+':k=>`<b>${k}</b>이 안정적입니다.`,
-'B':k=>`<b>${k}</b>의 기초가 좋아 더 빠르게 성장할 수 있어요.`,
-'B-':k=>`<b>${k}</b>은(는) 루틴과 연습으로 금방 끌어올릴 수 있어요.`};
-const TRACK={'색감각':'색채 기반 일러스트/디자인','공간감':'건축·풍경·입체 장면','서사력':'스토리텔링·만화','관찰력':'관찰 드로잉·자연물 탐구','구성력':'포스터·레이아웃',
-'디테일':'텍스처·리얼리즘','소통력':'발표·비평·작가노트','도전성':'실험적 매체','미적 판단력':'큐레이션·레퍼런스 분석','정서표현/공감':'감정 표현 프로젝트','창의 문제해결':'제한 미션·디자인 씽킹','자기성찰/개선':'리메이크·포트폴리오 개선','꾸준성':'데일리 스케치'};
-function buildSummary(s,top3,name){
-  top3=top3||[];
-  const f=(k)=>TRACK[k]||'핵심 트랙';
-  const hi=Object.values(s).filter(v=>v>=3.0).length;
-  const breadth=hi>=7?'여러 영역이 고르게 높아 폭넓은 잠재력을 보여줍니다.'
-    :hi>=4?'핵심 축이 뚜렷하면서 보조 역량도 안정적입니다.'
-    :'강점이 선명해 집중 훈련에 유리한 유형입니다.';
-  return `${name}님은 <b>${top3.join('·')||'강점 영역'}</b>에서 특히 우수했습니다. ${breadth} 
-  상위 영역을 바탕으로 <b>${f(top3[0]||top3[1]||top3[2])}</b> 중심의 프로젝트를 권장하며, 
-  <b>${top3[1]||''}</b>${top3[1]?', ':''}${top3[2]||''}는 <b>${[f(top3[1]),f(top3[2])].filter(Boolean).join(', ')}</b>로 자연스럽게 확장할 수 있습니다.`;
-}
-function nowKST(){const d=new Date(),p=n=>String(n).padStart(2,'0');return`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())} KST`}
+const adjust=v=>Math.round((2 + v/2) * 10)/10; // 0→2.0, 4→4.0
+function band(v){ if(v>=3.6) return 'S'; if(v>=3.2) return 'A'; if(v>=2.8) return 'A-'; if(v>=2.4) return 'B+'; if(v>=2.0) return 'B'; if(v>=1.6) return 'B-'; if(v>=1.0) return 'C+'; return 'C'; }
+const DETAIL = {
+  '관찰력':(n)=>`${n}님은 대상의 특징을 캐치하는 눈이 좋아요. 작은 변화도 포착해 표현의 밀도를 높입니다.`,
+  '색감각':(n)=>`${n}님은 색의 분위기를 읽고 조합하는 감이 탁월합니다. 미묘한 톤 차이도 안정적으로 다룹니다.`,
+  '서사력':(n)=>`${n}님은 장면 속에 이야기를 심는 데 강점이 있어요. 감정과 사건을 자연스럽게 연결합니다.`,
+  '공간감':(n)=>`${n}님은 원근·스케일을 활용해 입체감을 살립니다. 장면의 깊이를 안정적으로 구성합니다.`,
+  '디테일':(n)=>`${n}님은 마감과 질감 표현이 섬세해요. 작품 완성도를 올리는 집중력이 강점입니다.`,
+  '도전성':(n)=>`${n}님은 새로운 도구와 방식에 두려움이 적어요. 실험적인 프로젝트에서 성장 속도가 빠릅니다.`,
+  '소통력':(n)=>`${n}님은 의도를 언어로 풀어내는 힘이 좋아요. 발표·비평 활동에서 설득력이 있습니다.`,
+  '꾸준성':(n)=>`${n}님은 루틴을 유지하며 완성까지 밀어붙이는 힘이 돋보입니다. 학습 지속력이 강합니다.`
+};
+const PRAISE = {
+  'S':k=>`와, ${k}에서 <b>타고난 재능</b>이 돋보입니다. 높은 난이도도 스스로 기획해볼 수 있어요.`,
+  'A':k=>`${k} 감각이 <b>뛰어납니다</b>. 한 단계 높은 과제도 무리 없이 소화합니다.`,
+  'A-':k=>`${k} 실력이 <b>탄탄</b>합니다. 약간의 다듬기로 금방 상위권을 노려요.`,
+  'B+':k=>`${k}이 안정적입니다. 새로운 시도에도 잘 적응합니다.`,
+  'B':k=>`${k} 기본기가 좋습니다. 루틴을 넓히면 <b>성장 가속</b>!`
+};
+const MISSIONS={ // 실생활형 15분 루틴
+  '관찰력':['집 안 사물 3개 5분 관찰스케치','광원 바꿔 동일물체 2장','식물 잎사귀 확대 스케치'],
+  '색감각':['한정 팔레트 3색으로 소품 칠하기','보색 포인트 한 장면','따뜻/차가움 나누어 색채 실험'],
+  '서사력':['3컷 만화로 오늘 사건','장면 전/후 바꾸어 2컷','캐릭터 감정 변화 4표정'],
+  '공간감':['앞-중-뒤 나눠 배치하기','상자 5개로 거리감 실험','한 방의 바닥/소실점 잡기'],
+  '디테일':['재질 3종(금속/천/나무) 표현','선 굵기 3단계로 정리','작은 패턴 반복으로 밀도 올리기'],
+  '도전성':['새 도구 1개 체험 기록','실패작 수정해 새 결과 만들기','사진 보고 과감한 변형'],
+  '소통력':['작가노트 3문장 쓰기','친구/가족에게 설명하고 피드백 1개 반영','제목 3개 짓고 채택'],
+  '꾸준성':['5일 연속 15분 체크','작은 목표 설정→완료 표시','진행사진 2장 남기기']
+};
 
-/* ───────────────── 제출(시트 저장) ───────────────── */
-async function submitAll(){
-  try{
-    const raw=aggregateScores(STATE.answers);
-    const scores=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,adjust(v)]));
-    const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3);
-    const resultId=(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36));
+/* ===== 제출 & 결과 ===== */
+function nowKST(){ const d=new Date(),p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())} KST`; }
 
-    // 시트 저장
-    try{
-      const form=new FormData();
-      const answersWithMeta={profile:STATE.profile,questions:STATE.answers};
-      form.append(F.child_name,STATE.profile.child_name);
-      form.append(F.age,STATE.profile.age);
-      form.append(F.grade,STATE.profile.grade);
-      form.append(F.guardian,STATE.profile.guardian);
-      form.append(F.phone,STATE.profile.phone);
-      form.append(F.campus,STATE.profile.campus||'');
-      form.append(F.answers,JSON.stringify(answersWithMeta));
-      form.append(F.scores,JSON.stringify(scores));
-      form.append(F.top3,top3.join(','));           // ← top3 영역명 저장
-      form.append(F.resultId,resultId);
-      form.append(F.timestamp,nowKST());
-      fetch(FORM_ACTION,{method:'POST',mode:'no-cors',body:form}).catch(()=>{});
-    }catch(e){console.warn('폼 저장 실패(무시):',e)}
+async function submitAllSafe(){
+  const raw=aggregateScores(STATE.answers);
+  const scores=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,adjust(v)])); // 2.0~4.0 보정
+  const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3); // 영역명 3개
+  const resultId=crypto.randomUUID();
 
-    STATE.result={scores,top3,resultId};
-  }catch(e){
-    console.error('점수 오류:',e);
-    STATE.result={scores:{},top3:[],resultId:Date.now().toString(36)};
-  }
-  STATE.step='result'; render();
+  // Google Form 전송 (top3는 영역명으로 저장!)
+  const form=new FormData();
+  form.append(F.child_name,STATE.profile.child_name); form.append(F.age,STATE.profile.age); form.append(F.grade,STATE.profile.grade);
+  form.append(F.guardian,STATE.profile.guardian); form.append(F.phone,STATE.profile.phone); form.append(F.campus,STATE.profile.campus||'');
+  form.append(F.answers,JSON.stringify({profile:STATE.profile,questions:STATE.answers}));
+  form.append(F.scores,JSON.stringify(scores));
+  form.append(F.top3,top3.join(',')); // <-- 수정: id가 아닌 영역명
+  form.append(F.resultId,resultId); form.append(F.timestamp,nowKST());
+  try{ await fetch(FORM_ACTION,{method:'POST',mode:'no-cors',body:form}); }catch(e){}
+
+  STATE.result={scores,top3,resultId}; STATE.step='result'; render();
 }
 
-/* ───────────────── RESULT ───────────────── */
-let CHARTS=[]; function destroyCharts(){CHARTS.forEach(c=>c.destroy?.());CHARTS=[]}
+let CHARTS=[];
+function destroyCharts(){ CHARTS.forEach(c=>c.destroy?.()); CHARTS=[]; }
+
 function viewResult(){
   const r=STATE.result, s=r?.scores||{};
-  const totalMax=DOMAINS.length*4;
-  const overall=Math.round((Object.values(s).reduce((a,b)=>a+(+b||0),0))*10)/10||0;
+  const overall = Math.round((Object.values(s).reduce((a,b)=>a+(+b||0),0))*10)/10 || 0;
 
-  $('app').innerHTML=`
+  // 상위영역 기반 총평 2~3줄
+  const T = r.top3;
+  const summary = `${STATE.profile.child_name}님은 <b>${T[0]}</b>를 중심으로 <b>${T[1]}</b>, <b>${T[2]}</b>에서 강점이 뚜렷합니다. 화면을 읽고 선택하는 과정이 안정적이며, 시도에 대한 두려움이 낮아 발전 속도가 빠른 유형이에요. 강점 영역을 루틴으로 확장해 ‘작은 완성’을 자주 만드는 것이 동기 유지에 특히 효과적입니다.`;
+
+  app().innerHTML=`<div id="resultCard">
     <div class="block callout" style="text-align:center">
       <div class="chip" style="margin:0 auto 8px;display:inline-block">테스트 완료</div>
-      <h2 style="margin:0 0 10px"><b>${STATE.profile.child_name}</b>님, 오늘 정말 멋졌어요!</h2>
-      <div class="kpi" style="justify-content:center"><div class="num" style="font-size:52px">${overall.toFixed(1)}</div><div class="unit">/ ${totalMax}</div></div>
-      <p class="small" style="margin-top:10px;color:#0f172a;font-size:15px;line-height:1.8">${buildSummary(s,r.top3,STATE.profile.child_name)}</p>
-      <div class="chips" style="margin-top:10px;justify-content:center">${(r.top3||[]).map(t=>`<span class="chip">우수: ${t}</span>`).join('')}</div>
+      <h2 style="margin:0 0 10px"><b>${STATE.profile.child_name}</b>님, 멋진 집중력이었습니다!</h2>
+      <div class="kpi" style="justify-content:center"><div class="num" style="font-size:52px">${overall.toFixed(1)}</div><div class="unit">/ 32 (8영역 합산)</div></div>
+      <div class="chips" style="margin-top:10px;justify-content:center">${r.top3.map(t=>`<span class="chip">뛰어난 영역: ${t}</span>`).join('')}</div>
     </div>
 
-    <div class="chartRow">
-      <div class="block"><h3 class="center">영역별 관심도(레이더)</h3><canvas id="radar" height="220"></canvas></div>
-      <div class="block"><h3 class="center">뛰어난 영역(Top3)</h3><canvas id="bars" height="220"></canvas></div>
+    <div class="result-row">
+      <div class="block"><h3 class="center">영역별 관심도(레이다)</h3><canvas id="radar" height="260"></canvas></div>
+      <div class="block"><h3 class="center">뛰어난 영역(막대)</h3><canvas id="bars" height="260"></canvas></div>
+    </div>
+
+    <div class="block">
+      <h3>총평</h3>
+      <p style="color:#0f172a;font-size:15px;line-height:1.7">${summary}</p>
     </div>
 
     <div class="block">
       <h3>항목별 해석 & 일일 15분 훈련</h3>
-      <div class="grid grid-2">
+      <div class="grid" style="grid-template-columns:1fr 1fr">
         ${DOMAINS.map(k=>{
           const v=+(s[k]||0), b=band(v), w=Math.min(100,(v/4)*100);
-          const missionHi={'관찰력':'창밖 사물 3개 1분 드로잉','색감각':'팔레트 3색으로 오늘의 물건','서사력':'4컷 이야기','공간감':'박스 5개 원근','디테일':'텍스처 3종 묘사','도전성':'처음 쓰는 도구 1개','소통력':'작가노트 3문장','꾸준성':'5일 연속 10분 손풀기','미적 판단력':'좋은/아쉬운 예 1개 찾기','정서표현/공감':'오늘 기분 색 3개','창의 문제해결':'실수 1곳 장점화','자기성찰/개선':'지난 그림 리메이크'}[k];
-          const missionLo={'관찰력':'물체 윤곽선 5분','색감각':'따뜻/차가운 비교','서사력':'처음-중간-끝 썸네일','공간감':'앞·중·뒤 레이어','디테일':'선 굵기 3단계','도전성':'낯선 주제 1개','소통력':'가족 앞 30초 발표','꾸준성':'요일 루틴 체크','미적 판단력':'왜 좋은지 2문장','정서표현/공감':'친구 응원 엽서','창의 문제해결':'5분 아이디어 3개','자기성찰/개선':'자가체크 5항목'}[k];
-          const miss=(v>=3.2?missionHi:missionLo);
-          return `
-            <div style="border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff;box-shadow:0 10px 26px rgba(16,24,40,.06)">
-              <div style="display:flex;justify-content:space-between;align-items:flex-end">
-                <strong>${k}</strong>
-                <div class="kpi"><div class="num" style="font-size:28px">${v.toFixed(1)}</div><div class="unit">/ 4.0</div></div>
-              </div>
-              <div class="topprogress" style="height:10px;margin:8px 0 10px"><div style="width:${w}%;height:100%;background:linear-gradient(90deg,#B9C8FF,#9DE5D5,#FFD9BE)"></div></div>
-              <div class="small" style="color:#0f172a">${DETAIL[k](STATE.profile.child_name)}</div>
-              <div class="small" style="margin-top:6px;color:#0f172a">${PRAISE[b](k)}</div>
-              <div class="small" style="margin-top:6px"><b>오늘의 15분:</b> ${miss}</div>
-            </div>`;
+          const praiseFn = PRAISE[b] || (()=>`${k}에서 꾸준히 성장 중입니다.`);
+          const mission = (MISSIONS[k]||[])[0] || '관찰·스케치 1장';
+          return `<div style="border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff;box-shadow:0 10px 26px rgba(16,24,40,.06)">
+            <div style="display:flex;justify-content:space-between;align-items:flex-end">
+              <strong>${k}</strong>
+              <div class="kpi"><div class="num" style="font-size:28px">${v.toFixed(1)}</div><div class="unit">/ 4.0</div></div>
+            </div>
+            <div class="topprogress" style="height:10px;margin:8px 0 10px"><div style="width:${w}%;height:100%;background:linear-gradient(90deg,#B9C8FF,#9DE5D5,#FFD9BE)"></div></div>
+            <div class="small" style="color:#0f172a">${DETAIL[k](STATE.profile.child_name)}</div>
+            <div class="small" style="margin-top:6px;color:#0f172a">${praiseFn(k)}</div>
+            <div class="small" style="margin-top:4px">오늘의 15분: <b>${mission}</b></div>
+          </div>`;
         }).join('')}
       </div>
     </div>
 
     <p class="credit">※ 본 결과는 교육 가이드 목적이며 의학·임상 진단이 아닙니다.</p>
-    <div class="center" style="margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-      <button class="btn-ghost" onclick="STATE.step='start';render()">처음으로</button>
-      <button class="btn" onclick="window.print()">PDF 저장</button>
-    </div>`;
+  </div>
+
+  <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap">
+    <button class="btn-ghost" onclick="STATE.step='start'; render()">처음으로</button>
+    <button class="btn btn-mint" onclick="window.print()">PDF 저장</button>
+  </div>`;
+
   destroyCharts();
-  if(window.Chart){
-    try{
-      const rctx=$('radar').getContext('2d');
-      CHARTS.push(new Chart(rctx,{type:'radar',
-        data:{labels:DOMAINS,datasets:[{data:DOMAINS.map(k=>s[k]||0),borderColor:'#FFB98A',backgroundColor:'rgba(255,185,138,.22)',borderWidth:2,pointRadius:3,fill:true}]},
-        options:{animation:{duration:900},scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#eef2f7'},angleLines:{color:'#eef2f7'}}},plugins:{legend:{display:false}}}
-      ));
-      const bctx=$('bars').getContext('2d');
-      CHARTS.push(new Chart(bctx,{type:'bar',
-        data:{labels:r.top3||[],datasets:[{data:(r.top3||[]).map(k=>s[k]||0),borderRadius:12,borderSkipped:false,backgroundColor:'#FFE6CF'}]},
-        options:{animation:{duration:800},scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}},plugins:{legend:{display:false}}}
-      ));
-    }catch(e){console.warn('차트 오류:',e)}
-  }
+  const rctx=document.getElementById('radar').getContext('2d');
+  CHARTS.push(new Chart(rctx,{type:'radar',
+    data:{labels:DOMAINS, datasets:[{data:DOMAINS.map(k=>s[k]||0), borderColor:'#FFB98A', backgroundColor:'rgba(255,185,138,.22)', borderWidth:2, pointRadius:3, fill:true}]},
+    options:{animation:{duration:800}, scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#eef2f7'},angleLines:{color:'#eef2f7'}}}, plugins:{legend:{display:false}}}
+  }));
+  const bctx=document.getElementById('bars').getContext('2d');
+  CHARTS.push(new Chart(bctx,{type:'bar',
+    data:{labels:r.top3, datasets:[{data:r.top3.map(k=>s[k]||0), borderRadius:12, borderSkipped:false, backgroundColor:['#FFD9BE','#E6E2FF','#CFF7EE']}]},
+    options:{animation:{duration:700}, scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}}, plugins:{legend:{display:false}}}
+  }));
 }
 
-/* ───────────────── Router ───────────────── */
-function render(){
-  renderNav(); updateTop();
+/* ===== Router ===== */
+function render(){ renderNav(); updateTopProgress();
   if(STATE.step==='start') return viewStart();
   if(STATE.step==='consent') return viewConsent();
   if(STATE.step==='profile') return viewProfile();
   if(STATE.step==='test') return viewTest();
   if(STATE.step==='result') return viewResult();
 }
-function boot(){ try{ render(); } catch(e){ console.error(e); $('app').innerHTML=`<div class="center"><h3>시작 화면 로딩 중 오류</h3><div class="small muted">${e.message||e}</div></div>`; } }
-if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',boot)} else {boot()}
+render();
+
+/* ===== Fallback용 15문항 정의 (라벨/가중치 예시·이미지 샘플) ===== */
+function W(w){ // 간단한 가중치 헬퍼 (없으면 0)
+  const o={}; DOMAINS.forEach(k=>o[k]=0); Object.entries(w).forEach(([k,v])=>o[k]=v); return o;
+}
+function localQuestions(){
+  const S=(q,p,a,b,c,d)=>({id:q,order:+q.replace('q',''),prompt:p,options:[
+    {key:'A',label:a[0],imageUrl:a[1],weights:W(a[2])},
+    {key:'B',label:b[0],imageUrl:b[1],weights:W(b[2])},
+    {key:'C',label:c[0],imageUrl:c[1],weights:W(c[2])},
+    {key:'D',label:d[0],imageUrl:d[1],weights:W(d[2])},
+  ]});
+  const IMG=(kw)=>`https://images.unsplash.com/photo-150${Math.floor(Math.random()*899+100)}?auto=format&fit=crop&w=600&q=60&${encodeURIComponent(kw)}`;
+
+  return [
+    S('q1','새로운 미술 도구를 발견했어요! 무엇을 먼저 해볼까요?',
+      ['설명서를 꼼꼼히 읽어본다', IMG('paper'), {디테일:1, 꾸준성:0.6}],
+      ['종이에 탐색·실험한다', IMG('sketch'), {도전성:1, 창의:1, 소통력:0.3}],
+      ['친구들과 아이디어 나눈다', IMG('kids'), {소통력:1, 서사력:0.6}],
+      ['가장 특이한 결과 상상', IMG('idea'), {도전성:1, 서사력:0.5}]
+    ),
+    S('q2','그림에 어떤 이야기를 담고 싶나요?',
+      ['모험 이야기', IMG('adventure'), {서사력:1}],
+      ['감정을 색과 형태로', IMG('abstract'), {색감각:0.8, 서사력:0.6}],
+      ['현실 건물 새로 디자인', IMG('architecture'), {공간감:1, 디테일:0.4}],
+      ['작은 생명체의 숨은 세계', IMG('mini world'), {관찰력:0.8, 서사력:0.6}]
+    ),
+    S('q3','두 그림 중 색이 더 조화로운 것은?',
+      ['조화로운 팔레트', IMG('palette'), {색감각:1, 미적:0.6}],
+      ['대비 강한 팔레트', IMG('contrast'), {도전성:0.6}],
+      ['파스텔 편안함', IMG('pastel'), {색감각:0.8}],
+      ['강한 보색', IMG('vivid'), {도전성:0.6}]
+    ),
+    S('q4','그리다 실수를 했어요. 어떻게 할까요?',
+      ['지우고 다시 그린다', IMG('erase'), {디테일:0.8, 꾸준성:0.8}],
+      ['실수를 작품 일부로 바꾼다', IMG('mix'), {창의:1, 도전성:0.6}],
+      ['쉬고 재도전·완성', IMG('focus'), {꾸준성:1}],
+      ['도움을 요청', IMG('help'), {소통력:0.8}]
+    ),
+    S('q5','미술관에서 무엇을 오래 보나요?',
+      ['빛/그림자 분위기', IMG('light'), {공간감:0.6, 색감각:0.6}],
+      ['숨겨진 작은 요소', IMG('detail'), {관찰력:0.8, 디테일:0.8}],
+      ['작가의 마음 상상', IMG('emotion'), {서사력:0.7, 소통력:0.4}],
+      ['재료/기법이 궁금', IMG('material'), {도전성:0.6, 관찰력:0.6}]
+    ),
+    S('q6','미래의 도시를 그린다면, 어떻게 시작할까요?',
+      ['사진 조사·계획', IMG('city plan'), {디테일:0.7, 공간감:0.8}],
+      ['아무도 본 적 없는 건물', IMG('scifi'), {도전성:1, 창의:0.6}],
+      ['아이디어 모으기', IMG('team'), {소통력:0.8}],
+      ['재료 실험', IMG('paint'), {도전성:0.8, 색감각:0.5}]
+    ),
+    S('q7','친구가 슬퍼 보여요. 어떤 그림을 그려줄까요?',
+      ['귀여운 동물', IMG('cute'), {서사력:0.5, 정서:0.6}],
+      ['추상적 감정', IMG('blue'), {정서:0.8, 색감각:0.6}],
+      ['즐거운 추억', IMG('memory'), {서사력:0.8, 소통력:0.5}],
+      ['밝고 희망찬 그림', IMG('bright'), {색감각:0.7, 정서:0.6}]
+    ),
+    S('q8','편안한 색 조합은?',
+      ['따뜻한 계열', IMG('warm'), {색감각:0.8}],
+      ['차가운 계열', IMG('cool'), {색감각:0.8}],
+      ['보색 대비', IMG('complementary'), {도전성:0.6}],
+      ['파스텔', IMG('pastel soft'), {색감각:0.8}]
+    ),
+    S('q9','잘 안될 때 몇 번 시도할까요?',
+      ['바꾼다', IMG('switch'), {도전성:0.4}],
+      ['몇 번 후 포기', IMG('try'), {꾸준성:0.5}],
+      ['될 때까지 + 도움요청', IMG('keep'), {꾸준성:1, 소통력:0.5}],
+      ['원인 분석·새 방법', IMG('analyze'), {창의:0.8, 자기:0.6}]
+    ),
+    S('q10','이 그림에서 가장 눈에 띄는 것은?',
+      ['전체 구도', IMG('layout'), {공간감:0.9}],
+      ['작은 패턴/질감', IMG('texture'), {디테일:0.9}],
+      ['인물 표정/감정', IMG('face'), {서사력:0.7, 정서:0.6}],
+      ['독특한 재료/기법', IMG('tech'), {도전성:0.7}]
+    ),
+    S('q11','내 그림의 제목은?',
+      ['보이는 대로', IMG('see'), {관찰력:0.6}],
+      ['상상을 부르는 제목', IMG('title'), {서사력:0.9, 소통력:0.5}],
+      ['기분 좋아지는 제목', IMG('happy'), {정서:0.7}],
+      ['색/형태 강조', IMG('shape'), {색감각:0.7, 디테일:0.5}]
+    ),
+    S('q12','세상에 없는 동물, 어떤 동물?',
+      ['섞어서 만든 동물', IMG('hybrid'), {관찰력:0.6, 디테일:0.6}],
+      ['완전히 새로운 형태', IMG('new'), {도전성:0.9, 창의:0.8}],
+      ['감정 표현·대화', IMG('talk'), {서사력:0.7, 소통력:0.6}],
+      ['특별한 재료로 꾸미기', IMG('craft'), {색감각:0.6, 디테일:0.6}]
+    ),
+    S('q13','그림을 보여줄 때 듣고 싶은 말은?',
+      ['칭찬', IMG('praise'), {소통력:0.4}],
+      ['구체적 조언', IMG('advice'), {자기:0.6, 꾸준성:0.5}],
+      ['이야기가 떠올라', IMG('story'), {서사력:0.6}],
+      ['재료가 궁금', IMG('curious'), {도전성:0.5}]
+    ),
+    S('q14','두 풍경 중 더 안정적인 구도는?',
+      ['균형 잡힌 구도', IMG('balance'), {공간감:0.9, 미적:0.6}],
+      ['치우친 구도', IMG('tilt'), {도전성:0.4}]
+    ),
+    S('q15','답답할 때 어떤 생각을 하나요?',
+      ['재능이 없나…', IMG('sad'), {꾸준성:0.2}],
+      ['조금만 더! 자신감', IMG('cheer'), {꾸준성:0.9}],
+      ['다른 방법 떠올리기', IMG('newway'), {창의:0.8, 도전성:0.6}],
+      ['완성 상상으로 동기', IMG('finish'), {서사력:0.5, 꾸준성:0.7}]
+    )
+  ];
+}
 </script>
 </body>
 </html>
