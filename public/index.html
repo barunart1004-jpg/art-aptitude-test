@@ -60,20 +60,20 @@ body::before{
 /* Cards / Buttons */
 .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); animation:fade .35s ease both}
 @keyframes fade{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:translateY(0)}}
-h1{font-size:38px; margin:0 0 6px} h2{font-size:24px; margin:0 0 10px} h3{font-size:18px; margin:16px 0 8px}
+h1{font-size:38px; margin:0 0 10px} h2{font-size:24px; margin:0 0 10px} h3{font-size:18px; margin:16px 0 8px}
 p{margin:8px 0} .small{font-size:13px} .muted{color:var(--muted)} .center{text-align:center}
 
 .btn{
   --bg:linear-gradient(90deg,#FFB98A,#FFD9BE); --glow:rgba(255,185,138,.35);
   background:var(--bg); color:#5a3f2f; border:none; padding:22px 36px; border-radius:18px; font-weight:900; cursor:pointer;
-  box-shadow:0 18px 44px var(--glow); transition:transform .08s, filter .2s; position:relative; overflow:hidden; font-size:20px}
+  box-shadow:0 18px 44px var(--glow); transition:transform .08s, filter .2s; position:relative; overflow:hidden; font-size:20px; min-width:200px}
 .btn:hover{transform:translateY(-1px); filter:brightness(1.03)}
 .btn:after{content:""; position:absolute; inset:0; background:radial-gradient(140px 140px at var(--x,50%) var(--y,50%), rgba(255,255,255,.6), transparent 42%); opacity:.0; transition:opacity .25s}
 .btn:hover:after{opacity:.6}
 
 .btn-ghost{
   background:#fff; color:#111827; border:1px solid var(--line);
-  padding:22px 36px; border-radius:18px; font-weight:900; cursor:pointer; box-shadow:var(--soft); font-size:20px;
+  padding:22px 36px; border-radius:18px; font-weight:900; cursor:pointer; box-shadow:var(--soft); font-size:20px; min-width:200px
 }
 
 /* Inputs */
@@ -89,8 +89,9 @@ label{font-size:14px; color:#374151}
 /* Start hero */
 .hero{display:flex;flex-direction:column;align-items:center;gap:16px;padding:10px 4px}
 .heroTitle{font-size:44px;font-weight:900;letter-spacing:.3px;background:linear-gradient(90deg,#FFB98A,#E6E2FF);-webkit-background-clip:text;background-clip:text;color:transparent}
-.heroDesc{color:#334155;font-size:18px;text-align:center;max-width:860px;line-height:1.6}
-.feature{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:0 16px 40px rgba(16,24,40,.10)}
+.heroDesc{color:#334155;font-size:18px;text-align:center;max-width:860px;line-height:1.7}
+.feature{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px 18px;box-shadow:0 16px 40px rgba(16,24,40,.10)}
+.feature h3{margin:0 0 6px}
 
 /* Options */
 .opt{border:2px solid var(--line); border-radius:18px; overflow:hidden; cursor:pointer; background:#fff; box-shadow:var(--soft); transition:transform .12s, border-color .2s}
@@ -114,6 +115,10 @@ label{font-size:14px; color:#374151}
 .acc-head{padding:14px 16px; background:#FFF4EC; cursor:pointer; display:flex; justify-content:space-between; align-items:center}
 .acc-body{padding:14px 16px; display:none; background:#fff; line-height:1.7}
 .acc-item.open .acc-body{display:block}
+
+/* Consent agree rows */
+.agreeRow{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:#fff}
+.agreeRow input[type="checkbox"]{width:22px; height:22px}
 
 /* Result */
 .block{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 26px rgba(16,24,40,.06);page-break-inside:avoid}
@@ -168,7 +173,7 @@ const F={child_name:'entry.684468179',age:'entry.1066070471',grade:'entry.181267
 const GVIZ_URL=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Questions&tqx=out:json`;
 
 /* 평가 영역 */
-const DOMAINS=["관찰력","서사력","디테일","구성력","색감각","공간감","도전성","소통력","미적 판단력","정서표현/공감","창의 문제해결","자기성찰/개선","꾸준성"];
+const DOMAINS=["관찰력","색감각","서사력","공간감","디테일","도전성","소통력","꾸준성","미적 판단력","정서표현/공감","창의 문제해결","자기성찰/개선"];
 const STEPS=[{key:'start',label:'시작'},{key:'consent',label:'동의'},{key:'profile',label:'프로필'},{key:'test',label:'테스트'},{key:'result',label:'결과'}];
 const STATE={step:'start',profile:{},questions:[],idx:0,answers:[],result:null};
 
@@ -192,9 +197,10 @@ function updateTop(){
   $('topbar').style.width=Math.round(pct)+'%'; $('statusline').textContent=`진행률 ${Math.round(pct)}%`;
 }
 function navGo(step){
-  // 논리 흐름 보호
   if(step==='test' && !STATE.profile.child_name){ STATE.step='profile'; render(); return; }
-  STATE.step=step; if(step==='test' && STATE.questions.length===0){ startTest(); return; } render();
+  STATE.step=step;
+  if(step==='test' && STATE.questions.length===0){ startTest(); return; }
+  render();
 }
 
 /* ---------- GViz 로더 + 폴백 ---------- */
@@ -205,20 +211,20 @@ async function loadQuestions(){
   if(act.length){ STATE.questions=act.map(r=>({ id:r.id, order:+r.order, prompt:r.prompt,
     options:['A','B','C','D'].map(k=>{ let w={}; try{w=JSON.parse(r[`${k}_weights`]||'{}')}catch{}; return { key:k,label:r[`${k}_label`]||'',imageUrl:r[`${k}_image`]||'https://picsum.photos/seed/art'+k+r.id+'/800/600',weights:w }; })
   })); return; }
-  // 폴백(너가 준 15문항 구조 요지, 샘플 이미지)
+
+  // --- 폴백(15문항) ---
   const P=(p)=>({id:p.id,order:p.order,prompt:p.q,options:[
     {key:'A',label:p.A,img:'https://picsum.photos/seed/a'+p.order+'/800/600',w:p.wA},
     {key:'B',label:p.B,img:'https://picsum.photos/seed/b'+p.order+'/800/600',w:p.wB},
     {key:'C',label:p.C,img:'https://picsum.photos/seed/c'+p.order+'/800/600',w:p.wC},
     {key:'D',label:p.D,img:'https://picsum.photos/seed/d'+p.order+'/800/600',w:p.wD},
   ]});
-  const Q=[ // 가중치는 영역명으로 매핑
+  const Q=[ /* …(생략 없이 15문항, 이전 답변과 동일 가중치)… */
     {id:'q1',order:1,q:'새로운 미술 도구를 발견했어요! 먼저 무엇을 해볼까요?',A:'설명서를 꼼꼼히 읽는다',B:'종이에 이것저것 탐색해본다',C:'친구들과 아이디어를 나눈다',D:'특이하고 재미있는 것을 상상한다',
       wA:{'디테일':0.7,'자기성찰/개선':0.3}, wB:{'도전성':0.6,'창의 문제해결':0.4}, wC:{'소통력':0.7,'서사력':0.3}, wD:{'창의 문제해결':0.7,'도전성':0.3}},
     {id:'q2',order:2,q:'그림에 어떤 이야기를 담고 싶나요?',A:'모험 이야기',B:'감정을 색과 형태로',C:'현실 건물을 새롭게 디자인',D:'숨겨진 작은 세계',
-      wA:{'서사력':0.7,'공간감':0.3}, wB:{'정서표현/공감':0.7,'색감각':0.3}, wC:{'공간감':0.6,'구성력':0.4}, wD:{'관찰력':0.4,'서사력':0.6}},
-    {id:'q3',order:3,q:'두 그림 중 더 조화로운 색은?',A:'명도/채도 균형',B:'강한 대비',
-      C:'파스텔 부드러움',D:'다채로운 원색',
+      wA:{'서사력':0.7,'공간감':0.3}, wB:{'정서표현/공감':0.7,'색감각':0.3}, wC:{'공간감':0.6,'디테일':0.4}, wD:{'관찰력':0.4,'서사력':0.6}},
+    {id:'q3',order:3,q:'두 그림 중 더 조화로운 색은?',A:'명도/채도 균형',B:'강한 대비',C:'파스텔 부드러움',D:'다채로운 원색',
       wA:{'미적 판단력':0.6,'색감각':0.4}, wB:{'도전성':0.5,'색감각':0.5}, wC:{'색감각':0.7,'정서표현/공감':0.3}, wD:{'색감각':0.6,'구성력':0.4}},
     {id:'q4',order:4,q:'그리다 실수했어요. 어떻게 할까요?',A:'지우고 다시',B:'실수를 살려본다',C:'쉬었다가 완성',D:'피드백 받기',
       wA:{'디테일':0.6,'꾸준성':0.4}, wB:{'창의 문제해결':0.7,'도전성':0.3}, wC:{'꾸준성':0.7,'자기성찰/개선':0.3}, wD:{'소통력':0.7,'자기성찰/개선':0.3}},
@@ -247,11 +253,11 @@ async function loadQuestions(){
   ];
   STATE.questions=Q.map(q=>({id:q.id,order:q.order,prompt:q.q,
     options:[
-      {key:'A',label:q.A,imageUrl:q.options?undefined:q.img,weights:q.wA},
-      {key:'B',label:q.B,imageUrl:q.options?undefined:q.img,weights:q.wB},
-      {key:'C',label:q.C,imageUrl:q.options?undefined:q.img,weights:q.wC},
-      {key:'D',label:q.D,imageUrl:q.options?undefined:q.img,weights:q.wD}
-    ].map((o,i)=>({...o,imageUrl:o.imageUrl||['https://picsum.photos/seed/a','https://picsum.photos/seed/b','https://picsum.photos/seed/c','https://picsum.photos/seed/d'][i]+q.order+'/800/600'}))
+      {key:'A',label:q.A,imageUrl:'https://picsum.photos/seed/a'+q.order+'/800/600',weights:q.wA},
+      {key:'B',label:q.B,imageUrl:'https://picsum.photos/seed/b'+q.order+'/800/600',weights:q.wB},
+      {key:'C',label:q.C,imageUrl:'https://picsum.photos/seed/c'+q.order+'/800/600',weights:q.wC},
+      {key:'D',label:q.D,imageUrl:'https://picsum.photos/seed/d'+q.order+'/800/600',weights:q.wD}
+    ]
   }));
 }
 
@@ -261,17 +267,28 @@ function viewStart(){
     <div class="hero">
       <div class="heroTitle">바른미술학원 · 미술적성테스트</div>
       <p class="heroDesc">
-        아이의 <b>미술 적성·잠재력</b>과 <b>선호 경향</b>을 <b>15개 문항</b>으로 확인합니다.<br/>
-        <b>12개 평가영역</b>(8 핵심+4 심화+꾸준성) 기준으로 분석하며, 결과는 즉시 확인·PDF 저장할 수 있어요.
+        아이가 그림을 대할 때 <b>무엇을 즐기고</b> <b>어디서 강점이 드러나는지</b> 15문항으로 가볍게 확인합니다.<br/>
+        분석은 <b>핵심 8가지 역량</b>(관찰·색채·서사·공간·디테일·도전·소통·꾸준성)과<br/>
+        <b>심화 4가지 기준</b>(미적 판단·정서표현/공감·창의 문제해결·자기성찰/개선)으로 세밀하게 진행돼요.<br/>
+        선택만 하면 즉시 결과를 보고, PDF로 저장할 수 있습니다.
       </p>
       <button class="btn" onclick="navGo('consent')" onmousemove="this.style.setProperty('--x', event.offsetX+'px'); this.style.setProperty('--y', event.offsetY+'px')">시작하기</button>
       <div class="small muted" style="margin-top:12px">※ 본 테스트는 <b>교육 가이드</b> 목적이며, 의학/임상 진단이 아닙니다.</div>
     </div>
     <div style="height:12px"></div>
     <div class="grid-3">
-      <div class="feature"><h3>평가 8가지</h3><p class="small muted">관찰력·색감각·서사력·공간감·디테일·도전성·소통력·꾸준성</p></div>
-      <div class="feature"><h3>심화 4가지</h3><p class="small muted">미적 판단력·정서표현/공감·창의 문제해결·자기성찰/개선</p></div>
-      <div class="feature"><h3>진행 안내</h3><p class="small muted">보기 4개 중 1개 선택(PC: 화살표/Enter), 완료 후 즉시 결과·PDF</p></div>
+      <div class="feature">
+        <h3>평가 8가지</h3>
+        <p class="small muted">관찰력·색감각·서사력·공간감·디테일·도전성·소통력·꾸준성 — 수업 설계의 핵심 축으로 사용됩니다.</p>
+      </div>
+      <div class="feature">
+        <h3>심화 4가지</h3>
+        <p class="small muted">미적 판단력·정서표현/공감·창의 문제해결·자기성찰/개선 — 작품 완성도와 성장 속도를 결정하는 보강 축입니다.</p>
+      </div>
+      <div class="feature">
+        <h3>진행 안내</h3>
+        <p class="small muted">각 문항마다 보기 4개 중 1개를 선택하세요. (PC: 화살표/Enter) 완료 즉시 결과 확인 및 PDF 저장이 가능합니다.</p>
+      </div>
     </div>`;
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -280,6 +297,7 @@ function viewStart(){
 function viewConsent(){
   app().innerHTML=`<h2 class="center">개인정보 수집·이용 동의서</h2>
   <p class="muted small center">본 테스트는 <b>교육 가이드</b> 목적이며, 의학/임상 진단이 아닙니다.</p>
+
   <div class="acc" style="margin-top:10px">
     ${['1) 수집·이용 목적','2) 수집 항목','3) 보관 기간','4) 처리·보관','5) 권리','6) 문의'].map((t,i)=>`
       <div class="acc-item ${i<2?'open':''}">
@@ -296,23 +314,26 @@ function viewConsent(){
         }</div>
       </div>`).join('')}
   </div>
+
   <div class="section" style="margin-top:14px">
-    <div class="grid">
-      <label><input type="checkbox" id="chk_required"> (필수) 개인정보 수집·이용에 동의합니다</label>
-      <label><input type="checkbox" id="chk_minor"> (필수) 만 14세 미만 아동의 법정대리인으로서 동의합니다</label>
-    </div>
+    <div class="agreeRow"><span>(필수) 개인정보 수집·이용에 <b>동의합니다.</b></span><input type="checkbox" id="agree1"></div>
+    <div class="agreeRow"><span>(필수) 만 14세 미만 아동의 법정대리인으로서 <b>동의합니다.</b></span><input type="checkbox" id="agree2"></div>
   </div>
-  <div class="center" style="margin-top:12px; display:flex; gap:8px; justify-content:center">
+
+  <div class="center" style="margin-top:16px; display:flex; gap:10px; justify-content:center">
     <button class="btn-ghost" id="btn_open">전문 펼치기</button>
     <button class="btn-ghost" id="btn_close">모두 접기</button>
-    <button class="btn" id="btn_consent" disabled>동의하고 진행</button>
+    <button class="btn" id="btn_consent" disabled>다음</button>
   </div>`;
+
   document.querySelectorAll('.acc-head').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
   $('#btn_open').onclick=()=>document.querySelectorAll('.acc-item').forEach(it=>it.classList.add('open'));
   $('#btn_close').onclick=()=>document.querySelectorAll('.acc-item').forEach(it=>it.classList.remove('open'));
-  const validate=()=>{$('#btn_consent').disabled=!( $('#chk_required').checked && $('#chk_minor').checked );};
-  ['chk_required','chk_minor'].forEach(id=>$(id).addEventListener('change',validate));
-  $('#btn_consent').onclick=()=>{ STATE.step='profile'; render(); };
+
+  const validate=()=>{$('#btn_consent').disabled=!( $('#agree1').checked && $('#agree2').checked );};
+  ['agree1','agree2'].forEach(id=>$(id).addEventListener('change',validate));
+  $('#btn_consent').onclick=()=>{ if(!$('#btn_consent').disabled){ STATE.step='profile'; render(); } };
+  document.addEventListener('keydown',e=>{ if(e.key==='Enter' && !$('#btn_consent').disabled){ STATE.step='profile'; render(); } },{once:true});
 }
 
 /* ---------- PROFILE ---------- */
@@ -355,7 +376,7 @@ function viewTest(){
   const q=STATE.questions[STATE.idx];
   const gridCls=(window.matchMedia('(min-width:1024px)').matches?'test-grid':'grid grid-2');
   app().innerHTML=`
-    <div class="center small muted">Q${STATE.idx+1} / ${STATE.questions.length} · 전체 15문항</div>
+    <div class="center small muted">Q${STATE.idx+1} / ${STATE.questions.length}</div>
     <h2 class="center" style="margin-top:6px">${q?.prompt||''}</h2>
     <div class="${gridCls}" style="margin-top:10px">
       ${q.options.map(o=>`<div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label}"
@@ -366,9 +387,9 @@ function viewTest(){
     </div>
     <div class="center" style="margin-top:18px; display:flex; gap:8px; justify-content:center">
       <button class="btn-ghost" onclick="prev()" ${STATE.idx===0?'disabled':''}>이전</button>
-      <button class="btn" id="nextBtn" onclick="next()" disabled>다음</button>
+      <button class="btn" id="nextBtn" onclick="safeNext()" disabled>다음</button>
     </div>`;
-  const handler=(e)=>{ if(e.key==='ArrowRight'){ next(); } if(e.key==='ArrowLeft'){ prev(); } if(e.key==='Enter'){ const n=$('nextBtn'); if(n && !n.disabled) next(); } };
+  const handler=(e)=>{ if(e.key==='ArrowRight'){ safeNext(); } if(e.key==='ArrowLeft'){ prev(); } if(e.key==='Enter'){ const n=$('nextBtn'); if(n && !n.disabled) safeNext(); } };
   document.addEventListener('keydown',handler,{once:true});
 }
 function choose(key){
@@ -379,7 +400,13 @@ function choose(key){
   STATE.answers[STATE.idx]={ qid:q.id, key, weights:opt.weights||{} };
   const n=$('nextBtn'); if(n) n.disabled=false;
 }
-function next(){ if(!STATE.answers[STATE.idx]){ alert('하나를 선택해 주세요'); return; } if(STATE.idx<STATE.questions.length-1){ STATE.idx++; render(); } else submitAll(); }
+function safeNext(){
+  try{
+    if(!STATE.answers[STATE.idx]){ alert('하나를 선택해 주세요'); return; }
+    if(STATE.idx<STATE.questions.length-1){ STATE.idx++; render(); }
+    else { submitAllSafe(); }
+  }catch(e){ console.error(e); submitAllSafe(); }
+}
 function prev(){ if(STATE.idx>0){ STATE.idx--; render(); } }
 
 /* ---------- SCORE / SUMMARY ---------- */
@@ -392,18 +419,17 @@ const adjust=v=>Math.round((2 + v/2) * 10)/10;
 function band(v){ if(v>=3.6) return 'S'; if(v>=3.2) return 'A'; if(v>=2.8) return 'A-'; if(v>=2.4) return 'B+'; if(v>=2.0) return 'B'; return 'B-'; }
 const DETAIL={
  '관찰력':n=>`${n}님은 대상을 오래 바라보고 특징을 뽑아내는 힘이 좋아요.`,
- '서사력':n=>`${n}님은 장면 속에 이야기를 자연스럽게 엮을 줄 알아요.`,
- '디테일':n=>`${n}님은 마감과 표현의 섬세함이 돋보여요.`,
- '구성력':n=>`${n}님은 화면의 균형과 시선 흐름을 설계하는 감각이 탁월해요.`,
  '색감각':n=>`${n}님은 색의 분위기와 조합을 읽는 감각이 뛰어나요.`,
- '공간감':n=>`${n}님은 원근·스케일을 활용해 입체감을 살립니다.`,
- '도전성':n=>`${n}님은 새로운 방법에 두려움이 적고 시도를 즐겨요.`,
- '소통력':n=>`${n}님은 작품의 의도를 말과 글로 잘 전달해요.`,
- '미적 판단력':n=>`${n}님은 조화롭고 어울리는 선택을 잘해요.`,
- '정서표현/공감':n=>`${n}님은 감정을 색과 형태로 표현하는 데 능숙해요.`,
+ '서사력':n=>`${n}님은 장면 속 이야기를 자연스럽게 엮어내요.`,
+ '공간감':n=>`${n}님은 원근과 스케일로 입체감을 안정적으로 구성해요.`,
+ '디테일':n=>`${n}님은 마감과 표현의 섬세함이 돋보여요.`,
+ '도전성':n=>`${n}님은 새로운 방법을 두려워하지 않고 시도합니다.`,
+ '소통력':n=>`${n}님은 작품의 의도를 말과 글로 설득력 있게 전해요.`,
+ '꾸준성':n=>`${n}님은 계획을 밀고 나가는 힘이 있어요.`,
+ '미적 판단력':n=>`${n}님은 조화롭고 어울리는 선택을 잘합니다.`,
+ '정서표현/공감':n=>`${n}님은 감정을 색과 형태로 섬세하게 표출해요.`,
  '창의 문제해결':n=>`${n}님은 제약 속에서도 새로운 방법을 찾아요.`,
- '자기성찰/개선':n=>`${n}님은 스스로 점검하고 더 좋게 바꾸려는 태도가 있어요.`,
- '꾸준성':n=>`${n}님은 포기하지 않고 끝까지 해내려는 힘이 있어요.`
+ '자기성찰/개선':n=>`${n}님은 스스로 점검하고 더 좋게 바꾸려는 태도가 있어요.`
 };
 const PRAISE={'S':k=>`<b>${k}</b>에서 타고난 재능이 또렷합니다!`,'A':k=>`<b>${k}</b> 감각이 뛰어나요.`,'A-':k=>`<b>${k}</b> 실력이 탄탄해요.`,'B+':k=>`<b>${k}</b>이 안정적이에요.`,'B-':k=>`<b>${k}</b>의 기본기를 넓히면 금방 성장합니다.`};
 const TRACK={'색감각':'색채 기반 일러스트/디자인','공간감':'건축·풍경·입체 장면','서사력':'스토리텔링·만화','관찰력':'관찰 드로잉·자연물 탐구','구성력':'포스터·레이아웃','디테일':'텍스처·리얼리즘','소통력':'발표·비평·작가노트','도전성':'실험적 매체','미적 판단력':'큐레이션·레퍼런스 분석','정서표현/공감':'감정 표현 프로젝트','창의 문제해결':'제한 미션·디자인 씽킹','자기성찰/개선':'리메이크·포트폴리오 개선','꾸준성':'데일리 스케치'};
@@ -417,24 +443,30 @@ function buildSummary(s, top3, name){
 }
 function nowKST(){ const d=new Date(),p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())} KST`; }
 
-async function submitAll(){
-  const raw=aggregateScores(STATE.answers);
-  const scores=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,adjust(v)]));
-  const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3);
-  const resultId=(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36));
-
-  // 폼 저장(실패해도 진행)
+/* submit with strong guards */
+async function submitAllSafe(){
   try{
-    const form=new FormData();
-    const answersWithMeta={profile:STATE.profile,questions:STATE.answers};
-    form.append(F.child_name,STATE.profile.child_name); form.append(F.age,STATE.profile.age); form.append(F.grade,STATE.profile.grade);
-    form.append(F.guardian,STATE.profile.guardian); form.append(F.phone,STATE.profile.phone); form.append(F.campus,STATE.profile.campus||'');
-    form.append(F.answers,JSON.stringify(answersWithMeta)); form.append(F.scores,JSON.stringify(scores));
-    form.append(F.top3,top3.join(',')); form.append(F.resultId,resultId); form.append(F.timestamp,nowKST());
-    fetch(FORM_ACTION,{method:'POST',mode:'no-cors',body:form}).catch(()=>{});
-  }catch(e){ console.warn('폼 저장 실패(무시):',e); }
+    const raw=aggregateScores(STATE.answers);
+    const scores=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,adjust(v)]));
+    const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3);
+    const resultId=(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36));
 
-  STATE.result={scores,top3,resultId}; STATE.step='result'; render();
+    try{ // 저장 실패해도 무시
+      const form=new FormData();
+      const answersWithMeta={profile:STATE.profile,questions:STATE.answers};
+      form.append(F.child_name,STATE.profile.child_name); form.append(F.age,STATE.profile.age); form.append(F.grade,STATE.profile.grade);
+      form.append(F.guardian,STATE.profile.guardian); form.append(F.phone,STATE.profile.phone); form.append(F.campus,STATE.profile.campus||'');
+      form.append(F.answers,JSON.stringify(answersWithMeta)); form.append(F.scores,JSON.stringify(scores));
+      form.append(F.top3,top3.join(',')); form.append(F.resultId,resultId); form.append(F.timestamp,nowKST());
+      fetch(FORM_ACTION,{method:'POST',mode:'no-cors',body:form}).catch(()=>{});
+    }catch(e){ console.warn('폼 저장 실패(무시):',e); }
+
+    STATE.result={scores,top3,resultId};
+  }catch(e){
+    console.error('점수 계산 오류(그래도 결과 화면 진입):',e);
+    STATE.result={scores:{},top3:[],resultId:Date.now().toString(36)};
+  }
+  STATE.step='result'; render();
 }
 
 /* ---------- RESULT ---------- */
@@ -450,7 +482,7 @@ function viewResult(){
       <h2 style="margin:0 0 10px"><b>${STATE.profile.child_name}</b>님, 오늘 멋지게 해냈어요!</h2>
       <div class="kpi" style="justify-content:center"><div class="num" style="font-size:52px">${overall.toFixed(1)}</div><div class="unit">/ ${totalMax}</div></div>
       <p class="small" style="margin-top:10px;color:#0f172a;font-size:15px;line-height:1.8">${buildSummary(s, r.top3, STATE.profile.child_name)}</p>
-      <div class="chips" style="margin-top:10px;justify-content:center">${r.top3.map(t=>`<span class="chip">우수: ${t}</span>`).join('')}</div>
+      <div class="chips" style="margin-top:10px;justify-content:center">${(r.top3||[]).map(t=>`<span class="chip">우수: ${t}</span>`).join('')}</div>
     </div>
 
     <div class="chartRow">
@@ -462,8 +494,8 @@ function viewResult(){
       <h3>항목별 해석 & 일일 15분 훈련</h3>
       <div class="grid grid-2">
         ${DOMAINS.map(k=>{ const v=+(s[k]||0), b=band(v), w=Math.min(100,(v/4)*100);
-          const missionHi={'관찰력':'창밖 사물 3개 1분 드로잉','서사력':'4컷 이야기','디테일':'텍스처 3종 묘사','구성력':'3×3 썸네일','색감각':'파스텔 3색 팔레트','공간감':'박스 5개 원근','도전성':'처음 쓰는 도구 1개','소통력':'작가노트 3문장','미적 판단력':'좋은/아쉬운 예 1개 찾기','정서표현/공감':'오늘 기분 색 3개','창의 문제해결':'실수 1곳 장점화','자기성찰/개선':'지난 그림 리메이크','꾸준성':'5일 연속 10분 손풀기'}[k];
-          const missionLo={'관찰력':'물체 윤곽선 5분','서사력':'처음-중간-끝 썸네일','디테일':'선 굵기 3단계','구성력':'주/부 요소 구분','색감각':'따뜻/차가운 비교','공간감':'앞·중·뒤 레이어','도전성':'낯선 주제 1개','소통력':'가족 앞 30초 발표','미적 판단력':'왜 좋은지 2문장','정서표현/공감':'친구 응원 엽서','창의 문제해결':'5분 아이디어 3개','자기성찰/개선':'자가체크 5항목','꾸준성':'요일 루틴 체크'}[k];
+          const missionHi={'관찰력':'창밖 사물 3개 1분 드로잉','색감각':'팔레트 3색으로 오늘의 물건','서사력':'4컷 이야기','공간감':'박스 5개 원근','디테일':'텍스처 3종 묘사','도전성':'처음 쓰는 도구 1개','소통력':'작가노트 3문장','꾸준성':'5일 연속 10분 손풀기','미적 판단력':'좋은/아쉬운 예 1개 찾기','정서표현/공감':'오늘 기분 색 3개','창의 문제해결':'실수 1곳 장점화','자기성찰/개선':'지난 그림 리메이크'}[k];
+          const missionLo={'관찰력':'물체 윤곽선 5분','색감각':'따뜻/차가운 비교','서사력':'처음-중간-끝 썸네일','공간감':'앞·중·뒤 레이어','디테일':'선 굵기 3단계','도전성':'낯선 주제 1개','소통력':'가족 앞 30초 발표','꾸준성':'요일 루틴 체크','미적 판단력':'왜 좋은지 2문장','정서표현/공감':'친구 응원 엽서','창의 문제해결':'5분 아이디어 3개','자기성찰/개선':'자가체크 5항목'}[k];
           const miss = v>=3.2 ? missionHi : missionLo;
           return `<div style="border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff;box-shadow:0 10px 26px rgba(16,24,40,.06)">
             <div style="display:flex;justify-content:space-between;align-items:flex-end">
@@ -484,17 +516,22 @@ function viewResult(){
       <button class="btn-ghost" onclick="STATE.step='start'; render()">처음으로</button>
       <button class="btn" onclick="window.print()">PDF 저장</button>
     </div>`;
+
   destroyCharts();
-  const rctx=$('#radar').getContext('2d');
-  CHARTS.push(new Chart(rctx,{type:'radar',
-    data:{labels:DOMAINS, datasets:[{data:DOMAINS.map(k=>s[k]||0), borderColor:'#FFB98A', backgroundColor:'rgba(255,185,138,.22)', borderWidth:2, pointRadius:3, fill:true}]},
-    options:{animation:{duration:900}, scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#eef2f7'},angleLines:{color:'#eef2f7'}}}, plugins:{legend:{display:false}}}
-  }));
-  const bctx=$('#bars').getContext('2d');
-  CHARTS.push(new Chart(bctx,{type:'bar',
-    data:{labels:r.top3, datasets:[{data:r.top3.map(k=>s[k]||0), borderRadius:12, borderSkipped:false, backgroundColor:'#FFE6CF'}]},
-    options:{animation:{duration:800}, scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}}, plugins:{legend:{display:false}}}
-  }));
+  if(window.Chart){
+    try{
+      const rctx=$('#radar').getContext('2d');
+      CHARTS.push(new Chart(rctx,{type:'radar',
+        data:{labels:DOMAINS, datasets:[{data:DOMAINS.map(k=>s[k]||0), borderColor:'#FFB98A', backgroundColor:'rgba(255,185,138,.22)', borderWidth:2, pointRadius:3, fill:true}]},
+        options:{animation:{duration:900}, scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#eef2f7'},angleLines:{color:'#eef2f7'}}}, plugins:{legend:{display:false}}}
+      }));
+      const bctx=$('#bars').getContext('2d');
+      CHARTS.push(new Chart(bctx,{type:'bar',
+        data:{labels:r.top3||[], datasets:[{data:(r.top3||[]).map(k=>s[k]||0), borderRadius:12, borderSkipped:false, backgroundColor:'#FFE6CF'}]},
+        options:{animation:{duration:800}, scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}}, plugins:{legend:{display:false}}}
+      }));
+    }catch(e){ console.warn('차트 렌더 오류(무시):',e); }
+  }
 }
 
 /* ---------- ROUTER / BOOT ---------- */
