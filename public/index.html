@@ -62,6 +62,15 @@ body::before{
 h1{font-size:34px; margin:0 0 6px} h2{font-size:24px; margin:0 0 10px} h3{font-size:18px; margin:16px 0 8px}
 p{margin:8px 0} .small{font-size:13px} .muted{color:var(--muted)} .center{text-align:center}
 
+/* Hero Title 강조 */
+.heroTitle{
+  font-size:48px; line-height:1.1; margin:6px 0 10px; font-weight:900; letter-spacing:.2px;
+  background:linear-gradient(90deg,#111827 0%,#5a3f2f 40%,#FFB98A 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  text-shadow:0 1px 0 rgba(0,0,0,.06), 0 10px 30px rgba(255,185,138,.25);
+}
+
+/* 버튼 */
 .btn{
   --bg:linear-gradient(90deg,#FFB98A,#FFD9BE); --glow:rgba(255,185,138,.35);
   background:var(--bg); color:#5a3f2f; border:none; padding:18px 28px; border-radius:18px; font-weight:900; cursor:pointer;
@@ -71,7 +80,9 @@ p{margin:8px 0} .small{font-size:13px} .muted{color:var(--muted)} .center{text-a
 .btn:hover:after{opacity:.6}
 .btn-ghost{background:#fff; color:#111827; border:1px solid var(--line); padding:12px 14px; border-radius:12px; font-weight:800; cursor:pointer; box-shadow:var(--soft)}
 .btn-mint{--bg:linear-gradient(90deg,#FFE6CF,#FFD9BE); --glow:rgba(255,214,190,.4)}
+.btn-xl{padding:22px 34px; font-size:22px; border-radius:22px}
 
+/* 입력 */
 input,select,textarea{width:100%; background:#fff; color:#111; border:1px solid var(--line); border-radius:12px; padding:12px; outline:none}
 input:focus,select:focus,textarea:focus{border-color:#FFD9BE; box-shadow:0 0 0 6px rgba(255,217,190,.26)}
 label{font-size:14px; color:#374151}
@@ -86,9 +97,10 @@ label{font-size:14px; color:#374151}
 .opt:hover{transform:translateY(-2px)} .opt img{width:100%; display:block; aspect-ratio:3/2; object-fit:cover}
 .opt .cap{padding:10px; color:#374151; font-weight:700} .opt.sel{border-color:#FFD9BE; box-shadow:0 0 0 6px rgba(255,217,190,.25)}
 
-/* PC - 한 화면 4개 + 사이드 버튼 */
+/* PC - 한 화면 4개 + 사이드 버튼 (2지선다일 땐 2컬럼) */
 @media (min-width:1024px){
-  .test-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
+  .test-grid-4{display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
+  .test-grid-2{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
   .opt img{aspect-ratio:4/3}
   .sideNav{position:fixed; top:50%; transform:translateY(-50%); z-index:20}
   .sideNav.left{left:18px} .sideNav.right{right:18px}
@@ -116,6 +128,12 @@ label{font-size:14px; color:#374151}
 .skel{border-radius:12px; background:linear-gradient(90deg,#f3f4f6,#eaeef3,#f3f4f6); background-size:200% 100%; animation:sh 1.2s infinite}@keyframes sh{to{background-position:-200% 0}}
 
 .checkRow{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+
+/* 동의 체크: 한 줄씩 + 체크박스 우측 정렬 */
+.agreeList{display:grid; gap:10px; margin-top:10px}
+.agree-row{display:flex; align-items:center; justify-content:space-between; gap:14px; padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:#fff}
+.agree-row .txt{font-size:14px; color:#0f172a; line-height:1.55}
+.agree-row input[type="checkbox"]{width:20px; height:20px; accent-color:#FFB98A;}
 
 /* 결과 그래프 행: 레이더+막대 한 줄 */
 .result-row{display:grid; grid-template-columns:1.2fr .8fr; gap:16px}
@@ -156,6 +174,7 @@ const FORM_ACTION= 'https://docs.google.com/forms/d/e/1FAIpQLSeRWq5YKN50zL0simia
 const F = { child_name:'entry.684468179', age:'entry.1066070471', grade:'entry.1812672802', guardian:'entry.1666083184', phone:'entry.89824848', campus:'entry.490719219', answers:'entry.85364862', scores:'entry.1455508168', top3:'entry.1261684833', resultId:'entry.2120338430', timestamp:'entry.532514127' };
 /* ========================= */
 
+const ASSET_BASE = '/public/img'; // 시트에 이미지 공란이면 /public/img/1-A.png 형식으로 자동 사용
 const DOMAINS = ["관찰력","색감각","서사력","공간감","디테일","도전성","소통력","꾸준성"];
 const STEPS = [{key:'start',label:'시작'},{key:'consent',label:'동의'},{key:'profile',label:'프로필'},{key:'test',label:'테스트'},{key:'result',label:'결과'}];
 const STATE = { step:'start', consent:false, profile:{}, questions:[], idx:0, answers:[], result:null };
@@ -186,10 +205,31 @@ async function loadQuestions(){
   try{
     const txt=await (await fetch(GVIZ_URL)).text(); const rows=parseGViz(txt)||[];
     const act=rows.filter(r=>String(r.active).toUpperCase()==='TRUE').sort((a,b)=>(+a.order - +b.order));
-    if(act.length){ 
-      STATE.questions=act.map(r=>({ id:r.id, order:+r.order, prompt:r.prompt,
-        options:['A','B','C','D'].map(k=>({ key:k, label:r[`${k}_label`]||'', imageUrl:r[`${k}_image`]||'', alt:r[`${k}_label`]||'',
-          weights:(()=>{try{return JSON.parse(r[`${k}_weights`])||{}}catch{return{}}})() })) }));
+    if(act.length){
+      STATE.questions=act.map(r=>{
+        const mkWeights = (k)=>{ try{ return JSON.parse(r[`${k}_weights`]) || {}; } catch{ return {}; } };
+        const mkOpt = (k)=>({
+          key:k,
+          label:(r[`${k}_label`]||'').trim(),
+          imageUrl:(r[`${k}_image`]||'').trim(),
+          weights: mkWeights(k)
+        });
+        // 원자료에서 유효한 보기만 추림 (라벨/이미지/가중치 중 하나라도 존재)
+        const opts = ['A','B','C','D'].map(mkOpt).filter(o=>{
+          const hasLabel = o.label.length>0;
+          const hasImage = o.imageUrl.length>0;
+          const hasWeight = Object.values(o.weights||{}).some(v=>Number(v||0)!==0);
+          return hasLabel || hasImage || hasWeight;
+        });
+        // 최소 2개 유도 (혹시 1개 이하인 데이터 방지)
+        const safeOpts = opts.length>=2 ? opts : ['A','B'].map(mkOpt);
+        return {
+          id: r.id || `q${r.order}`,
+          order: +r.order,
+          prompt: r.prompt || '',
+          options: safeOpts
+        };
+      });
       return;
     }
   }catch(e){}
@@ -200,15 +240,18 @@ async function loadQuestions(){
 /* ===== 시작 화면 ===== */
 function startScreen(){
   return `<div class="center">
-    <h1 style="margin-top:8px;font-size:42px">바른미술학원 · 미술적성테스트</h1>
+    <h1 class="heroTitle">바른미술학원 · 미술적성테스트</h1>
     <p class="muted" style="font-size:16px">아이의 미술 적성과 잠재력을 간단히 확인하고, 바로 결과를 확인·저장할 수 있는 테스트입니다.</p>
-    <div style="height:10px"></div>
 
+    <div style="height:18px"></div>
+    <button class="btn btn-mint btn-xl" id="startBtn">지금 바로 시작하기</button>
+
+    <div style="height:16px"></div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:1000px;margin:0 auto">
       ${[
-        {title:'평가 8가지',desc:'관찰력·색감각·서사력·공간감·디테일·도전성·소통력·꾸준성'},
-        {title:'심화 4가지',desc:'미적 판단력 · 정서표현/공감 · 창의 문제해결 · 자기성찰/개선'},
-        {title:'진행 안내',desc:'보기 4개 중 1개 선택(PC: 화살표/Enter), 완료 즉시 결과·PDF 저장'}
+        {title:'우린 이런 점을 봐요',desc:'관찰력, 색감각, 서사력, 공간감, 디테일, 도전성, 소통력, 꾸준성 — 아이의 강점을 폭넓게 확인해요.'},
+        {title:'심화 포인트도 체크',desc:'미적 판단력, 정서표현/공감, 창의 문제해결, 자기성찰/개선까지 가볍게 균형 점검해요.'},
+        {title:'진행 방법은 아주 간단',desc:'각 문항에서 마음에 드는 보기 하나만 선택하세요. 끝나면 결과와 PDF 저장을 바로 제공합니다.'}
       ].map((f)=>`
         <div style="background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 14px 36px rgba(16,24,40,.08);position:relative;overflow:hidden">
           <div style="position:absolute; inset:-1px; padding:1px; border-radius:18px; background:linear-gradient(90deg,#FFE6CF,#E6E2FF,#CFF7EE); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude"></div>
@@ -217,14 +260,11 @@ function startScreen(){
         </div>`).join('')}
     </div>
 
-    <div style="height:18px"></div>
-    <button class="btn btn-mint" id="startBtn">시작하기</button>
     <div class="small muted" style="margin-top:12px">※ 본 테스트는 <b>교육 가이드</b> 목적이며, 의학/임상 진단이 아닙니다.</div>
   </div>`;
 }
 function viewStart(){
   app().innerHTML=startScreen();
-  // 시작 버튼 바인딩 (렌더 후!)
   $('startBtn').onclick=()=>navGo('consent');
   $('startBtn').onmousemove=(e)=>{ e.currentTarget.style.setProperty('--x', e.offsetX+'px'); e.currentTarget.style.setProperty('--y', e.offsetY+'px'); };
   window.scrollTo({top:0,behavior:'smooth'});
@@ -243,12 +283,20 @@ function viewConsent(){
     ${accItem('5) 권리','동의 거부 가능(거부 시 서비스 제한 가능)')}
     ${accItem('6) 문의','barunart1004@gmail.com')}
   </div>
+
   <div class="section" style="margin-top:16px">
-    <div class="checkRow">
-      <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="chk_required"> <span>(필수) 개인정보 수집·이용에 <b>동의합니다.</b></span></label>
-      <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="chk_minor"> <span>(필수) 만 14세 미만 아동의 법정대리인으로서 <b>동의합니다.</b></span></label>
+    <div class="agreeList">
+      <div class="agree-row">
+        <div class="txt">(필수) 개인정보 수집·이용에<br><b>동의합니다.</b></div>
+        <input type="checkbox" id="chk_required" />
+      </div>
+      <div class="agree-row">
+        <div class="txt">(필수) 만 14세 미만 아동의 법정대리인으로서<br><b>동의합니다.</b></div>
+        <input type="checkbox" id="chk_minor" />
+      </div>
     </div>
   </div>
+
   <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center">
     <button class="btn" id="btn_consent" disabled>동의하고 진행</button>
     <button class="btn-ghost" id="btn_expand">전문 펼치기</button>
@@ -289,7 +337,6 @@ function viewProfile(){
     </div>
   </div>
   <div class="center" style="margin-top:16px"><button class="btn btn-mint" id="btn_starttest">테스트 시작</button></div>`;
-  // 나이 ↔ 학년 연동
   $('age').addEventListener('change',e=>{ $('grade').value = AGE_TO_GRADE[e.target.value]; });
   $('grade').addEventListener('change',e=>{ $('age').value = GRADE_TO_AGE[e.target.value]; });
   $('btn_starttest').onclick=startTest;
@@ -303,14 +350,26 @@ async function startTest(){
 }
 
 /* ===== 테스트 ===== */
+function pcGridClassFor(optsCount){
+  if (window.matchMedia('(min-width:1024px)').matches){
+    return optsCount===2 ? 'test-grid-2' : 'test-grid-4';
+  }
+  return 'grid grid-2';
+}
+function optionImageUrl(q, o){
+  // 시트 이미지가 비었으면 /public/img/1-A.png 형식으로 대체
+  if (o.imageUrl) return o.imageUrl;
+  const num = Number(q.order)|| (STATE.idx+1);
+  return `${ASSET_BASE}/${num}-${o.key}.png`;
+}
 function viewTest(){
   const q=STATE.questions[STATE.idx]; if(!q){ app().innerHTML='<h3 class="center">문항을 불러오지 못했습니다. 관리자에 문의해 주세요.</h3>'; return; }
-  const gridCls = (window.matchMedia('(min-width:1024px)').matches?'test-grid':'grid grid-2');
+  const gridCls = pcGridClassFor(q.options.length);
   app().innerHTML=`<div class="center small muted">Q${STATE.idx+1} / ${STATE.questions.length}</div>
     <h2 class="center" style="margin-top:6px">${q.prompt||''}</h2>
     <div class="${gridCls}" style="margin-top:10px">
-      ${q.options.map(o=>`<div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label}" data-key="${o.key}">
-        <img src="${o.imageUrl}" alt="${o.label}" onerror="this.style.opacity=.2" loading="lazy"><div class="cap center">${o.label}</div></div>`).join('')}
+      ${q.options.map(o=>`<div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label||o.key}" data-key="${o.key}">
+        <img src="${optionImageUrl(q,o)}" alt="${o.label||o.key}" onerror="this.style.opacity=.2" loading="lazy"><div class="cap center">${o.label||o.key}</div></div>`).join('')}
     </div>
     <div class="center" style="margin-top:18px; display:flex; gap:10px; justify-content:center">
       <button class="btn-ghost" id="btn_prev" ${STATE.idx===0?'disabled':''}>이전</button>
@@ -324,15 +383,13 @@ function viewTest(){
   });
   $('btn_prev').onclick=prev;
   $('btn_next').onclick=next;
-  document.addEventListener('keydown',keyHandler,{once:true});
 }
-function keyHandler(e){ if(e.key==='ArrowRight'){ next(); } if(e.key==='ArrowLeft'){ prev(); } if(e.key==='Enter'){ if(!$('btn_next').disabled) next(); } }
 function choose(key){
   const q=STATE.questions[STATE.idx];
-  ['A','B','C','D'].forEach(k=>{const n=document.getElementById(`opt_${k}`); if(n) n.classList.remove('sel');});
+  q.options.forEach(k=>{const n=document.getElementById(`opt_${k.key}`); if(n) n.classList.remove('sel');});
   const node=document.getElementById(`opt_${key}`); if(node){ node.classList.add('sel'); node.animate([{transform:'scale(1)'},{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:160}); }
   const opt=q.options.find(o=>o.key===key);
-  STATE.answers[STATE.idx]={ qid:q.id, key, weights:opt.weights };
+  STATE.answers[STATE.idx]={ qid:q.id, key, weights:opt.weights||{} };
   $('btn_next').disabled=false;
 }
 function next(){
@@ -342,6 +399,14 @@ function next(){
   else{ submitAllSafe(); }
 }
 function prev(){ if(STATE.idx>0){ STATE.idx--; render(); } }
+
+// 전역 키보드 내비게이션(테스트 단계에서만 동작)
+document.addEventListener('keydown', (e)=>{
+  if(STATE.step!=='test') return;
+  if(e.key==='ArrowRight'){ next(); }
+  if(e.key==='ArrowLeft'){ prev(); }
+  if(e.key==='Enter'){ if(!$('btn_next').disabled) next(); }
+});
 
 /* ===== 점수/멘트 ===== */
 function aggregateScores(ans){
@@ -370,7 +435,7 @@ const PRAISE = {
   'B+':k=>`${k}이 안정적입니다. 새로운 시도에도 잘 적응합니다.`,
   'B':k=>`${k} 기본기가 좋습니다. 루틴을 넓히면 <b>성장 가속</b>!`
 };
-const MISSIONS={ // 실생활형 15분 루틴
+const MISSIONS={
   '관찰력':['집 안 사물 3개 5분 관찰스케치','광원 바꿔 동일물체 2장','식물 잎사귀 확대 스케치'],
   '색감각':['한정 팔레트 3색으로 소품 칠하기','보색 포인트 한 장면','따뜻/차가움 나누어 색채 실험'],
   '서사력':['3컷 만화로 오늘 사건','장면 전/후 바꾸어 2컷','캐릭터 감정 변화 4표정'],
@@ -387,16 +452,15 @@ function nowKST(){ const d=new Date(),p=n=>String(n).padStart(2,'0'); return `${
 async function submitAllSafe(){
   const raw=aggregateScores(STATE.answers);
   const scores=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,adjust(v)])); // 2.0~4.0 보정
-  const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3); // 영역명 3개
+  const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3);
   const resultId=crypto.randomUUID();
 
-  // Google Form 전송 (top3는 영역명으로 저장!)
   const form=new FormData();
   form.append(F.child_name,STATE.profile.child_name); form.append(F.age,STATE.profile.age); form.append(F.grade,STATE.profile.grade);
   form.append(F.guardian,STATE.profile.guardian); form.append(F.phone,STATE.profile.phone); form.append(F.campus,STATE.profile.campus||'');
   form.append(F.answers,JSON.stringify({profile:STATE.profile,questions:STATE.answers}));
   form.append(F.scores,JSON.stringify(scores));
-  form.append(F.top3,top3.join(',')); // <-- 수정: id가 아닌 영역명
+  form.append(F.top3,top3.join(','));
   form.append(F.resultId,resultId); form.append(F.timestamp,nowKST());
   try{ await fetch(FORM_ACTION,{method:'POST',mode:'no-cors',body:form}); }catch(e){}
 
@@ -410,7 +474,6 @@ function viewResult(){
   const r=STATE.result, s=r?.scores||{};
   const overall = Math.round((Object.values(s).reduce((a,b)=>a+(+b||0),0))*10)/10 || 0;
 
-  // 상위영역 기반 총평 2~3줄
   const T = r.top3;
   const summary = `${STATE.profile.child_name}님은 <b>${T[0]}</b>를 중심으로 <b>${T[1]}</b>, <b>${T[2]}</b>에서 강점이 뚜렷합니다. 화면을 읽고 선택하는 과정이 안정적이며, 시도에 대한 두려움이 낮아 발전 속도가 빠른 유형이에요. 강점 영역을 루틴으로 확장해 ‘작은 완성’을 자주 만드는 것이 동기 유지에 특히 효과적입니다.`;
 
@@ -485,9 +548,7 @@ function render(){ renderNav(); updateTopProgress();
 render();
 
 /* ===== Fallback용 15문항 정의 (라벨/가중치 예시·이미지 샘플) ===== */
-function W(w){ // 간단한 가중치 헬퍼 (없으면 0)
-  const o={}; DOMAINS.forEach(k=>o[k]=0); Object.entries(w).forEach(([k,v])=>o[k]=v); return o;
-}
+function W(w){ const o={}; DOMAINS.forEach(k=>o[k]=0); Object.entries(w).forEach(([k,v])=>o[k]=v); return o; }
 function localQuestions(){
   const S=(q,p,a,b,c,d)=>({id:q,order:+q.replace('q',''),prompt:p,options:[
     {key:'A',label:a[0],imageUrl:a[1],weights:W(a[2])},
@@ -500,7 +561,7 @@ function localQuestions(){
   return [
     S('q1','새로운 미술 도구를 발견했어요! 무엇을 먼저 해볼까요?',
       ['설명서를 꼼꼼히 읽어본다', IMG('paper'), {디테일:1, 꾸준성:0.6}],
-      ['종이에 탐색·실험한다', IMG('sketch'), {도전성:1, 창의:1, 소통력:0.3}],
+      ['종이에 탐색·실험한다', IMG('sketch'), {도전성:1}],
       ['친구들과 아이디어 나눈다', IMG('kids'), {소통력:1, 서사력:0.6}],
       ['가장 특이한 결과 상상', IMG('idea'), {도전성:1, 서사력:0.5}]
     ),
@@ -510,15 +571,16 @@ function localQuestions(){
       ['현실 건물 새로 디자인', IMG('architecture'), {공간감:1, 디테일:0.4}],
       ['작은 생명체의 숨은 세계', IMG('mini world'), {관찰력:0.8, 서사력:0.6}]
     ),
+    // ... (나머지는 기존 예시와 동일)
     S('q3','두 그림 중 색이 더 조화로운 것은?',
-      ['조화로운 팔레트', IMG('palette'), {색감각:1, 미적:0.6}],
+      ['조화로운 팔레트', IMG('palette'), {색감각:1}],
       ['대비 강한 팔레트', IMG('contrast'), {도전성:0.6}],
       ['파스텔 편안함', IMG('pastel'), {색감각:0.8}],
       ['강한 보색', IMG('vivid'), {도전성:0.6}]
     ),
     S('q4','그리다 실수를 했어요. 어떻게 할까요?',
       ['지우고 다시 그린다', IMG('erase'), {디테일:0.8, 꾸준성:0.8}],
-      ['실수를 작품 일부로 바꾼다', IMG('mix'), {창의:1, 도전성:0.6}],
+      ['실수를 작품 일부로 바꾼다', IMG('mix'), {도전성:0.6}],
       ['쉬고 재도전·완성', IMG('focus'), {꾸준성:1}],
       ['도움을 요청', IMG('help'), {소통력:0.8}]
     ),
@@ -530,15 +592,15 @@ function localQuestions(){
     ),
     S('q6','미래의 도시를 그린다면, 어떻게 시작할까요?',
       ['사진 조사·계획', IMG('city plan'), {디테일:0.7, 공간감:0.8}],
-      ['아무도 본 적 없는 건물', IMG('scifi'), {도전성:1, 창의:0.6}],
+      ['아무도 본 적 없는 건물', IMG('scifi'), {도전성:1}],
       ['아이디어 모으기', IMG('team'), {소통력:0.8}],
       ['재료 실험', IMG('paint'), {도전성:0.8, 색감각:0.5}]
     ),
     S('q7','친구가 슬퍼 보여요. 어떤 그림을 그려줄까요?',
-      ['귀여운 동물', IMG('cute'), {서사력:0.5, 정서:0.6}],
-      ['추상적 감정', IMG('blue'), {정서:0.8, 색감각:0.6}],
+      ['귀여운 동물', IMG('cute'), {서사력:0.5}],
+      ['추상적 감정', IMG('blue'), {색감각:0.6}],
       ['즐거운 추억', IMG('memory'), {서사력:0.8, 소통력:0.5}],
-      ['밝고 희망찬 그림', IMG('bright'), {색감각:0.7, 정서:0.6}]
+      ['밝고 희망찬 그림', IMG('bright'), {색감각:0.7}]
     ),
     S('q8','편안한 색 조합은?',
       ['따뜻한 계열', IMG('warm'), {색감각:0.8}],
@@ -550,43 +612,50 @@ function localQuestions(){
       ['바꾼다', IMG('switch'), {도전성:0.4}],
       ['몇 번 후 포기', IMG('try'), {꾸준성:0.5}],
       ['될 때까지 + 도움요청', IMG('keep'), {꾸준성:1, 소통력:0.5}],
-      ['원인 분석·새 방법', IMG('analyze'), {창의:0.8, 자기:0.6}]
+      ['원인 분석·새 방법', IMG('analyze'), {도전성:0.6}]
     ),
     S('q10','이 그림에서 가장 눈에 띄는 것은?',
       ['전체 구도', IMG('layout'), {공간감:0.9}],
       ['작은 패턴/질감', IMG('texture'), {디테일:0.9}],
-      ['인물 표정/감정', IMG('face'), {서사력:0.7, 정서:0.6}],
+      ['인물 표정/감정', IMG('face'), {서사력:0.7}],
       ['독특한 재료/기법', IMG('tech'), {도전성:0.7}]
     ),
     S('q11','내 그림의 제목은?',
       ['보이는 대로', IMG('see'), {관찰력:0.6}],
       ['상상을 부르는 제목', IMG('title'), {서사력:0.9, 소통력:0.5}],
-      ['기분 좋아지는 제목', IMG('happy'), {정서:0.7}],
+      ['기분 좋아지는 제목', IMG('happy'), {서사력:0.3}],
       ['색/형태 강조', IMG('shape'), {색감각:0.7, 디테일:0.5}]
     ),
     S('q12','세상에 없는 동물, 어떤 동물?',
       ['섞어서 만든 동물', IMG('hybrid'), {관찰력:0.6, 디테일:0.6}],
-      ['완전히 새로운 형태', IMG('new'), {도전성:0.9, 창의:0.8}],
+      ['완전히 새로운 형태', IMG('new'), {도전성:0.9}],
       ['감정 표현·대화', IMG('talk'), {서사력:0.7, 소통력:0.6}],
       ['특별한 재료로 꾸미기', IMG('craft'), {색감각:0.6, 디테일:0.6}]
     ),
     S('q13','그림을 보여줄 때 듣고 싶은 말은?',
-      ['칭찬', IMG('praise'), {소통력:0.4}],
-      ['구체적 조언', IMG('advice'), {자기:0.6, 꾸준성:0.5}],
-      ['이야기가 떠올라', IMG('story'), {서사력:0.6}],
-      ['재료가 궁금', IMG('curious'), {도전성:0.5}]
+      ['칭찬', IMG('praise'), {}],
+      ['구체적 조언', IMG('advice'), {}],
+      ['이야기가 떠올라', IMG('story'), {}],
+      ['재료가 궁금', IMG('curious'), {}]
     ),
     S('q14','두 풍경 중 더 안정적인 구도는?',
-      ['균형 잡힌 구도', IMG('balance'), {공간감:0.9, 미적:0.6}],
-      ['치우친 구도', IMG('tilt'), {도전성:0.4}]
+      ['균형 잡힌 구도', IMG('balance'), {공간감:0.9}],
+      ['치우친 구도', IMG('tilt'), {도전성:0.4}],
+      ['','',{}],
+      ['','',{}]
     ),
     S('q15','답답할 때 어떤 생각을 하나요?',
       ['재능이 없나…', IMG('sad'), {꾸준성:0.2}],
       ['조금만 더! 자신감', IMG('cheer'), {꾸준성:0.9}],
-      ['다른 방법 떠올리기', IMG('newway'), {창의:0.8, 도전성:0.6}],
+      ['다른 방법 떠올리기', IMG('newway'), {도전성:0.6}],
       ['완성 상상으로 동기', IMG('finish'), {서사력:0.5, 꾸준성:0.7}]
     )
-  ];
+  ].map(q=>{
+    // Fallback에서도 2지선다 테스트 가능하도록 빈 보기 제외
+    q.options = q.options.filter(o=> (o.label||o.imageUrl) );
+    if(q.options.length<2) q.options = q.options.slice(0,2); // 안전장치
+    return q;
+  });
 }
 </script>
 </body>
