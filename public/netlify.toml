@@ -1,10 +1,10 @@
+# netlify.toml
 [build]
-  # 정적 사이트라면 별도 빌드 명령이 없어도 OK
-  # functions 디렉토리 위치 지정 (기본값도 netlify/functions 이지만 명시 권장)
-  functions = "netlify/functions"
+  publish   = "public"           # 정적 파일 폴더
+  functions = "netlify/functions" # 함수 폴더
 
-# 프런트의 /api/* 요청을 Netlify Functions로 프록시
-[[redirects]]
-  from = "/api/*"
-  to   = "/.netlify/functions/:splat"
-  status = 200
+[functions]
+  node_bundler = "esbuild"
+
+[dev]
+  framework = "#static"
