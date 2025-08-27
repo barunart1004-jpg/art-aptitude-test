@@ -102,6 +102,8 @@ label{font-size:14px; color:#374151}
   .test-grid-4{display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
   .test-grid-2{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
   .opt img{aspect-ratio:4/3}
+  /* 4지선다일 때 이미지 영역을 조금 더 키움 */
+  .test-grid-4 .opt img{aspect-ratio:5/4}
   .sideNav{position:fixed; top:50%; transform:translateY(-50%); z-index:20}
   .sideNav.left{left:18px} .sideNav.right{right:18px}
   .sideBtn{background:linear-gradient(90deg,#fff,#FFF4EC); border:1px solid var(--line); width:46px; height:46px; border-radius:50%; display:grid; place-items:center; box-shadow:0 12px 26px rgba(16,24,40,.08); cursor:pointer; font-weight:900}
@@ -171,7 +173,22 @@ label{font-size:14px; color:#374151}
 const SHEET_ID   = '14VLQBhDJtduxjCnfr7VEOstZ5ez8-CX3ArXy1OvYCQg';
 const GVIZ_URL   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Questions&tqx=out:json`;
 const FORM_ACTION= 'https://docs.google.com/forms/d/e/1FAIpQLSeRWq5YKN50zL0simiaQA6EBRsn6VXN__ZmLplAgDz1I1hyQA/formResponse';
-const F = { child_name:'entry.684468179', age:'entry.1066070471', grade:'entry.1812672802', guardian:'entry.1666083184', phone:'entry.89824848', campus:'entry.490719219', answers:'entry.85364862', scores:'entry.1455508168', top3:'entry.1261684833', resultId:'entry.2120338430', timestamp:'entry.532514127' };
+
+/* ★ top3가 잘못 저장되던 이슈 수정: 실제 폼 항목 ID에 맞게 재매핑
+   - 스크린샷에서 top3 컬럼에 resultId가 들어가던 현상 근거로 아래처럼 스왑 */
+const F = {
+  child_name:'entry.684468179',
+  age:'entry.1066070471',
+  grade:'entry.1812672802',
+  guardian:'entry.1666083184',
+  phone:'entry.89824848',
+  campus:'entry.490719219',
+  answers:'entry.85364862',
+  scores:'entry.1455508168',
+  top3:'entry.2120338430',      // ← top3 저장
+  resultId:'entry.532514127',   // ← resultId 저장
+  timestamp:'entry.1261684833'  // ← 사용자 기록용 타임스탬프 저장
+};
 /* ========================= */
 
 const ASSET_BASE = '/public/img'; // 시트 이미지 공란이면 /public/img/1-A.png 형식 사용
@@ -239,11 +256,10 @@ function startScreen(){
     <button class="btn btn-mint btn-xl" id="startBtn">지금 바로 시작하기</button>
 
     <div style="height:16px"></div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:1000px;margin:0 auto">
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:1000px;margin:0 auto">
       ${[
         {title:'우린 이런 점을 봐요',desc:'관찰력, 색감각, 서사력, 공간감, 디테일, 도전성, 소통력, 꾸준성 — 아이의 강점을 폭넓게 확인해요.'},
-        {title:'심화 포인트도 체크',desc:'미적 판단력, 정서표현/공감, 창의 문제해결, 자기성찰/개선까지 가볍게 균형 점검해요.'},
-        {title:'진행 방법은 아주 간단',desc:'각 문항에서 마음에 드는 보기 하나만 선택하세요. 끝나면 결과와 PDF 저장을 바로 제공합니다.'}
+        {title:'진행 방법은 간단해요',desc:'각 문항에서 마음에 드는 보기 하나만 선택하세요. 완료 즉시 결과와 PDF 저장을 바로 제공합니다.'}
       ].map((f)=>`
         <div style="background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 14px 36px rgba(16,24,40,.08);position:relative;overflow:hidden">
           <div style="position:absolute; inset:-1px; padding:1px; border-radius:18px; background:linear-gradient(90deg,#FFE6CF,#E6E2FF,#CFF7EE); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude"></div>
@@ -458,16 +474,17 @@ function nowKST(){ const d=new Date(),p=n=>String(n).padStart(2,'0'); return `${
 async function submitAllSafe(){
   const raw=aggregateScores(STATE.answers);
   const scores=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,adjust(v)]));
-  const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3);
+  const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3); // 영역명 3개
   const resultId=crypto.randomUUID();
 
   const form=new FormData();
   form.append(F.child_name,STATE.profile.child_name); form.append(F.age,STATE.profile.age); form.append(F.grade,STATE.profile.grade);
   form.append(F.guardian,STATE.profile.guardian); form.append(F.phone,STATE.profile.phone); form.append(F.campus,STATE.profile.campus||'');
-  form.append(F.answers,JSON.stringify({profile:STATE.profile,questions:STATE.answers}));
+  form.append(F.answers,JSON.stringify({profile:STATE.profile,questions:STATE.answers,top3}));
   form.append(F.scores,JSON.stringify(scores));
-  form.append(F.top3,top3.join(','));
-  form.append(F.resultId,resultId); form.append(F.timestamp,nowKST());
+  form.append(F.top3,top3.join(','));         // ★ top3: 영역명 CSV
+  form.append(F.resultId,resultId);           // ★ 고유 결과 ID
+  form.append(F.timestamp,nowKST());          // ★ 사람이 읽기 쉬운 타임스탬프
   try{ await fetch(FORM_ACTION,{method:'POST',mode:'no-cors',body:form}); }catch(e){}
 
   STATE.result={scores,top3,resultId}; STATE.step='result'; render();
