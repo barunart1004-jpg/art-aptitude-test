@@ -13,108 +13,75 @@
 
 <style>
 :root{
-  --ink:#0f172a; --muted:#6b7280; --line:#e9eef5;
-  --white:#ffffff;
-  --o1:#FFE6CF; --o2:#FFD9BE; --o3:#FFC9A3; --o4:#FFB98A;
-  --mint:#CFF7EE; --vio:#E6E2FF;
+  --ink:#0f172a; --muted:#6b7280; --line:#e9eef5; --white:#ffffff;
+  --cta1:#FFB457; --cta2:#FF8C3A; --badge:#f3f4f6;
   --radius:20px; --shadow:0 18px 60px rgba(16,24,40,.12); --soft:0 10px 28px rgba(16,24,40,.08);
-  --cta1:#FFB457; --cta2:#FF8C3A;
-  --badge:#f3f4f6;
 }
-
-/* 기본 배경: 연한 주황 파스텔 단색 */
 html,body{height:100%}
-body{
-  margin:0; color:var(--ink);
-  font-family:"Pretendard",ui-sans-serif,system-ui,"Noto Sans KR",Segoe UI,Roboto,Arial;
-  background: #FFF4E8; /* 단색 파스텔 */
-}
-
-/* 컨테이너 */
-.container{min-height:100dvh; display:flex; flex-direction:column; align-items:center}
-.main{width:100%; max-width:1100px; padding:18px; display:flex; flex-direction:column; gap:16px; margin:0 auto}
+body{margin:0;color:var(--ink);font-family:"Pretendard",ui-sans-serif,system-ui,"Noto Sans KR",Segoe UI,Roboto,Arial;background:#FFF4E8}
+.container{min-height:100dvh;display:flex;flex-direction:column;align-items:center}
+.main{width:100%;max-width:1200px;padding:18px;display:flex;flex-direction:column;gap:16px;margin:0 auto}
 
 /* 헤더 */
-.header{width:100%; display:flex; justify-content:center}
-.brand{
-  width:100%; max-width:1100px; margin-top:10px; display:flex; align-items:center; gap:12px; padding:12px 16px;
-  border-radius:999px; background:#fff; border:1px solid var(--line); box-shadow:var(--soft)
-}
+.header{width:100%;display:flex;justify-content:center}
+.brand{width:100%;max-width:1200px;margin-top:10px;display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:999px;background:#fff;border:1px solid var(--line);box-shadow:var(--soft)}
 .logo{width:28px;height:28px;border-radius:50%;background:conic-gradient(from 0deg,#FFB98A,#FFE6CF,#E6E2FF,#CFF7EE,#FFB98A)}
-.brand span{font-weight:900; letter-spacing:.2px}
+.brand span{font-weight:900;letter-spacing:.2px}
 
 /* 네비 + 진행바 */
-.sticky{
-  position:sticky; top:0; z-index:10; backdrop-filter:blur(8px);
-  background:#fff; border:1px solid var(--line); border-radius:16px; box-shadow:var(--soft);
-  padding:8px 10px; display:flex; flex-direction:column; gap:10px;
-}
-.navbar{display:flex; flex-wrap:wrap; gap:10px; justify-content:center}
-.step{
-  display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; cursor:pointer;
-  background:#fff; color:#374151; font-weight:850; border:1px solid var(--line); box-shadow:var(--soft); transition:transform .12s
-}
+.sticky{position:sticky;top:0;z-index:10;backdrop-filter:blur(8px);background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--soft);padding:8px 10px;display:flex;flex-direction:column;gap:10px}
+.navbar{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.step{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;cursor:pointer;background:#fff;color:#374151;font-weight:850;border:1px solid var(--line);box-shadow:var(--soft);transition:transform .12s}
 .step:hover{transform:translateY(-1px)}
 .step .num{width:20px;height:20px;border-radius:50%;display:inline-grid;place-items:center;background:#fff;border:1px solid var(--line);font-size:12px}
-.step.active{background:linear-gradient(90deg,#FFE6CF,#FFD9BE); color:#111827; box-shadow:0 12px 30px rgba(255,214,176,.28)}
-.step.done{background:#f2fffa; border-color:#dff7ef}
-.topprogress{height:10px; background:#f6f7fb; border-radius:999px; overflow:hidden}
-.topprogress>div{height:100%; width:0; background:linear-gradient(90deg,#B9C8FF,#9DE5D5,#FFD9BE); transition:width .35s ease}
-.statusline{font-size:12px; color:#6b7280; text-align:center}
+.step.active{background:linear-gradient(90deg,#FFE6CF,#FFD9BE);color:#111827;box-shadow:0 12px 30px rgba(255,214,176,.28)}
+.step.done{background:#f2fffa;border-color:#dff7ef}
+.topprogress{height:10px;background:#f6f7fb;border-radius:999px;overflow:hidden}
+.topprogress>div{height:100%;width:0;background:linear-gradient(90deg,#B9C8FF,#9DE5D5,#FFD9BE);transition:width .35s ease}
+.statusline{font-size:12px;color:#6b7280;text-align:center}
 
-/* 카드/타이포/버튼 */
-.card{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); animation:fade .35s ease both}
-@keyframes fade{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:translateY(0)}}
-h1{font-size:34px; margin:0 0 6px} h2{font-size:24px; margin:0 0 10px} h3{font-size:18px; margin:16px 0 8px}
-p{margin:8px 0} .small{font-size:13px} .muted{color:var(--muted)} .center{text-align:center}
+/* 카드/버튼 */
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);animation:fade .35s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:34px;margin:0 0 6px}h2{font-size:26px;margin:0 0 10px}h3{font-size:18px;margin:16px 0 8px}
+p{margin:8px 0}.small{font-size:13px}.muted{color:var(--muted)}.center{text-align:center}
+.btn{--bg:linear-gradient(90deg,#FFB98A,#FFD9BE);--glow:rgba(255,185,138,.35);background:var(--bg);color:#5a3f2f;border:none;padding:16px 24px;border-radius:16px;font-weight:900;cursor:pointer;box-shadow:0 16px 40px var(--glow);transition:transform .08s,filter .2s,box-shadow .2s;position:relative;overflow:hidden;font-size:18px}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.03)}
+.btn-ghost{background:#fff;color:#111827;border:1px solid var(--line);padding:12px 14px;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:var(--soft)}
+.btn-primary{background:linear-gradient(90deg,var(--cta1),var(--cta2));color:#fff;box-shadow:0 14px 36px rgba(255,140,58,.35)}
+.btn-mint{background:linear-gradient(90deg,#FFE6CF,#FFD9BE)}
+.btn-xl{padding:20px 30px;font-size:20px;border-radius:20px}
 
-/* 버튼 */
-.btn{
-  --bg:linear-gradient(90deg,#FFB98A,#FFD9BE); --glow:rgba(255,185,138,.35);
-  background:var(--bg); color:#5a3f2f; border:none; padding:16px 24px; border-radius:16px; font-weight:900; cursor:pointer;
-  box-shadow:0 16px 40px var(--glow); transition:transform .08s, filter .2s, box-shadow .2s; position:relative; overflow:hidden; font-size:18px
-}
-.btn:hover{transform:translateY(-1px); filter:brightness(1.03)}
-.btn-ghost{background:#fff; color:#111827; border:1px solid var(--line); padding:12px 14px; border-radius:12px; font-weight:800; cursor:pointer; box-shadow:var(--soft)}
-.btn-mint{--bg:linear-gradient(90deg,#FFE6CF,#FFD9BE); --glow:rgba(255,214,190,.4)}
-.btn-xl{padding:20px 30px; font-size:20px; border-radius:20px}
-.btn-primary{background:linear-gradient(90deg,var(--cta1),var(--cta2)); color:#fff; box-shadow:0 14px 36px rgba(255,140,58,.35)}
-.btn-danger{background:#ef4444; color:#fff}
+/* 입력 + 폼 그리드 */
+input,select,textarea{width:100%;background:#fff;color:#111;border:1px solid var(--line);border-radius:12px;padding:12px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:#FFD9BE;box-shadow:0 0 0 6px rgba(255,217,190,.26)}
+label{font-size:14px;color:#374151;font-weight:700}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.form .field{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
+@media (max-width:860px){ .form{grid-template-columns:1fr} }
 
-/* 입력 */
-input,select,textarea{width:100%; background:#fff; color:#111; border:1px solid var(--line); border-radius:12px; padding:12px; outline:none}
-input:focus,select:focus,textarea:focus{border-color:#FFD9BE; box-shadow:0 0 0 6px rgba(255,217,190,.26)}
-label{font-size:14px; color:#374151}
-.section{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+/* 배지/뱃지 */
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#f3f4f6;font-weight:800;font-size:12px}
 
-/* 그리드 */
-.grid{display:grid; gap:14px}
-.grid-2{grid-template-columns:1fr 1fr}
-@media (max-width:860px){ .grid-2{grid-template-columns:1fr} }
-
-/* 보기 카드 (4개일 때 살짝 축소) */
-.opt{border:2px solid var(--line); border-radius:18px; overflow:hidden; cursor:pointer; background:#fff; box-shadow:var(--soft); transition:transform .12s, border-color .2s}
+/* 보기 카드(4개 더 크게) */
+.opt{border:2px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;background:#fff;box-shadow:var(--soft);transition:transform .12s,border-color .2s}
 .opt:hover{transform:translateY(-2px)}
-.opt img{width:100%; display:block; aspect-ratio:4/3; object-fit:cover} /* 옆으로 덜 잘림 */
-.opt .cap{padding:10px; color:#374151; font-weight:700}
-.opt.sel{border-color:#FFD9BE; box-shadow:0 0 0 6px rgba(255,217,190,.25)}
-/* PC: 4개 그리드는 전체적으로 8% 축소  */
+.opt img{width:100%;display:block;aspect-ratio:4/3;object-fit:cover}
+.opt .cap{padding:12px 14px;color:#374151;font-weight:800;font-size:16px}
+.opt.sel{border-color:#FFD9BE;box-shadow:0 0 0 6px rgba(255,217,190,.25)}
 @media (min-width:1024px){
-  .test-grid-4{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; transform:scale(.92); transform-origin:center}
-  .test-grid-2{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
+  .test-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .test-grid-4 .opt img{aspect-ratio:5/4} /* 이미지 세로 조금 더 */
+  .test-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
 }
 @media (max-width:1023px){ .sideNav{display:none} }
 
-/* 배지/뱃지 */
-.badge{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; background:var(--badge); font-weight:800; font-size:12px}
-
-/* 아코디언/블록 */
-.acc{border-radius:14px; overflow:hidden; border:1px solid var(--line)}
+/* 섹션/블록 */
+.acc{border-radius:14px;overflow:hidden;border:1px solid var(--line)}
 .acc-item{border-top:1px solid var(--line)}
-.acc-head{padding:14px 16px; background:#FFF4EC; cursor:pointer; display:flex; justify-content:space-between; align-items:center}
-.acc-body{padding:14px 16px; display:none; background:#fff}
+.acc-head{padding:14px 16px;background:#FFF4EC;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.acc-body{padding:14px 16px;display:none;background:#fff}
 .acc-item.open .acc-body{display:block}
-
 .block{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 26px rgba(16,24,40,.06);page-break-inside:avoid}
 .block h3{margin:0 0 10px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -125,45 +92,35 @@ label{font-size:14px; color:#374151}
 .callout{position:relative;background:linear-gradient(90deg,#FFE3CC,#E7F6FF);padding:22px;border-radius:18px;border:1px solid var(--line)}
 .credit{font-size:12px;color:#6b7280;text-align:center}
 
-/* 결과 상단 배너 */
-.heroTitle{
-  font-size:48px; line-height:1.1; margin:6px 0 10px; font-weight:900; letter-spacing:.2px;
-  background:linear-gradient(90deg,#111827 0%,#5a3f2f 40%,#FFB98A 100%);
-  -webkit-background-clip:text; background-clip:text; color:transparent;
-}
-
-/* 시작 화면 - 테스트 특징 + CTA */
-.features{display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-top:12px}
-.feature-card{background:#fff; border:1px solid var(--line); border-radius:18px; padding:20px; box-shadow:var(--soft); text-align:center}
+/* 시작 히어로/특징 */
+.heroTitle{font-size:48px;line-height:1.1;margin:6px 0 10px;font-weight:900;letter-spacing:.2px;background:linear-gradient(90deg,#111827 0%,#5a3f2f 40%,#FFB98A 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:12px}
+.feature-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--soft);text-align:center}
 .feature-icon{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;margin:0 auto 10px;background:#FFEBCF}
-.cta{
-  margin-top:26px; border-radius:18px; border:1px solid var(--line);
-  background:linear-gradient(90deg,#FFB75B,#FF983F);
-  color:#fff; padding:30px 16px; text-align:center; box-shadow:0 16px 36px rgba(255,152,63,.25)
-}
-.cta h3{margin:0 0 6px; font-size:26px; color:#fff}
-.cta p{margin:0 0 18px; color:#fff; opacity:.95}
+.cta{margin-top:26px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(90deg,#FFB75B,#FF983F);color:#fff;padding:30px 16px;text-align:center;box-shadow:0 16px 36px rgba(255,152,63,.25)}
+.cta h3{margin:0 0 6px;font-size:26px;color:#fff}
+.cta p{margin:0 0 18px;color:#fff;opacity:.95}
 
-/* 전문가(종합) 섹션 */
-.section-title{display:flex; align-items:center; gap:10px; font-size:20px; font-weight:900; margin:16px 0 10px}
-.expert-wrap{background:#F4F8FF; border:1px solid #dfe8fb; padding:18px; border-radius:16px}
-.expert-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+/* 전문가(종합) */
+.section-title{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:900;margin:16px 0 10px}
+.expert-wrap{background:#F4F8FF;border:1px solid #dfe8fb;padding:18px;border-radius:16px}
+.expert-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media (max-width:900px){ .expert-grid{grid-template-columns:1fr} }
-.card-lite{background:#fff; border:1px solid var(--line); border-radius:14px; padding:14px}
-.tag-blue{background:#e8f0ff; color:#2563eb; padding:6px 10px; border-radius:999px; font-weight:800; font-size:12px; display:inline-block}
+.card-lite{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
+.tag-blue{background:#e8f0ff;color:#2563eb;padding:6px 10px;border-radius:999px;font-weight:800;font-size:12px;display:inline-block}
 
-/* 차트 2분할 */
-.result-row{display:grid; grid-template-columns:1.1fr .9fr; gap:16px}
+/* 결과 차트 2분할(A4 절반 이하) */
+.result-row{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
 @media (max-width:900px){ .result-row{grid-template-columns:1fr} }
 
 /* PDF 모드 */
 @media print{ .no-print{display:none !important} }
 .pdf-mode .no-print{display:none !important}
 .pdf-mode body{background:#fff}
-.pdf-mode .card, .pdf-mode .block {box-shadow:none}
-.pdf-mode .main{max-width:794px} /* A4 폭에 맞춤 */
+.pdf-mode .card,.pdf-mode .block{box-shadow:none}
+.pdf-mode .main{max-width:794px}
 .pdf-mode .callout{background:#fff}
-.pdf-mode canvas{background:#fff} /* 캔버스 희미해짐 방지 */
+.pdf-mode canvas{background:#fff}
 </style>
 </head>
 <body>
@@ -183,20 +140,24 @@ label{font-size:14px; color:#374151}
   </main>
 </div>
 
-<!-- 네비(화살표) -->
-<div class="sideNav left no-print" id="sideLeft" style="display:none"><button class="btn-ghost" onclick="prev()" aria-label="이전">‹</button></div>
-<div class="sideNav right no-print" id="sideRight" style="display:none"><button class="btn-ghost" onclick="next()" aria-label="다음">›</button></div>
+<!-- 사이드 네비 -->
+<div class="sideNav left no-print" id="sideLeft" style="display:none;position:fixed;top:50%;left:18px;transform:translateY(-50%);z-index:20">
+  <button class="btn-ghost" onclick="prev()" aria-label="이전">‹</button>
+</div>
+<div class="sideNav right no-print" id="sideRight" style="display:none;position:fixed;top:50%;right:18px;transform:translateY(-50%);z-index:20">
+  <button class="btn-ghost" onclick="next()" aria-label="다음">›</button>
+</div>
 
 <!-- 이메일 모달 -->
-<div id="emailModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:50; align-items:center; justify-content:center">
-  <div style="width:min(560px,94vw); background:#fff; border:1px solid var(--line); border-radius:16px; padding:18px; box-shadow:var(--shadow)">
+<div id="emailModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;align-items:center;justify-content:center">
+  <div style="width:min(560px,94vw);background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)">
     <h3 style="margin-top:0">결과 PDF 이메일로 보내기</h3>
-    <div class="grid">
-      <div><label>받는 사람 이메일</label><input id="mail_to" placeholder="you@example.com"></div>
-      <div><label>제목</label><input id="mail_subject" placeholder="홍길동 테스트 결과입니다"></div>
+    <div class="form" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>받는 사람 이메일</label><input id="mail_to" placeholder="you@example.com"></div>
+      <div class="field"><label>제목</label><input id="mail_subject" placeholder="홍길동 테스트 결과입니다"></div>
     </div>
     <div id="mail_status" class="small muted" style="margin-top:8px"></div>
-    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px">
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
       <button class="btn-ghost" onclick="closeEmail()">취소</button>
       <button class="btn btn-primary" onclick="sendEmail()">보내기</button>
     </div>
@@ -209,7 +170,7 @@ const SHEET_ID   = '14VLQBhDJtduxjCnfr7VEOstZ5ez8-CX3ArXy1OvYCQg';
 const GVIZ_URL   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Questions&tqx=out:json`;
 const FORM_ACTION= 'https://docs.google.com/forms/d/e/1FAIpQLSeRWq5YKN50zL0simiaQA6EBRsn6VXN__ZmLplAgDz1I1hyQA/formResponse';
 
-/* ★ 폼 항목 매핑 (top3/resultId 수정 반영) */
+/* 폼 항목 매핑 */
 const F = {
   child_name:'entry.684468179',
   age:'entry.1066070471',
@@ -325,20 +286,15 @@ function viewConsent(){
     ${accItem('<b>6) 문의</b>','barunart1004@gmail.com')}
   </div>
 
-  <div class="section" style="margin-top:16px">
-    <div class="grid">
-      <label class="badge">필수 항목 모두 동의해 주세요</label>
-      <div style="display:flex; gap:14px; align-items:center">
-        <input type="checkbox" id="chk_required" style="width:20px;height:20px;accent-color:#FFB98A"> <span>(필수) 개인정보 수집·이용에 <b>동의합니다</b>.</span>
-      </div>
-      <div style="display:flex; gap:14px; align-items:center">
-        <input type="checkbox" id="chk_minor" style="width:20px;height:20px;accent-color:#FFB98A"> <span>(필수) 만 14세 미만 아동의 법정대리인으로서 <b>동의합니다</b>.</span>
-      </div>
+  <div class="card" style="margin-top:16px">
+    <div class="badge">필수 항목 모두 동의해 주세요</div>
+    <div style="display:flex;gap:18px;align-items:center;margin-top:10px;flex-wrap:wrap">
+      <label style="display:flex;gap:12px;align-items:center"><input type="checkbox" id="chk_required" style="width:20px;height:20px;accent-color:#FFB98A"> (필수) 개인정보 수집·이용에 <b>동의합니다</b>.</label>
+      <label style="display:flex;gap:12px;align-items:center"><input type="checkbox" id="chk_minor" style="width:20px;height:20px;accent-color:#FFB98A"> (필수) 만 14세 미만 아동의 법정대리인으로서 <b>동의합니다</b>.</label>
     </div>
-  </div>
-
-  <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center">
-    <button class="btn" id="btn_consent" disabled>동의하고 진행</button>
+    <div class="center" style="margin-top:16px">
+      <button class="btn" id="btn_consent" disabled>동의하고 진행</button>
+    </div>
   </div>`;
   const validate=()=>{ $('btn_consent').disabled=!( $('chk_required').checked && $('chk_minor').checked ); };
   $('chk_required').addEventListener('change',validate);
@@ -354,16 +310,18 @@ const CAMPUSES = ['압구정[본원]','반포 캠퍼스','한남 캠퍼스','방
 
 function viewProfile(){
   app().innerHTML=`<h2 class="center">프로필 정보</h2>
-  <div class="grid grid-2" style="margin-top:8px">
-    <div class="section"><label>아동 이름</label><input id="cname" placeholder="예: 홍길동"></div>
-    <div class="section"><label>보호자 이름</label><input id="gname" placeholder="예: 김보호자"></div>
-    <div class="section"><label>나이</label><select id="age">${[7,8,9,10,11,12].map(a=>`<option value="${a}">${a}</option>`).join('')}</select></div>
-    <div class="section"><label>학년</label><select id="grade">${Object.values(AGE_TO_GRADE).map(g=>`<option>${g}</option>`).join('')}</select></div>
-    <div class="section"><label>연락처</label><input id="phone" placeholder="010-0000-0000"></div>
-    <div class="section"><label>이메일(선택, 결과지 전송용)</label><input id="email" placeholder="example@email.com"></div>
-    <div class="section"><label>캠퍼스</label><select id="campus">${CAMPUSES.map(c=>`<option value="${c}">${c}</option>`).join('')}</select></div>
+  <div class="form" style="margin-top:8px">
+    <div class="field"><label>아동 이름</label><input id="cname" placeholder="예: 홍길동"></div>
+    <div class="field"><label>보호자 이름</label><input id="gname" placeholder="예: 김보호자"></div>
+
+    <div class="field"><label>나이</label><select id="age">${[7,8,9,10,11,12].map(a=>`<option value="${a}">${a}</option>`).join('')}</select></div>
+    <div class="field"><label>학년</label><select id="grade">${Object.values(AGE_TO_GRADE).map(g=>`<option>${g}</option>`).join('')}</select></div>
+
+    <div class="field" style="grid-column:1 / span 2"><label>연락처</label><input id="phone" placeholder="010-0000-0000"></div>
+    <div class="field"><label>캠퍼스</label><select id="campus">${CAMPUSES.map(c=>`<option value="${c}">${c}</option>`).join('')}</select></div>
+    <div class="field"><label>이메일(선택, 결과지 전송용)</label><input id="email" placeholder="example@email.com"></div>
   </div>
-  <div class="center" style="margin-top:16px"><button class="btn btn-mint" id="btn_starttest">테스트 시작</button></div>`;
+  <div class="center" style="margin-top:18px"><button class="btn btn-mint" id="btn_starttest">테스트 시작</button></div>`;
   $('age').addEventListener('change',e=>{ $('grade').value = AGE_TO_GRADE[e.target.value]; });
   $('grade').addEventListener('change',e=>{ $('age').value = GRADE_TO_AGE[e.target.value]; });
   $('btn_starttest').onclick=startTest;
@@ -403,11 +361,13 @@ function viewTest(){
       <span class="badge">Q ${STATE.idx+1} / ${STATE.questions.length}</span>
     </div>
     <h2 class="center" style="margin-top:6px">${q.prompt||''}</h2>
-    <div class="${gridCls}" style="margin-top:6px">
+    <div class="${gridCls}" style="margin-top:8px">
       ${q.options.map(o=>`<div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label||o.key}" data-key="${o.key}">
-        <img src="${optionImageUrl(q,o)}" alt="${o.label||o.key}" onerror="this.style.opacity=.2" loading="lazy"><div class="cap center">${o.label||o.key}</div></div>`).join('')}
+        <img src="${optionImageUrl(q,o)}" alt="${o.label||o.key}" onerror="this.style.opacity=.2" loading="lazy">
+        <div class="cap center">${o.label||o.key}</div>
+      </div>`).join('')}
     </div>
-    <div class="center" style="margin-top:16px; display:flex; gap:10px; justify-content:center">
+    <div class="center" style="margin-top:16px;display:flex;gap:10px;justify-content:center">
       <button class="btn-ghost" id="btn_prev" ${STATE.idx===0?'disabled':''}>이전</button>
       <button class="btn" id="btn_next" disabled>다음</button>
     </div>`;
@@ -435,7 +395,7 @@ function next(){
 }
 function prev(){ if(STATE.idx>0){ STATE.idx--; render(); } }
 
-document.addEventListener('keydown', (e)=>{
+document.addEventListener('keydown',(e)=>{
   if(STATE.step!=='test') return;
   if(e.key==='ArrowRight'){ next(); }
   if(e.key==='ArrowLeft'){ prev(); }
@@ -450,7 +410,7 @@ function aggregateScores(ans){
   DOMAINS.forEach(d=>{ const v=(sum[d]||0)/n*4; raw[d]=Math.max(0,Math.round(v*10)/10); });
   return raw;
 }
-const adjust=v=>Math.round((2 + v/2) * 10)/10; // 0→2.0, 4→4.0
+const adjust=v=>Math.round((2 + v/2) * 10)/10;
 function band(v){ if(v>=3.6) return 'S'; if(v>=3.2) return 'A'; if(v>=2.8) return 'A-'; if(v>=2.4) return 'B+'; if(v>=2.0) return 'B'; if(v>=1.6) return 'B-'; if(v>=1.0) return 'C+'; return 'C'; }
 const DETAIL = {
   '관찰력':(n)=>`${n}님은 대상의 특징을 캐치하는 눈이 좋아요. 작은 변화도 포착해 표현의 밀도를 높입니다.`,
@@ -463,21 +423,21 @@ const DETAIL = {
   '꾸준성':(n)=>`${n}님은 루틴을 유지하며 완성까지 밀어붙이는 힘이 돋보입니다. 학습 지속력이 강합니다.`
 };
 const PRAISE = {
-  'S':k=>`와, ${k}에서 <b>타고난 재능</b>이 돋보입니다. 높은 난이도도 스스로 기획해볼 수 있어요.`,
-  'A':k=>`${k} 감각이 <b>뛰어납니다</b>. 한 단계 높은 과제도 무리 없이 소화합니다.`,
-  'A-':k=>`${k} 실력이 <b>탄탄</b>합니다. 약간의 다듬기로 금방 상위권을 노려요.`,
-  'B+':k=>`${k}이 안정적입니다. 새로운 시도에도 잘 적응합니다.`,
-  'B':k=>`${k} 기본기가 좋습니다. 루틴을 넓히면 <b>성장 가속</b>!`
+  'S':k=>`와, ${k}에서 <b>타고난 재능</b>이 돋보입니다.`,
+  'A':k=>`${k} 감각이 <b>뛰어납니다</b>.`,
+  'A-':k=>`${k} 실력이 <b>탄탄</b>합니다.`,
+  'B+':k=>`${k}이 안정적입니다.`,
+  'B':k=>`${k} 기본기가 좋습니다.`
 };
 const MISSIONS={
-  '관찰력':['집 안 사물 3개 5분 관찰스케치','광원 바꿔 동일물체 2장','식물 잎사귀 확대 스케치'],
-  '색감각':['한정 팔레트 3색으로 소품 칠하기','보색 포인트 한 장면','따뜻/차가움 나누어 색채 실험'],
-  '서사력':['3컷 만화로 오늘 사건','장면 전/후 바꾸어 2컷','캐릭터 감정 변화 4표정'],
-  '공간감':['앞-중-뒤 나눠 배치하기','상자 5개로 거리감 실험','한 방의 바닥/소실점 잡기'],
-  '디테일':['재질 3종(금속/천/나무) 표현','선 굵기 3단계로 정리','작은 패턴 반복으로 밀도 올리기'],
-  '도전성':['새 도구 1개 체험 기록','실패작 수정해 새 결과 만들기','사진 보고 과감한 변형'],
-  '소통력':['작가노트 3문장 쓰기','친구/가족에게 설명하고 피드백 1개 반영','제목 3개 짓고 채택'],
-  '꾸준성':['5일 연속 15분 체크','작은 목표 설정→완료 표시','진행사진 2장 남기기']
+  '관찰력':['집 안 사물 3개 5분 관찰스케치'],
+  '색감각':['한정 팔레트 3색으로 소품 칠하기'],
+  '서사력':['3컷 만화로 오늘 사건'],
+  '공간감':['앞-중-뒤 나눠 배치하기'],
+  '디테일':['재질 3종(금속/천/나무) 표현'],
+  '도전성':['새 도구 1개 체험 기록'],
+  '소통력':['작가노트 3문장 쓰기'],
+  '꾸준성':['5일 연속 15분 체크']
 };
 
 /* ===== 제출 & 결과 ===== */
@@ -505,87 +465,45 @@ async function submitAllSafe(){
 let CHARTS=[];
 function destroyCharts(){ CHARTS.forEach(c=>c.destroy?.()); CHARTS=[]; }
 
-/* 전문가(종합) 섹션 HTML */
+/* 전문가(종합) 섹션 */
 function expertSection(childName, scores, top3){
-  const chunks = top3.map((k,i)=>`
-    <div class="expert-wrap">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
-        <div class="badge">${i+1}. ${k}</div>
-        <span class="small muted">현재 수준: <b>${(scores[k]||0).toFixed(1)}</b></span>
-        <span class="tag-blue">강점 영역</span>
-      </div>
-      <div class="expert-grid">
-        <div class="card-lite">
-          <div style="font-weight:900; margin-bottom:6px">📍 이론적 근거</div>
-          <p class="small"><b>${i===0?'Itten의 색채이론':'Bruner의 서사적 사고이론'}</b><br>${k}은(는) 작품의 완성도와 표현력을 결정하는 중요한 지표입니다.</p>
-        </div>
-        <div class="card-lite" style="background:#F8F1FF">
-          <div style="font-weight:900; margin-bottom:6px;color:#7c3aed">👩‍⚕️ 전문가 의견</div>
-          <p class="small">“${childName}은(는) <b>${k}</b>에서 돋보이며, 창의적 사고력과 표현의 균형이 좋습니다.”</p>
-        </div>
-        <div class="card-lite">
-          <div style="font-weight:900; margin-bottom:6px">⬆ 발달 방향</div>
-          <p class="small">루틴 속 실험을 늘리고 작은 완성을 자주 만드는 학습 패턴을 추천합니다.</p>
-        </div>
-        <div class="card-lite"></div>
-      </div>
-    </div>
-  `).join('');
-
   return `
     <div class="section-title">🧾 전문가 평가 및 이론적 배경</div>
-    <div class="small muted" style="margin-bottom:10px">${childName}의 미술적성에 대한 심화 분석 보고서</div>
-    ${chunks}
-    <div class="section-title">🧑‍⚕️ 종합 전문가 소견</div>
-    <div class="expert-wrap">
-      <div class="card-lite" style="background:#FFF4EF;border-color:#ffd7c2">
-        <div style="font-weight:900;margin-bottom:8px">현재 발달 상황 평가</div>
-        <p class="small">현재 ${childName}은(는) <b>${top3[0]}</b>을 중심으로 급격히 발달하는 시기이며, 맞춤형 커리큘럼이 효과적입니다.</p>
-        <div style="height:10px"></div>
-        <div style="font-weight:900;margin-bottom:6px">교육적 권장사항</div>
-        <ul class="small">
-          <li>개별화 교육: 강점 영역 중심의 맞춤형 커리큘럼</li>
-          <li>단계적 발달: 현재 수준에서 점진적 난이도 상승</li>
-          <li>통합적 접근: 약점 보완을 위한 다각도 활동</li>
-        </ul>
-      </div>
-      <div class="grid" style="grid-template-columns:1fr 1fr; gap:14px; margin-top:12px">
-        <div class="card-lite" style="background:#ECFFF7;border-color:#c8f7e3">
-          <div style="font-weight:900;margin-bottom:8px">추천 교육 프로그램 – 기초 실기반</div>
-          <ul class="small">
-            <li>주 2회, 90분 수업 / 소수정예 6~8명</li>
-            <li>개별 포트폴리오 관리</li>
-            <li>월 12만원</li>
-          </ul>
+    ${top3.map((k,i)=>`
+      <div class="expert-wrap">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+          <div class="badge">${i+1}. ${k}</div>
+          <span class="small muted">현재 수준: <b>${(scores[k]||0).toFixed(1)}</b></span>
+          <span class="tag-blue">강점 영역</span>
         </div>
-        <div class="card-lite" style="background:#EEF4FF;border-color:#dbe6ff">
-          <div style="font-weight:900;margin-bottom:8px">추천 교육 프로그램 – 심화 특기반</div>
-          <ul class="small">
-            <li>주 3회, 120분 수업 / 전문가 1:4 수업</li>
-            <li>공모전 출품 지도</li>
-            <li>월 18만원</li>
-          </ul>
+        <div class="expert-grid">
+          <div class="card-lite">
+            <div style="font-weight:900;margin-bottom:6px">📍 이론적 근거</div>
+            <p class="small">${k}은(는) 작품의 완성도와 표현력을 결정하는 중요한 지표입니다.</p>
+          </div>
+          <div class="card-lite" style="background:#F8F1FF">
+            <div style="font-weight:900;margin-bottom:6px;color:#7c3aed">👩‍⚕️ 전문가 의견</div>
+            <p class="small">“${childName}은(는) <b>${k}</b>에서 돋보이며, 창의적 사고력과 표현의 균형이 좋습니다.”</p>
+          </div>
+          <div class="card-lite">
+            <div style="font-weight:900;margin-bottom:6px">⬆ 발달 방향</div>
+            <p class="small">루틴 속 실험을 늘리고 작은 완성을 자주 만드는 학습 패턴을 추천합니다.</p>
+          </div>
+          <div class="card-lite"></div>
         </div>
       </div>
-      <div class="card-lite" style="background:#FFF7ED;border-color:#ffe0c2; margin-top:12px">
-        <div style="font-weight:900;margin-bottom:6px">전문가 방문 상담 예약</div>
-        <p class="small">테스트 결과를 바탕으로 개별 맞춤 교육 계획을 수립하는 1:1 상담(무료, 60분)입니다.</p>
-        <button class="btn btn-primary no-print" onclick="alert('상담 예약 기능은 추후 연결 예정입니다')" style="margin-top:8px">상담 예약하기</button>
-      </div>
-    </div>
+    `).join('')}
   `;
 }
 
-/* 결과 뷰 */
 function viewResult(){
   const r=STATE.result, s=r?.scores||{};
   const overall = Math.round((Object.values(s).reduce((a,b)=>a+(+b||0),0))*10)/10 || 0;
-
   const T = r.top3;
-  const summary = `${STATE.profile.child_name}님은 <b>${T[0]}</b>를 중심으로 <b>${T[1]}</b>, <b>${T[2]}</b>에서 강점이 뚜렷합니다. 화면을 읽고 선택하는 과정이 안정적이며, 시도에 대한 두려움이 낮아 발전 속도가 빠른 유형이에요. 강점 영역을 루틴으로 확장해 ‘작은 완성’을 자주 만드는 것이 동기 유지에 특히 효과적입니다.`;
+  const summary = `${STATE.profile.child_name}님은 <b>${T[0]}</b>를 중심으로 <b>${T[1]}</b>, <b>${T[2]}</b>에서 강점이 뚜렷합니다.`;
 
   app().innerHTML=`<div id="resultCard">
-    <div class="block callout" style="text-align:center">
+    <div class="block callout center">
       <div class="chip" style="margin:0 auto 8px;display:inline-block">테스트 완료</div>
       <h2 style="margin:0 0 10px"><b>${STATE.profile.child_name}</b>님, 멋진 집중력이었습니다!</h2>
       <div class="kpi" style="justify-content:center"><div class="num" style="font-size:52px">${overall.toFixed(1)}</div><div class="unit">/ 32 (8영역 합산)</div></div>
@@ -599,25 +517,23 @@ function viewResult(){
 
     <div class="block">
       <h3>총평</h3>
-      <p style="color:#0f172a;font-size:15px;line-height:1.7">${summary}</p>
+      <p class="small" style="color:#0f172a;line-height:1.7">${summary}</p>
     </div>
 
     <div class="block">
       <h3>항목별 해석 & 일일 15분 훈련</h3>
-      <div class="grid" style="grid-template-columns:1fr 1fr">
+      <div class="form" style="grid-template-columns:1fr 1fr">
         ${DOMAINS.map(k=>{
           const v=+(s[k]||0), b=band(v), w=Math.min(100,(v/4)*100);
-          const praiseFn = PRAISE[b] || (()=>`${k}에서 꾸준히 성장 중입니다.`);
           const mission = (MISSIONS[k]||[])[0] || '관찰·스케치 1장';
-          return `<div style="border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff;box-shadow:0 10px 26px rgba(16,24,40,.06)">
+          return `<div class="card-lite">
             <div style="display:flex;justify-content:space-between;align-items:flex-end">
               <strong>${k}</strong>
-              <div class="kpi"><div class="num" style="font-size:28px">${v.toFixed(1)}</div><div class="unit">/ 4.0</div></div>
+              <div class="kpi"><div class="num" style="font-size:26px">${v.toFixed(1)}</div><div class="unit">/ 4.0</div></div>
             </div>
             <div class="topprogress" style="height:10px;margin:8px 0 10px"><div style="width:${w}%;height:100%;background:linear-gradient(90deg,#B9C8FF,#9DE5D5,#FFD9BE)"></div></div>
             <div class="small" style="color:#0f172a">${DETAIL[k](STATE.profile.child_name)}</div>
-            <div class="small" style="margin-top:6px;color:#0f172a">${praiseFn(k)}</div>
-            <div class="small" style="margin-top:4px">오늘의 15분: <b>${mission}</b></div>
+            <div class="small" style="margin-top:4px">오늘의 15분: <b>${mission}</b> — 등급 ${b}</div>
           </div>`;
         }).join('')}
       </div>
@@ -628,7 +544,7 @@ function viewResult(){
     <p class="credit">※ 본 결과는 교육 가이드 목적이며 의학·임상 진단이 아닙니다.</p>
   </div>
 
-  <div class="center no-print" style="margin-top:16px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap">
+  <div class="center no-print" style="margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
     <button class="btn-ghost" onclick="STATE.step='start'; render()">처음으로</button>
     <button class="btn btn-mint" id="btn_pdf">PDF 저장</button>
     <button class="btn btn-primary" id="btn_email">이메일로 보내기</button>
@@ -654,7 +570,7 @@ function viewResult(){
 /* ===== PDF 저장 ===== */
 async function savePDF(){
   document.documentElement.classList.add('pdf-mode');
-  // 차트 → 이미지로 교체(투명/흐릿 방지)
+  // 차트 → 이미지로 교체
   const replaced = [];
   CHARTS.forEach((c)=>{
     const canvas = c.canvas;
@@ -680,10 +596,7 @@ async function savePDF(){
   await html2pdf().from(node).set(opt).save();
 
   // 복구
-  replaced.forEach(({canvas,img})=>{
-    img.remove();
-    canvas.style.display='';
-  });
+  replaced.forEach(({canvas,img})=>{ img.remove(); canvas.style.display=''; });
   document.documentElement.classList.remove('pdf-mode');
 }
 
@@ -700,7 +613,6 @@ async function sendEmail(){
   const to = $('mail_to').value.trim();
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)){ $('mail_status').textContent='올바른 이메일 주소를 입력해 주세요.'; return; }
 
-  // PDF를 dataURI로 만들고 Base64만 추출
   document.documentElement.classList.add('pdf-mode');
   const node = $('app');
   const opt = {
@@ -712,7 +624,7 @@ async function sendEmail(){
   const dataUri = await html2pdf().from(node).set(opt).outputPdf('datauristring');
   document.documentElement.classList.remove('pdf-mode');
 
-  const base64 = dataUri.split(',')[1]; // 프리픽스 제거
+  const base64 = dataUri.split(',')[1];
   $('mail_status').textContent='전송 중…';
 
   try{
@@ -731,7 +643,7 @@ async function sendEmail(){
     const data = await res.json();
     if(!res.ok){ throw new Error(data?.error || '전송 실패'); }
     $('mail_status').textContent='전송 성공!';
-    setTimeout(closeEmail, 1000);
+    setTimeout(closeEmail, 900);
   }catch(e){
     $('mail_status').textContent='전송 실패: ' + e.message;
   }
@@ -747,7 +659,7 @@ function render(){ renderNav(); updateTopProgress();
 }
 render();
 
-/* ===== Fallback용 15문항 정의 ===== */
+/* ===== Fallback 문항 ===== */
 function W(w){ const o={}; DOMAINS.forEach(k=>o[k]=0); Object.entries(w).forEach(([k,v])=>o[k]=v); return o; }
 function localQuestions(){
   const S=(q,p,a,b,c,d)=>({id:q,order:+q.replace('q',''),prompt:p,options:[
@@ -756,7 +668,7 @@ function localQuestions(){
     {key:'C',label:c[0],imageUrl:c[1],weights:W(c[2])},
     {key:'D',label:d[0],imageUrl:d[1],weights:W(d[2])},
   ]});
-  const IMG=(kw)=>`https://images.unsplash.com/photo-150${Math.floor(Math.random()*899+100)}?auto=format&fit=crop&w=900&q=70&${encodeURIComponent(kw)}`;
+  const IMG=(kw)=>`https://images.unsplash.com/photo-150${Math.floor(Math.random()*899+100)}?auto=format&fit=crop&w=1000&q=70&${encodeURIComponent(kw)}`;
 
   return [
     S('q1','새로운 미술 도구를 발견했어요! 무엇을 먼저 해볼까요?',
@@ -840,8 +752,8 @@ function localQuestions(){
     S('q14','두 풍경 중 더 안정적인 구도는?',
       ['균형 잡힌 구도', IMG('balance'), {공간감:0.9}],
       ['치우친 구도', IMG('tilt'), {도전성:0.4}],
-      ['','',{}],
-      ['','',{}]
+      ['다채로운 색 배치', IMG('colors'), {색감각:0.5}],
+      ['전경-중경-후경', IMG('depth'), {공간감:0.6}]
     ),
     S('q15','답답할 때 어떤 생각을 하나요?',
       ['재능이 없나…', IMG('sad'), {꾸준성:0.2}],
@@ -849,11 +761,7 @@ function localQuestions(){
       ['다른 방법 떠올리기', IMG('newway'), {도전성:0.6}],
       ['완성 상상으로 동기', IMG('finish'), {서사력:0.5, 꾸준성:0.7}]
     )
-  ].map(q=>{
-    q.options = q.options.filter(o=> (o.label||o.imageUrl) );
-    if(q.options.length<2) q.options = q.options.slice(0,2);
-    return q;
-  });
+  ];
 }
 </script>
 </body>
