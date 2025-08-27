@@ -7,6 +7,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<!-- ★ NEW: html2pdf.js (브라우저에서 PDF 생성) -->
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+
 <style>
 :root{
   --ink:#0f172a; --muted:#6b7280;
@@ -147,6 +151,19 @@ label{font-size:14px; color:#374151}
   .card{box-shadow:none;border:1px solid #ddd}
   .block{break-inside:avoid-page}
 }
+
+/* ★ NEW: 이메일 모달 */
+.modal-backdrop{
+  position:fixed; inset:0; background:rgba(0,0,0,.35); display:none; align-items:center; justify-content:center; z-index:999;
+}
+.modal{
+  width:min(520px,92vw); background:#fff; border:1px solid var(--line); border-radius:16px; box-shadow:0 18px 60px rgba(16,24,40,.18);
+  padding:18px;
+}
+.modal.show{display:flex}
+.modal h3{margin:0 0 10px}
+.modal .row{display:grid; gap:8px; margin:10px 0}
+.modal .actions{display:flex; gap:8px; justify-content:flex-end; margin-top:10px}
 </style>
 </head>
 <body>
@@ -168,14 +185,33 @@ label{font-size:14px; color:#374151}
 <div class="sideNav left" id="sideLeft" style="display:none"><button class="sideBtn" onclick="prev()" aria-label="이전">‹</button></div>
 <div class="sideNav right" id="sideRight" style="display:none"><button class="sideBtn" onclick="next()" aria-label="다음">›</button></div>
 
+<!-- ★ NEW: 이메일 모달 -->
+<div class="modal-backdrop" id="emailModal">
+  <div class="modal">
+    <h3>이메일로 결과 보내기</h3>
+    <div class="row">
+      <label>받는 사람 이메일</label>
+      <input type="email" id="emailTo" placeholder="example@email.com">
+    </div>
+    <div class="row">
+      <label>제목</label>
+      <input type="text" id="emailSubject" value="">
+    </div>
+    <div class="actions">
+      <button class="btn-ghost" id="emailCancel">취소</button>
+      <button class="btn" id="emailSend">보내기</button>
+    </div>
+    <div class="small muted" id="emailMsg" style="margin-top:8px"></div>
+  </div>
+</div>
+
 <script>
 /* ===== 연결값(시트/폼) ===== */
 const SHEET_ID   = '14VLQBhDJtduxjCnfr7VEOstZ5ez8-CX3ArXy1OvYCQg';
 const GVIZ_URL   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Questions&tqx=out:json`;
 const FORM_ACTION= 'https://docs.google.com/forms/d/e/1FAIpQLSeRWq5YKN50zL0simiaQA6EBRsn6VXN__ZmLplAgDz1I1hyQA/formResponse';
 
-/* ★ top3가 잘못 저장되던 이슈 수정: 실제 폼 항목 ID에 맞게 재매핑
-   - 스크린샷에서 top3 컬럼에 resultId가 들어가던 현상 근거로 아래처럼 스왑 */
+/* ★ top3 이슈 수정 매핑 유지 */
 const F = {
   child_name:'entry.684468179',
   age:'entry.1066070471',
@@ -185,13 +221,12 @@ const F = {
   campus:'entry.490719219',
   answers:'entry.85364862',
   scores:'entry.1455508168',
-  top3:'entry.2120338430',      // ← top3 저장
-  resultId:'entry.532514127',   // ← resultId 저장
-  timestamp:'entry.1261684833'  // ← 사용자 기록용 타임스탬프 저장
+  top3:'entry.2120338430',
+  resultId:'entry.532514127',
+  timestamp:'entry.1261684833'
 };
-/* ========================= */
 
-const ASSET_BASE = '/public/img'; // 시트 이미지 공란이면 /public/img/1-A.png 형식 사용
+const ASSET_BASE = '/public/img';
 const DOMAINS = ["관찰력","색감각","서사력","공간감","디테일","도전성","소통력","꾸준성"];
 const STEPS = [{key:'start',label:'시작'},{key:'consent',label:'동의'},{key:'profile',label:'프로필'},{key:'test',label:'테스트'},{key:'result',label:'결과'}];
 const STATE = { step:'start', consent:false, profile:{}, questions:[], idx:0, answers:[], result:null };
@@ -474,7 +509,7 @@ function nowKST(){ const d=new Date(),p=n=>String(n).padStart(2,'0'); return `${
 async function submitAllSafe(){
   const raw=aggregateScores(STATE.answers);
   const scores=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,adjust(v)]));
-  const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3); // 영역명 3개
+  const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3);
   const resultId=crypto.randomUUID();
 
   const form=new FormData();
@@ -482,9 +517,9 @@ async function submitAllSafe(){
   form.append(F.guardian,STATE.profile.guardian); form.append(F.phone,STATE.profile.phone); form.append(F.campus,STATE.profile.campus||'');
   form.append(F.answers,JSON.stringify({profile:STATE.profile,questions:STATE.answers,top3}));
   form.append(F.scores,JSON.stringify(scores));
-  form.append(F.top3,top3.join(','));         // ★ top3: 영역명 CSV
-  form.append(F.resultId,resultId);           // ★ 고유 결과 ID
-  form.append(F.timestamp,nowKST());          // ★ 사람이 읽기 쉬운 타임스탬프
+  form.append(F.top3,top3.join(','));
+  form.append(F.resultId,resultId);
+  form.append(F.timestamp,nowKST());
   try{ await fetch(FORM_ACTION,{method:'POST',mode:'no-cors',body:form}); }catch(e){}
 
   STATE.result={scores,top3,resultId}; STATE.step='result'; render();
@@ -492,6 +527,100 @@ async function submitAllSafe(){
 
 let CHARTS=[];
 function destroyCharts(){ CHARTS.forEach(c=>c.destroy?.()); CHARTS=[]; }
+
+/* ★ NEW: PDF 생성 도우미 */
+async function waitFrame(){ return new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))); }
+function sanitizeFilename(s){ return (s||'결과').replace(/[^\w가-힣_\-]+/g,''); }
+async function buildPdfBlob(){
+  if(!window.html2pdf){ alert('PDF 모듈 로드 실패'); throw new Error('html2pdf missing'); }
+  // 차트/레이아웃 안정화를 위해 한 프레임 대기
+  await waitFrame();
+  const target = document.getElementById('resultCard') || document.getElementById('app');
+  const opt = {
+    margin: 10,
+    filename: 'result.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: ['css','avoid-all'] }
+  };
+  return await html2pdf().set(opt).from(target).toPdf().outputPdf('blob'); // blob 반환
+}
+function downloadBlob(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+async function blobToBase64(blob){
+  const buf = await blob.arrayBuffer();
+  let binary = '';
+  const bytes = new Uint8Array(buf);
+  const len = bytes.byteLength;
+  for (let i=0;i<len;i++) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary);
+}
+
+/* ★ NEW: 이메일 모달/전송 */
+function openEmailModal(){
+  const m = $('emailModal');
+  const emailInput = $('emailTo');
+  const subjectInput = $('emailSubject');
+  const child = STATE?.profile?.child_name || '학생';
+  subjectInput.value = `${child} 테스트 결과입니다`;
+  emailInput.value = STATE?.profile?.email || '';
+  $('emailMsg').textContent = '';
+  m.classList.add('show');
+}
+function closeEmailModal(){ $('emailModal').classList.remove('show'); }
+$('emailCancel').onclick = closeEmailModal;
+$('emailModal').addEventListener('click', (e)=>{ if(e.target.id==='emailModal') closeEmailModal(); });
+
+async function handleEmailSend(){
+  const to = $('emailTo').value.trim();
+  const subject = $('emailSubject').value.trim();
+  const msg = $('emailMsg');
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)){ msg.textContent='이메일 형식을 확인해 주세요.'; return; }
+  try{
+    $('emailSend').disabled = true; msg.textContent = 'PDF 생성 중...';
+    const blob = await buildPdfBlob();
+    const base64 = await blobToBase64(blob);
+    const filename = `${sanitizeFilename(STATE?.profile?.child_name)}_미술적성_결과.pdf`;
+    msg.textContent = '메일 전송 중...';
+
+    const resp = await fetch('/api/send-email', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        to, subject,
+        fileName: filename,
+        pdfBase64: base64,
+        childName: STATE?.profile?.child_name || '',
+        campus: STATE?.profile?.campus || ''
+      })
+    });
+
+    if(resp.ok){
+      msg.textContent = '전송 완료! 메일함을 확인해 주세요.';
+      setTimeout(closeEmailModal, 1200);
+    }else{
+      const err = await resp.json().catch(()=>({}));
+      msg.textContent = '전송 실패: ' + (err?.error || resp.status);
+    }
+  }catch(e){
+    msg.textContent = '오류가 발생했습니다: ' + e.message;
+  }finally{
+    $('emailSend').disabled = false;
+  }
+}
+$('emailSend').onclick = handleEmailSend;
+
+/* ★ NEW: 버튼에서 쓰는 함수 */
+async function downloadPdf(){
+  const blob = await buildPdfBlob();
+  const filename = `${sanitizeFilename(STATE?.profile?.child_name)}_미술적성_결과.pdf`;
+  downloadBlob(blob, filename);
+}
 
 function viewResult(){
   const r=STATE.result, s=r?.scores||{};
@@ -544,7 +673,8 @@ function viewResult(){
 
   <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap">
     <button class="btn-ghost" onclick="STATE.step='start'; render()">처음으로</button>
-    <button class="btn btn-mint" onclick="window.print()">PDF 저장</button>
+    <button class="btn btn-mint" id="btn_pdf">PDF 저장</button>
+    <button class="btn-ghost" id="btn_email">이메일로 보내기</button>
   </div>`;
 
   destroyCharts();
@@ -558,6 +688,10 @@ function viewResult(){
     data:{labels:r.top3, datasets:[{data:r.top3.map(k=>s[k]||0), borderRadius:12, borderSkipped:false, backgroundColor:['#FFD9BE','#E6E2FF','#CFF7EE']}]},
     options:{animation:{duration:700}, scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}}, plugins:{legend:{display:false}}}
   }));
+
+  // ★ NEW: 버튼 핸들러
+  $('btn_pdf').onclick = downloadPdf;
+  $('btn_email').onclick = openEmailModal;
 }
 
 /* ===== Router ===== */
@@ -574,10 +708,10 @@ render();
 function W(w){ const o={}; DOMAINS.forEach(k=>o[k]=0); Object.entries(w).forEach(([k,v])=>o[k]=v); return o; }
 function localQuestions(){
   const S=(q,p,a,b,c,d)=>({id:q,order:+q.replace('q',''),prompt:p,options:[
-    {key:'A',label:a[0],imageUrl:a[1],weights:W(a[2])},
-    {key:'B',label:b[0],imageUrl:b[1],weights:W(b[2])},
-    {key:'C',label:c[0],imageUrl:c[1],weights:W(c[2])},
-    {key:'D',label:d[0],imageUrl:d[1],weights:W(d[2])},
+    {key:'A',label=a[0],imageUrl=a[1],weights:W(a[2])},
+    {key:'B',label=b[0],imageUrl:b[1],weights:W(b[2])},
+    {key:'C',label=c[0],imageUrl=c[1],weights:W(c[2])},
+    {key:'D',label=d[0],imageUrl=d[1],weights:W(d[2])},
   ]});
   const IMG=(kw)=>`https://images.unsplash.com/photo-150${Math.floor(Math.random()*899+100)}?auto=format&fit=crop&w=600&q=60&${encodeURIComponent(kw)}`;
 
