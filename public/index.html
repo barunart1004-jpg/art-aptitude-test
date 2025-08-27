@@ -4,11 +4,12 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>바른미술학원 · 미술적성테스트</title>
+
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
-<!-- ★ NEW: html2pdf.js (브라우저에서 PDF 생성) -->
+<!-- Chart.js & html2pdf -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
 
 <style>
@@ -96,24 +97,26 @@ label{font-size:14px; color:#374151}
 .grid-2{grid-template-columns:1fr 1fr}
 @media (max-width:860px){ .grid-2{grid-template-columns:1fr} }
 
-/* 보기 */
+/* 보기 카드 */
 .opt{border:2px solid var(--line); border-radius:18px; overflow:hidden; cursor:pointer; background:#fff; box-shadow:var(--soft); transition:transform .12s, border-color .2s}
-.opt:hover{transform:translateY(-2px)} .opt img{width:100%; display:block; aspect-ratio:3/2; object-fit:cover}
-.opt .cap{padding:10px; color:#374151; font-weight:700} .opt.sel{border-color:#FFD9BE; box-shadow:0 0 0 6px rgba(255,217,190,.25)}
+.opt:hover{transform:translateY(-2px)}
+.opt img{width:100%; display:block; aspect-ratio:3/2; object-fit:cover} /* 모바일 기본 */
 
-/* PC - 한 화면 4개 + 사이드 버튼 (2지선다일 땐 2컬럼) */
+/* PC 레이아웃 + 4지선다 높이 ↑ */
 @media (min-width:1024px){
   .test-grid-4{display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
   .test-grid-2{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
-  .opt img{aspect-ratio:4/3}
-  /* 4지선다일 때 이미지 영역을 조금 더 키움 */
-  .test-grid-4 .opt img{aspect-ratio:5/4}
+  .opt img{aspect-ratio:4/3} /* 기본 */
+  /* 4지선다일 때 이미지 영역을 더 키움 (정사각형에 가깝게) */
+  .test-grid-4 .opt img{aspect-ratio:1/1}
   .sideNav{position:fixed; top:50%; transform:translateY(-50%); z-index:20}
   .sideNav.left{left:18px} .sideNav.right{right:18px}
   .sideBtn{background:linear-gradient(90deg,#fff,#FFF4EC); border:1px solid var(--line); width:46px; height:46px; border-radius:50%; display:grid; place-items:center; box-shadow:0 12px 26px rgba(16,24,40,.08); cursor:pointer; font-weight:900}
   .sideBtn:hover{transform:translateY(-1px)}
 }
 @media (max-width:1023px){ .sideNav{display:none} }
+.opt .cap{padding:10px; color:#374151; font-weight:700}
+.opt.sel{border-color:#FFD9BE; box-shadow:0 0 0 6px rgba(255,217,190,.25)}
 
 /* 아코디언 · 결과 블록 */
 .acc{border-radius:14px; overflow:hidden; border:1px solid var(--line)}
@@ -152,7 +155,7 @@ label{font-size:14px; color:#374151}
   .block{break-inside:avoid-page}
 }
 
-/* ★ NEW: 이메일 모달 */
+/* 이메일 모달 */
 .modal-backdrop{
   position:fixed; inset:0; background:rgba(0,0,0,.35); display:none; align-items:center; justify-content:center; z-index:999;
 }
@@ -185,7 +188,7 @@ label{font-size:14px; color:#374151}
 <div class="sideNav left" id="sideLeft" style="display:none"><button class="sideBtn" onclick="prev()" aria-label="이전">‹</button></div>
 <div class="sideNav right" id="sideRight" style="display:none"><button class="sideBtn" onclick="next()" aria-label="다음">›</button></div>
 
-<!-- ★ NEW: 이메일 모달 -->
+<!-- 이메일 모달 -->
 <div class="modal-backdrop" id="emailModal">
   <div class="modal">
     <h3>이메일로 결과 보내기</h3>
@@ -211,7 +214,7 @@ const SHEET_ID   = '14VLQBhDJtduxjCnfr7VEOstZ5ez8-CX3ArXy1OvYCQg';
 const GVIZ_URL   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Questions&tqx=out:json`;
 const FORM_ACTION= 'https://docs.google.com/forms/d/e/1FAIpQLSeRWq5YKN50zL0simiaQA6EBRsn6VXN__ZmLplAgDz1I1hyQA/formResponse';
 
-/* ★ top3 이슈 수정 매핑 유지 */
+/* ★ top3 이슈 수정 매핑 */
 const F = {
   child_name:'entry.684468179',
   age:'entry.1066070471',
@@ -226,7 +229,7 @@ const F = {
   timestamp:'entry.1261684833'
 };
 
-const ASSET_BASE = '/public/img';
+const ASSET_BASE = '/img'; // Netlify publish=public 기준, /img 가 public/img를 가리킴
 const DOMAINS = ["관찰력","색감각","서사력","공간감","디테일","도전성","소통력","꾸준성"];
 const STEPS = [{key:'start',label:'시작'},{key:'consent',label:'동의'},{key:'profile',label:'프로필'},{key:'test',label:'테스트'},{key:'result',label:'결과'}];
 const STATE = { step:'start', consent:false, profile:{}, questions:[], idx:0, answers:[], result:null };
@@ -357,38 +360,20 @@ function viewConsent(){
 /* ===== 프로필 ===== */
 const AGE_TO_GRADE = {7:'초등학교 1학년',8:'초등학교 2학년',9:'초등학교 3학년',10:'초등학교 4학년',11:'초등학교 5학년',12:'초등학교 6학년'};
 const GRADE_TO_AGE = Object.fromEntries(Object.entries(AGE_TO_GRADE).map(([a,g])=>[g,a]));
-
-// 캠퍼스(선택만 가능)
-const CAMPUSES = [
-  '압구정[본원]','반포 캠퍼스','한남 캠퍼스','방배 캠퍼스','목동 캠퍼스',
-  '송파 캠퍼스','서대문 캠퍼스','일산 캠퍼스','탄현 캠퍼스','김포 캠퍼스',
-  '송도 캠퍼스','부산 캠퍼스'
-];
+const CAMPUSES = ['압구정[본원]','반포 캠퍼스','한남 캠퍼스','방배 캠퍼스','목동 캠퍼스','송파 캠퍼스','서대문 캠퍼스','일산 캠퍼스','탄현 캠퍼스','김포 캠퍼스','송도 캠퍼스','부산 캠퍼스'];
 
 function viewProfile(){
   app().innerHTML=`<h2 class="center">프로필 정보</h2>
   <div class="grid grid-2" style="margin-top:8px">
     <div class="section"><label>아동 이름</label><input id="cname" placeholder="예: 홍길동"></div>
     <div class="section"><label>보호자 이름</label><input id="gname" placeholder="예: 김보호자"></div>
-    <div class="section">
-      <label>나이</label>
-      <select id="age">${[7,8,9,10,11,12].map(a=>`<option value="${a}">${a}</option>`).join('')}</select>
-    </div>
-    <div class="section">
-      <label>학년</label>
-      <select id="grade">${Object.values(AGE_TO_GRADE).map(g=>`<option>${g}</option>`).join('')}</select>
-    </div>
+    <div class="section"><label>나이</label><select id="age">${[7,8,9,10,11,12].map(a=>`<option value="${a}">${a}</option>`).join('')}</select></div>
+    <div class="section"><label>학년</label><select id="grade">${Object.values(AGE_TO_GRADE).map(g=>`<option>${g}</option>`).join('')}</select></div>
     <div class="section"><label>연락처</label><input id="phone" placeholder="010-0000-0000"></div>
     <div class="section"><label>이메일(선택, 결과지 전송용)</label><input id="email" placeholder="example@email.com"></div>
-    <div class="section">
-      <label>캠퍼스</label>
-      <select id="campus">
-        ${CAMPUSES.map(c=>`<option value="${c}">${c}</option>`).join('')}
-      </select>
-    </div>
+    <div class="section"><label>캠퍼스</label><select id="campus">${CAMPUSES.map(c=>`<option value="${c}">${c}</option>`).join('')}</select></div>
   </div>
   <div class="center" style="margin-top:16px"><button class="btn btn-mint" id="btn_starttest">테스트 시작</button></div>`;
-
   $('age').addEventListener('change',e=>{ $('grade').value = AGE_TO_GRADE[e.target.value]; });
   $('grade').addEventListener('change',e=>{ $('age').value = GRADE_TO_AGE[e.target.value]; });
   $('btn_starttest').onclick=startTest;
@@ -528,13 +513,12 @@ async function submitAllSafe(){
 let CHARTS=[];
 function destroyCharts(){ CHARTS.forEach(c=>c.destroy?.()); CHARTS=[]; }
 
-/* ★ NEW: PDF 생성 도우미 */
+/* ===== PDF 도우미 ===== */
 async function waitFrame(){ return new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))); }
 function sanitizeFilename(s){ return (s||'결과').replace(/[^\w가-힣_\-]+/g,''); }
 async function buildPdfBlob(){
   if(!window.html2pdf){ alert('PDF 모듈 로드 실패'); throw new Error('html2pdf missing'); }
-  // 차트/레이아웃 안정화를 위해 한 프레임 대기
-  await waitFrame();
+  await waitFrame(); // 차트 렌더링 안정화
   const target = document.getElementById('resultCard') || document.getElementById('app');
   const opt = {
     margin: 10,
@@ -544,7 +528,7 @@ async function buildPdfBlob(){
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
     pagebreak: { mode: ['css','avoid-all'] }
   };
-  return await html2pdf().set(opt).from(target).toPdf().outputPdf('blob'); // blob 반환
+  return await html2pdf().set(opt).from(target).toPdf().outputPdf('blob');
 }
 function downloadBlob(blob, filename){
   const url = URL.createObjectURL(blob);
@@ -556,12 +540,11 @@ async function blobToBase64(blob){
   const buf = await blob.arrayBuffer();
   let binary = '';
   const bytes = new Uint8Array(buf);
-  const len = bytes.byteLength;
-  for (let i=0;i<len;i++) binary += String.fromCharCode(bytes[i]);
+  for (let i=0;i<bytes.length;i++) binary += String.fromCharCode(bytes[i]);
   return btoa(binary);
 }
 
-/* ★ NEW: 이메일 모달/전송 */
+/* ===== 이메일 모달/전송 ===== */
 function openEmailModal(){
   const m = $('emailModal');
   const emailInput = $('emailTo');
@@ -573,8 +556,8 @@ function openEmailModal(){
   m.classList.add('show');
 }
 function closeEmailModal(){ $('emailModal').classList.remove('show'); }
-$('emailCancel').onclick = closeEmailModal;
-$('emailModal').addEventListener('click', (e)=>{ if(e.target.id==='emailModal') closeEmailModal(); });
+document.getElementById('emailCancel').onclick = closeEmailModal;
+document.getElementById('emailModal').addEventListener('click', (e)=>{ if(e.target.id==='emailModal') closeEmailModal(); });
 
 async function handleEmailSend(){
   const to = $('emailTo').value.trim();
@@ -613,9 +596,9 @@ async function handleEmailSend(){
     $('emailSend').disabled = false;
   }
 }
-$('emailSend').onclick = handleEmailSend;
+document.getElementById('emailSend').onclick = handleEmailSend;
 
-/* ★ NEW: 버튼에서 쓰는 함수 */
+/* ===== 버튼에서 쓰는 함수 ===== */
 async function downloadPdf(){
   const blob = await buildPdfBlob();
   const filename = `${sanitizeFilename(STATE?.profile?.child_name)}_미술적성_결과.pdf`;
@@ -689,7 +672,6 @@ function viewResult(){
     options:{animation:{duration:700}, scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}}, plugins:{legend:{display:false}}}
   }));
 
-  // ★ NEW: 버튼 핸들러
   $('btn_pdf').onclick = downloadPdf;
   $('btn_email').onclick = openEmailModal;
 }
@@ -702,16 +684,15 @@ function render(){ renderNav(); updateTopProgress();
   if(STATE.step==='test') return viewTest();
   if(STATE.step==='result') return viewResult();
 }
-render();
 
-/* ===== Fallback용 15문항 정의 ===== */
+/* ===== Fallback용 15문항(문항 시트가 비어도 동작) ===== */
 function W(w){ const o={}; DOMAINS.forEach(k=>o[k]=0); Object.entries(w).forEach(([k,v])=>o[k]=v); return o; }
 function localQuestions(){
   const S=(q,p,a,b,c,d)=>({id:q,order:+q.replace('q',''),prompt:p,options:[
-    {key:'A',label=a[0],imageUrl=a[1],weights:W(a[2])},
-    {key:'B',label=b[0],imageUrl:b[1],weights:W(b[2])},
-    {key:'C',label=c[0],imageUrl=c[1],weights:W(c[2])},
-    {key:'D',label=d[0],imageUrl=d[1],weights:W(d[2])},
+    {key:'A',label:a[0],imageUrl:a[1],weights:W(a[2])},
+    {key:'B',label:b[0],imageUrl:b[1],weights:W(b[2])},
+    {key:'C',label:c[0],imageUrl:c[1],weights:W(c[2])},
+    {key:'D',label:d[0],imageUrl:d[1],weights:W(d[2])},
   ]});
   const IMG=(kw)=>`https://images.unsplash.com/photo-150${Math.floor(Math.random()*899+100)}?auto=format&fit=crop&w=600&q=60&${encodeURIComponent(kw)}`;
 
@@ -812,6 +793,16 @@ function localQuestions(){
     return q;
   });
 }
+
+/* ===== 안전 실행: DOM 준비 후 render ===== */
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', render);
+} else {
+  render();
+}
+/* 콘솔에 에러 보이게 */
+window.addEventListener('error', e => console.error('JS error:', e.error || e.message));
+window.addEventListener('unhandledrejection', e => console.error('Promise rejection:', e.reason));
 </script>
 </body>
 </html>
