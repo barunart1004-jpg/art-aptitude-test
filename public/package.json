@@ -1,8 +1,7 @@
 {
-  "name": "barunart-static",
+  "name": "barunart-aptitude",
   "private": true,
-  "version": "1.0.0",
-  "overrides": {
-    "@netlify/blobs": "10.0.8"
+  "dependencies": {
+    "resend": "^3.2.0"
   }
 }
