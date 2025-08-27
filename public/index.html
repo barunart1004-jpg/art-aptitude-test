@@ -59,7 +59,7 @@ body::before{
 .step.done{background:#f2fffa; border-color:#dff7ef}
 .topprogress{height:10px; background:#f6f7fb; border-radius:999px; overflow:hidden}
 .topprogress>div{height:100%; width:0; background:linear-gradient(90deg,#B9C8FF,#9DE5D5,#FFD9BE); transition:width .35s ease}
-.statusline{font-size:12px; color:#6b7280; text-align:center}
+.statusline{font-size:12px; color:var(--muted); text-align:center}
 
 /* 카드/타이포/버튼 */
 .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); animation:fade .35s ease both}
@@ -86,6 +86,10 @@ p{margin:8px 0} .small{font-size:13px} .muted{color:var(--muted)} .center{text-a
 .btn-ghost{background:#fff; color:#111827; border:1px solid var(--line); padding:12px 14px; border-radius:12px; font-weight:800; cursor:pointer; box-shadow:var(--soft)}
 .btn-mint{--bg:linear-gradient(90deg,#FFE6CF,#FFD9BE); --glow:rgba(255,214,190,.4)}
 .btn-xl{padding:22px 34px; font-size:22px; border-radius:22px}
+/* 이메일 버튼 강조 */
+.btn-accent{
+  --bg:linear-gradient(90deg,#B9C8FF,#9DE5D5); --glow:rgba(165,200,255,.35);
+}
 
 /* 입력 */
 input,select,textarea{width:100%; background:#fff; color:#111; border:1px solid var(--line); border-radius:12px; padding:12px; outline:none}
@@ -106,9 +110,8 @@ label{font-size:14px; color:#374151}
 @media (min-width:1024px){
   .test-grid-4{display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
   .test-grid-2{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
-  .opt img{aspect-ratio:4/3} /* 기본 */
-  /* 4지선다일 때 이미지 영역을 더 키움 (정사각형에 가깝게) */
-  .test-grid-4 .opt img{aspect-ratio:1/1}
+  .opt img{aspect-ratio:4/3}
+  .test-grid-4 .opt img{aspect-ratio:1/1} /* 4개일 때 더 큼 */
   .sideNav{position:fixed; top:50%; transform:translateY(-50%); z-index:20}
   .sideNav.left{left:18px} .sideNav.right{right:18px}
   .sideBtn{background:linear-gradient(90deg,#fff,#FFF4EC); border:1px solid var(--line); width:46px; height:46px; border-radius:50%; display:grid; place-items:center; box-shadow:0 12px 26px rgba(16,24,40,.08); cursor:pointer; font-weight:900}
@@ -124,7 +127,7 @@ label{font-size:14px; color:#374151}
 .acc-head{padding:14px 16px; background:#FFF4EC; cursor:pointer; display:flex; justify-content:space-between; align-items:center}
 .acc-body{padding:14px 16px; display:none; background:#fff}
 .acc-item.open .acc-body{display:block}
-.block{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 26px rgba(16,24,40,.06);page-break-inside:avoid}
+.block{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 26px rgba(16,24,40,.06);page-break-inside:avoid;break-inside:avoid}
 .block h3{margin:0 0 10px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{background:linear-gradient(90deg,#FFE6CF,#FFD9BE);color:#5a3f2f;border:1px solid #ffe8d6;padding:8px 12px;border-radius:999px;font-weight:900}
@@ -202,7 +205,7 @@ label{font-size:14px; color:#374151}
     </div>
     <div class="actions">
       <button class="btn-ghost" id="emailCancel">취소</button>
-      <button class="btn" id="emailSend">보내기</button>
+      <button class="btn btn-accent" id="emailSend">보내기</button>
     </div>
     <div class="small muted" id="emailMsg" style="margin-top:8px"></div>
   </div>
@@ -229,7 +232,7 @@ const F = {
   timestamp:'entry.1261684833'
 };
 
-const ASSET_BASE = '/img'; // Netlify publish=public 기준, /img 가 public/img를 가리킴
+const ASSET_BASE = '/img'; // Netlify publish=public 기준
 const DOMAINS = ["관찰력","색감각","서사력","공간감","디테일","도전성","소통력","꾸준성"];
 const STEPS = [{key:'start',label:'시작'},{key:'consent',label:'동의'},{key:'profile',label:'프로필'},{key:'test',label:'테스트'},{key:'result',label:'결과'}];
 const STATE = { step:'start', consent:false, profile:{}, questions:[], idx:0, answers:[], result:null };
@@ -513,20 +516,25 @@ async function submitAllSafe(){
 let CHARTS=[];
 function destroyCharts(){ CHARTS.forEach(c=>c.destroy?.()); CHARTS=[]; }
 
-/* ===== PDF 도우미 ===== */
+/* ===== PDF: #app 전체를 멀티페이지로 정확히 생성 ===== */
 async function waitFrame(){ return new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))); }
 function sanitizeFilename(s){ return (s||'결과').replace(/[^\w가-힣_\-]+/g,''); }
 async function buildPdfBlob(){
   if(!window.html2pdf){ alert('PDF 모듈 로드 실패'); throw new Error('html2pdf missing'); }
-  await waitFrame(); // 차트 렌더링 안정화
-  const target = document.getElementById('resultCard') || document.getElementById('app');
+  await waitFrame(); // 차트/레이아웃 안정화
+  const target = $('app'); // ← 요청대로 #app 전체
   const opt = {
-    margin: 10,
-    filename: 'result.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    pagebreak: { mode: ['css','avoid-all'] }
+    margin:       10,
+    filename:     'result.pdf',
+    image:        { type: 'jpeg', quality: 0.96 },
+    html2canvas:  {
+      scale: 2, useCORS: true, allowTaint: true, imageTimeout: 15000,
+      scrollX: 0, scrollY: 0,
+      windowWidth:  document.documentElement.scrollWidth,
+      windowHeight: target.scrollHeight
+    },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak:    { mode: ['css','legacy'] }  // block에 page-break-inside:avoid 적용됨
   };
   return await html2pdf().set(opt).from(target).toPdf().outputPdf('blob');
 }
@@ -598,7 +606,7 @@ async function handleEmailSend(){
 }
 document.getElementById('emailSend').onclick = handleEmailSend;
 
-/* ===== 버튼에서 쓰는 함수 ===== */
+/* ===== 버튼 핸들러 ===== */
 async function downloadPdf(){
   const blob = await buildPdfBlob();
   const filename = `${sanitizeFilename(STATE?.profile?.child_name)}_미술적성_결과.pdf`;
@@ -657,7 +665,7 @@ function viewResult(){
   <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap">
     <button class="btn-ghost" onclick="STATE.step='start'; render()">처음으로</button>
     <button class="btn btn-mint" id="btn_pdf">PDF 저장</button>
-    <button class="btn-ghost" id="btn_email">이메일로 보내기</button>
+    <button class="btn btn-accent" id="btn_email">이메일로 보내기</button>
   </div>`;
 
   destroyCharts();
@@ -685,7 +693,7 @@ function render(){ renderNav(); updateTopProgress();
   if(STATE.step==='result') return viewResult();
 }
 
-/* ===== Fallback용 15문항(문항 시트가 비어도 동작) ===== */
+/* ===== Fallback용 15문항 ===== */
 function W(w){ const o={}; DOMAINS.forEach(k=>o[k]=0); Object.entries(w).forEach(([k,v])=>o[k]=v); return o; }
 function localQuestions(){
   const S=(q,p,a,b,c,d)=>({id:q,order:+q.replace('q',''),prompt:p,options:[
@@ -800,7 +808,7 @@ if (document.readyState === 'loading') {
 } else {
   render();
 }
-/* 콘솔에 에러 보이게 */
+/* 디버그 콘솔 */
 window.addEventListener('error', e => console.error('JS error:', e.error || e.message));
 window.addEventListener('unhandledrejection', e => console.error('Promise rejection:', e.reason));
 </script>
