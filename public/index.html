@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>바른미술학원 · 미술적성테스트</title>
+<title>바른미술학원 · 미술적성테스트 V1. BASIC</title>
 
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -15,40 +15,34 @@
 <style>
 :root{
   --ink:#0f172a; --muted:#6b7280;
-  --bg1:#fff7f1; --bg2:#f7f3ff;
+  --bg:#FFF4EC;              /* 연한 주황 파스텔 배경 */
   --card:#ffffff; --line:#eef2f7;
   --o1:#FFE6CF; --o2:#FFD9BE; --o3:#FFC9A3; --o4:#FFB98A;
   --mint:#CFF7EE; --vio:#E6E2FF;
   --radius:22px; --shadow:0 18px 60px rgba(16,24,40,.12); --soft:0 12px 30px rgba(16,24,40,.08);
+  --blue:#eaf1ff; --blue-strong:#5083ff; --green:#e9fbf0; --purple:#f2eaff;
 }
 *{box-sizing:border-box} html,body{height:100%}
 body{
   margin:0; color:var(--ink);
   font-family:"Pretendard",ui-sans-serif,system-ui,"Noto Sans KR",Segoe UI,Roboto,Arial;
-  background:
-   radial-gradient(900px 600px at 10% -10%, var(--vio), transparent 55%),
-   radial-gradient(900px 600px at 90% 110%, var(--mint), transparent 55%),
-   linear-gradient(180deg,var(--bg1),var(--bg2));
-  background-attachment:fixed;
+  background: var(--bg);
 }
-body::before{
-  content:""; position:fixed; inset:0; z-index:-2; pointer-events:none;
-  background:linear-gradient(rgba(255,255,255,.86), rgba(255,255,255,.86)), url("/bg.png") center/cover no-repeat fixed;
-  filter:saturate(1.02);
-}
+
+/* ----- 레이아웃 ----- */
 .container{min-height:100dvh; display:flex; flex-direction:column; align-items:center}
 .main{width:100%; max-width:1100px; padding:18px; display:flex; flex-direction:column; gap:16px; margin:0 auto}
-
-/* 헤더 & 네비 */
 .header{width:100%; display:flex; justify-content:center}
 .brand{width:100%; max-width:1100px; margin-top:10px; display:flex; align-items:center; gap:12px; padding:12px 16px;
-  border-radius:999px; background:rgba(255,255,255,.65); backdrop-filter:blur(8px); border:1px solid var(--line); box-shadow:var(--soft)}
+  border-radius:999px; background:#fff; border:1px solid var(--line); box-shadow:var(--soft)}
 .logo{width:28px;height:28px;border-radius:50%;background:conic-gradient(from 0deg,#FFB98A,#FFE6CF,#E6E2FF,#CFF7EE,#FFB98A);animation:spin 9s linear infinite paused}
 .brand:hover .logo{animation-play-state:running} @keyframes spin{to{transform:rotate(360deg)}}
-.brand span{font-weight:900; letter-spacing:.2px}
+.brand span{font-weight:900; letter-spacing:.2px; display:flex; align-items:center; gap:8px}
+.badge{font-size:11px; font-weight:900; padding:4px 8px; border-radius:999px; background:linear-gradient(90deg,#FFE6CF,#FFD9BE); color:#5a3f2f; border:1px solid #ffe0c9}
 
-.sticky{position:sticky; top:0; z-index:10; backdrop-filter:blur(8px);
-  background:rgba(255,255,255,.6); border:1px solid var(--line); border-radius:16px; box-shadow:var(--soft);
+/* 상단 고정 진행바 */
+.sticky{position:sticky; top:0; z-index:10;
+  background:rgba(255,255,255,.95); border:1px solid var(--line); border-radius:16px; box-shadow:var(--soft);
   padding:8px 10px; display:flex; flex-direction:column; gap:10px;}
 .navbar{display:flex; flex-wrap:wrap; gap:10px; justify-content:center}
 .step{display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; cursor:pointer;
@@ -61,19 +55,13 @@ body::before{
 .topprogress>div{height:100%; width:0; background:linear-gradient(90deg,#B9C8FF,#9DE5D5,#FFD9BE); transition:width .35s ease}
 .statusline{font-size:12px; color:var(--muted); text-align:center}
 
-/* 카드/타이포/버튼 */
 .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); animation:fade .35s ease both}
 @keyframes fade{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:translateY(0)}}
 h1{font-size:34px; margin:0 0 6px} h2{font-size:24px; margin:0 0 10px} h3{font-size:18px; margin:16px 0 8px}
 p{margin:8px 0} .small{font-size:13px} .muted{color:var(--muted)} .center{text-align:center}
 
 /* Hero Title */
-.heroTitle{
-  font-size:48px; line-height:1.1; margin:6px 0 10px; font-weight:900; letter-spacing:.2px;
-  background:linear-gradient(90deg,#111827 0%,#5a3f2f 40%,#FFB98A 100%);
-  -webkit-background-clip:text; background-clip:text; color:transparent;
-  text-shadow:0 1px 0 rgba(0,0,0,.06), 0 10px 30px rgba(255,185,138,.25);
-}
+.heroTitle{font-size:44px; line-height:1.1; margin:6px 0 10px; font-weight:900; letter-spacing:.2px; color:#1f2937}
 
 /* 버튼 */
 .btn{
@@ -81,8 +69,6 @@ p{margin:8px 0} .small{font-size:13px} .muted{color:var(--muted)} .center{text-a
   background:var(--bg); color:#5a3f2f; border:none; padding:18px 28px; border-radius:18px; font-weight:900; cursor:pointer;
   box-shadow:0 16px 40px var(--glow); transition:transform .08s, filter .2s, box-shadow .2s; position:relative; overflow:hidden; font-size:20px}
 .btn:hover{transform:translateY(-1px); filter:brightness(1.03)}
-.btn:after{content:""; position:absolute; inset:0; background:radial-gradient(120px 120px at var(--x,50%) var(--y,50%), rgba(255,255,255,.6), transparent 40%); opacity:.0; transition:opacity .25s}
-.btn:hover:after{opacity:.6}
 .btn-ghost{background:#fff; color:#111827; border:1px solid var(--line); padding:12px 14px; border-radius:12px; font-weight:800; cursor:pointer; box-shadow:var(--soft)}
 .btn-mint{--bg:linear-gradient(90deg,#FFE6CF,#FFD9BE); --glow:rgba(255,214,190,.4)}
 .btn-accent{--bg:linear-gradient(90deg,#B9C8FF,#9DE5D5); --glow:rgba(165,200,255,.35)}
@@ -98,32 +84,36 @@ label{font-size:14px; color:#374151}
 .grid-2{grid-template-columns:1fr 1fr}
 @media (max-width:860px){ .grid-2{grid-template-columns:1fr} }
 
-/* 보기 카드 */
-.opt{border:2px solid var(--line); border-radius:18px; overflow:hidden; cursor:pointer; background:#fff; box-shadow:var(--soft); transition:transform .12s, border-color .2s}
+/* 보기 카드 (더 크게 + 4지선다에서 2열) */
+.opt{border:2px solid var(--line); border-radius:20px; overflow:hidden; cursor:pointer; background:#fff; box-shadow:var(--soft); transition:transform .12s, border-color .2s}
 .opt:hover{transform:translateY(-2px)}
-.opt img{width:100%; display:block; aspect-ratio:3/2; object-fit:cover}
+.opt img{width:100%; display:block; aspect-ratio:4/3; object-fit:cover}
+.opt .cap{padding:12px 14px; color:#374151; font-weight:800; font-size:16px; line-height:1.35; white-space:normal}
 
-/* PC 레이아웃 + 4지선다 높이 ↑ */
 @media (min-width:1024px){
-  .test-grid-4{display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
-  .test-grid-2{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
-  .opt img{aspect-ratio:4/3}
-  .test-grid-4 .opt img{aspect-ratio:1/1}
+  .test-grid-4{display:grid; grid-template-columns:repeat(2,1fr); gap:16px}
+  .test-grid-2{display:grid; grid-template-columns:repeat(2,1fr); gap:16px}
   .sideNav{position:fixed; top:50%; transform:translateY(-50%); z-index:20}
   .sideNav.left{left:18px} .sideNav.right{right:18px}
   .sideBtn{background:linear-gradient(90deg,#fff,#FFF4EC); border:1px solid var(--line); width:46px; height:46px; border-radius:50%; display:grid; place-items:center; box-shadow:0 12px 26px rgba(16,24,40,.08); cursor:pointer; font-weight:900}
   .sideBtn:hover{transform:translateY(-1px)}
 }
 @media (max-width:1023px){ .sideNav{display:none} }
-.opt .cap{padding:10px; color:#374151; font-weight:700}
 .opt.sel{border-color:#FFD9BE; box-shadow:0 0 0 6px rgba(255,217,190,.25)}
 
-/* 아코디언 · 결과 블록 */
+/* 개인정보 동의 아코디언 */
 .acc{border-radius:14px; overflow:hidden; border:1px solid var(--line)}
 .acc-item{border-top:1px solid var(--line)}
 .acc-head{padding:14px 16px; background:#FFF4EC; cursor:pointer; display:flex; justify-content:space-between; align-items:center}
+.acc-head span{font-weight:900; font-size:17px;}
 .acc-body{padding:14px 16px; display:none; background:#fff}
 .acc-item.open .acc-body{display:block}
+.agreeList{display:grid; gap:10px; margin-top:10px}
+.agree-row{display:flex; align-items:center; justify-content:space-between; gap:14px; padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:#fff}
+.agree-row .txt{font-size:15px; color:#0f172a; line-height:1.55; font-weight:700}
+.agree-row input[type="checkbox"]{width:20px; height:20px; accent-color:#FFB98A;}
+
+/* 결과 블록/차트 */
 .block{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 26px rgba(16,24,40,.06);page-break-inside:avoid;break-inside:avoid}
 .block h3{margin:0 0 10px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -134,52 +124,82 @@ label{font-size:14px; color:#374151}
 .callout{position:relative;background:linear-gradient(135deg,#FFF2E6,#F8FBFF);padding:22px;border-radius:18px;border:1px solid var(--line);box-shadow:0 12px 34px rgba(255,185,138,.25)}
 .callout:before{content:"";position:absolute;inset:-1px;border-radius:18px;padding:1px;background:linear-gradient(90deg,#FFD9BE,#E6E2FF,#CFF7EE);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 .credit{font-size:12px;color:#6b7280;text-align:center}
-.skel{border-radius:12px; background:linear-gradient(90deg,#f3f4f6,#eaeef3,#f3f4f6); background-size:200% 100%; animation:sh 1.2s infinite}@keyframes sh{to{background-position:-200% 0}}
-.checkRow{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
 
-/* 동의 체크 */
-.agreeList{display:grid; gap:10px; margin-top:10px}
-.agree-row{display:flex; align-items:center; justify-content:space-between; gap:14px; padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:#fff}
-.agree-row .txt{font-size:14px; color:#0f172a; line-height:1.55}
-.agree-row input[type="checkbox"]{width:20px; height:20px; accent-color:#FFB98A;}
-
-/* 결과 그래프: A4 절반보다 작게 */
 .result-row{display:grid; grid-template-columns:1fr 1fr; gap:16px}
-.chartBox{max-width:300px; margin:0 auto;}
+.chartBox{max-width:200px; margin:0 auto;}  /* A4 반보다 작게 */
 @media (max-width:900px){ .result-row{grid-template-columns:1fr} }
 
-/* 인쇄 */
+/* 문제 번호 뱃지 */
+.qbadge{display:inline-block; padding:6px 12px; border-radius:999px; font-weight:900; color:#5a3f2f;
+  background:linear-gradient(90deg,#FFE6CF,#FFD9BE); border:1px solid #ffd9be;}
+
+/* 이론/전문가 섹션 */
+.theoryWrap{background:#f5f8ff; border:1px solid #e6eeff; border-radius:18px; padding:16px}
+.tgrid{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+.tcard{background:#fff; border:1px solid var(--line); border-radius:14px; padding:14px}
+.tcard.hint{background:#f9fbff}
+.tchip{background:#e6eeff; color:#2f5aff; border:1px solid #d9e3ff; padding:6px 10px; border-radius:999px; font-weight:800; font-size:12px}
+
+/* 종합 전문가 소견 & 프로그램/예약 */
+.panel{background:#fff7fd; border:1px solid #f1e0ff; border-radius:18px; padding:16px}
+.panel .row{display:grid; gap:10px}
+.panel .line{display:flex; gap:10px; align-items:flex-start}
+.panel .ic{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;background:#f1e8ff;color:#6a3dee;font-weight:900;border:1px solid #e4d8ff}
+
+.programs{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+.prog{background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px}
+.prog h4{margin:0 0 8px}
+.check{color:#059669; font-weight:900}
+.price{margin-top:8px; font-weight:900; color:#374151}
+
+.reserve{background:linear-gradient(180deg,#fff7ec,#ffe7d1); border:1px solid #ffd9be; border-radius:18px; padding:18px; text-align:left}
+.reserve .title{font-weight:900; font-size:22px; color:#5a3f2f}
+.reserve .items{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:16px 0}
+.reserve .pill{background:#fff; border:1px solid #ffe1c9; border-radius:14px; padding:12px}
+.reserve .pill .pt{font-weight:900; margin-bottom:6px}
+.reserve .note{font-size:12px; color:#6b7280; margin-top:8px}
+
+/* 인쇄 & PDF 캡처 */
 @media print{
-  .header,.sticky,.btn,.btn-ghost,.sideNav{display:none !important}
+  .header,.sticky,.btn,.btn-ghost,.sideNav,.no-pdf{display:none !important}
   .card{box-shadow:none;border:1px solid #ddd}
   .block{break-inside:avoid-page}
 }
+body.pdf-capture{ background:#ffffff !important; }
+body.pdf-capture #app{ width:720px !important; max-width:none !important; margin:0 auto !important; }
+body.pdf-capture .callout:before{ display:none !important; }
+.pdf-capture .no-pdf{ display:none !important; }
 
 /* 이메일 모달 */
-.modal-backdrop{
-  position:fixed; inset:0; background:rgba(0,0,0,.35); display:none; align-items:center; justify-content:center; z-index:999;
-}
+.modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.35); display:none; align-items:center; justify-content:center; z-index:999; }
 .modal-backdrop.show{display:flex}
-.modal{
-  width:min(520px,92vw); background:#fff; border:1px solid var(--line); border-radius:16px; box-shadow:0 18px 60px rgba(16,24,40,.18);
-  padding:18px;
-}
+.modal{ width:min(520px,92vw); background:#fff; border:1px solid var(--line); border-radius:16px; box-shadow:0 18px 60px rgba(16,24,40,.18); padding:18px; }
 .modal h3{margin:0 0 10px}
 .modal .row{display:grid; gap:8px; margin:10px 0}
 .modal .actions{display:flex; gap:8px; justify-content:flex-end; margin-top:10px}
 
-/* PDF 캡처 전용 오버라이드 */
-body.pdf-capture{ background:#fff !important; }
-body.pdf-capture::before{ display:none !important; }
-body.pdf-capture #app{ width:720px !important; max-width:none !important; }
-body.pdf-capture .callout:before{ display:none !important; } /* 글자 희미해짐 방지 */
-.pdf-capture .no-pdf{ display:none !important; }
+/* 특징 섹션(시작 화면) */
+.features{margin:24px auto 8px; max-width:980px}
+.features h2{font-size:28px; text-align:center; margin:6px 0 6px; font-weight:900}
+.features p.sub{color:#6b7280; text-align:center; margin:0 0 18px}
+.feature-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+@media (max-width:900px){ .feature-grid{grid-template-columns:1fr} }
+.feature{background:#fff; border:1px solid var(--line); border-radius:18px; padding:18px; box-shadow:0 14px 36px rgba(16,24,40,.08); display:flex; gap:12px; align-items:center}
+.feature .ic{width:46px; height:46px; border-radius:999px; display:grid; place-items:center; background:linear-gradient(90deg,#FFE6CF,#FFD9BE); font-size:22px; font-weight:900; color:#5a3f2f; border:1px solid #ffd9be}
+.feature .tit{font-weight:900; margin-bottom:4px}
+.cta{ margin:22px 0 0; padding:24px; border-radius:18px; border:1px solid var(--line);
+  background:linear-gradient(90deg,#FFEDCF,#FFCBA7); text-align:center; color:#5a3f2f; box-shadow:0 16px 40px rgba(255,185,138,.25); }
+.cta .big{font-size:22px; font-weight:900}
+.cta .sub{font-size:14px; opacity:.9; margin:6px 0 14px}
 </style>
 </head>
 <body>
 <div class="container">
   <div class="header">
-    <div class="brand"><div class="logo"></div><span>바른미술학원 · 미술적성테스트</span></div>
+    <div class="brand">
+      <div class="logo"></div>
+      <span>바른미술학원 · 미술적성테스트 <span class="badge">V1. BASIC</span></span>
+    </div>
   </div>
 
   <main class="main">
@@ -216,12 +236,15 @@ body.pdf-capture .callout:before{ display:none !important; } /* 글자 희미해
 </div>
 
 <script>
-/* ===== 연결값(시트/폼) ===== */
+/* ===== 상수/공용 ===== */
+const APP_TITLE = '바른미술학원 · 미술적성테스트 V1. BASIC';
+
 const SHEET_ID   = '14VLQBhDJtduxjCnfr7VEOstZ5ez8-CX3ArXy1OvYCQg';
 const GVIZ_URL   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Questions&tqx=out:json`;
 const FORM_ACTION= 'https://docs.google.com/forms/d/e/1FAIpQLSeRWq5YKN50zL0simiaQA6EBRsn6VXN__ZmLplAgDz1I1hyQA/formResponse';
+const EMAIL_FUNCTION_URL='/.netlify/functions/send-email';
 
-/* ★ 폼 항목 매핑 */
+/* Google Form 항목 매핑 */
 const F = {
   child_name:'entry.684468179',
   age:'entry.1066070471',
@@ -294,32 +317,38 @@ async function loadQuestions(){
 /* ===== 시작 화면 ===== */
 function startScreen(){
   return `<div class="center">
-    <h1 class="heroTitle">바른미술학원 · 미술적성테스트</h1>
+    <h1 class="heroTitle">${APP_TITLE}</h1>
     <p class="muted" style="font-size:16px">아이의 미술 적성과 잠재력을 간단히 확인하고, 바로 결과를 확인·저장할 수 있는 테스트입니다.</p>
 
     <div style="height:18px"></div>
     <button class="btn btn-mint btn-xl" id="startBtn">지금 바로 시작하기</button>
 
-    <div style="height:16px"></div>
-    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:1000px;margin:0 auto">
-      ${[
-        {title:'우린 이런 점을 봐요',desc:'관찰력, 색감각, 서사력, 공간감, 디테일, 도전성, 소통력, 꾸준성 — 아이의 강점을 폭넓게 확인해요.'},
-        {title:'진행 방법은 간단해요',desc:'각 문항에서 마음에 드는 보기 하나만 선택하세요. 완료 즉시 결과와 PDF 저장을 바로 제공합니다.'}
-      ].map((f)=>`
-        <div style="background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 14px 36px rgba(16,24,40,.08);position:relative;overflow:hidden">
-          <div style="position:absolute; inset:-1px; padding:1px; border-radius:18px; background:linear-gradient(90deg,#FFE6CF,#E6E2FF,#CFF7EE); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude"></div>
-          <div style="font-size:20px;font-weight:900">${f.title}</div>
-          <div class="small" style="color:#4b5563;margin-top:6px;line-height:1.6">${f.desc}</div>
-        </div>`).join('')}
-    </div>
+    <!-- 특징 섹션 -->
+    <section class="features">
+      <h2>테스트 특징</h2>
+      <p class="sub">아이의 미술 흥미·성향을 파악해 도움 되는 교육 포인트를 제시합니다</p>
+      <div class="feature-grid">
+        <div class="feature"><div class="ic">⏱</div><div><div class="tit">빠른 테스트</div><div class="small muted">6–8분 내 완료되는 간편한 테스트</div></div></div>
+        <div class="feature"><div class="ic">🎯</div><div><div class="tit">맞춤 분석</div><div class="small muted">개인별 강점과 교육 포인트 제시</div></div></div>
+        <div class="feature"><div class="ic">⚡</div><div><div class="tit">즉시 결과</div><div class="small muted">선택만으로 결과를 바로 받아보세요</div></div></div>
+      </div>
+      <div class="cta">
+        <div class="big">지금 바로 테스트해보세요</div>
+        <div class="sub">아이의 미술 재능과 성향을 발견하는 첫 걸음</div>
+        <button class="btn btn-xl" id="startBtn2">테스트 시작하기 →</button>
+      </div>
+    </section>
 
     <div class="small muted" style="margin-top:12px">※ 본 테스트는 <b>교육 가이드</b> 목적이며, 의학/임상 진단이 아닙니다.</div>
   </div>`;
 }
 function viewStart(){
   app().innerHTML=startScreen();
+  const onHover=(e)=>{ e.currentTarget.style.setProperty('--x', e.offsetX+'px'); e.currentTarget.style.setProperty('--y', e.offsetY+'px'); };
   $('startBtn').onclick=()=>navGo('consent');
-  $('startBtn').onmousemove=(e)=>{ e.currentTarget.style.setProperty('--x', e.offsetX+'px'); e.currentTarget.style.setProperty('--y', e.offsetY+'px'); };
+  $('startBtn').onmousemove=onHover;
+  $('startBtn2').onclick=()=>navGo('consent');
+  $('startBtn2').onmousemove=onHover;
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -340,11 +369,11 @@ function viewConsent(){
   <div class="section" style="margin-top:16px">
     <div class="agreeList">
       <div class="agree-row">
-        <div class="txt">(필수) 개인정보 수집·이용에<br><b>동의합니다.</b></div>
+        <div class="txt">(필수) 개인정보 수집·이용에 <b>동의합니다.</b></div>
         <input type="checkbox" id="chk_required" />
       </div>
       <div class="agree-row">
-        <div class="txt">(필수) 만 14세 미만 아동의 법정대리인으로서<br><b>동의합니다.</b></div>
+        <div class="txt">(필수) 만 14세 미만 아동의 법정대리인으로서 <b>동의합니다.</b></div>
         <input type="checkbox" id="chk_minor" />
       </div>
     </div>
@@ -416,11 +445,15 @@ function optionImageUrl(q, o){
 function viewTest(){
   const q=STATE.questions[STATE.idx]; if(!q){ app().innerHTML='<h3 class="center">문항을 불러오지 못했습니다. 관리자에 문의해 주세요.</h3>'; return; }
   const gridCls = pcGridClassFor(q.options.length);
-  app().innerHTML=`<div class="center small muted">Q${STATE.idx+1} / ${STATE.questions.length}</div>
-    <h2 class="center" style="margin-top:6px">${q.prompt||''}</h2>
-    <div class="${gridCls}" style="margin-top:10px">
+  app().innerHTML=`<div class="center small muted">
+      <span class="qbadge">Q ${STATE.idx+1} / ${STATE.questions.length}</span>
+    </div>
+    <h2 class="center" style="margin-top:10px">${q.prompt||''}</h2>
+    <div class="${gridCls}" style="margin-top:12px">
       ${q.options.map(o=>`<div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label||o.key}" data-key="${o.key}">
-        <img src="${optionImageUrl(q,o)}" alt="${o.label||o.key}" onerror="this.style.opacity=.2" loading="lazy"><div class="cap center">${o.label||o.key}</div></div>`).join('')}
+        <img src="${optionImageUrl(q,o)}" alt="${o.label||o.key}" onerror="this.style.opacity=.2" loading="lazy">
+        <div class="cap center">${o.label||o.key}</div>
+      </div>`).join('')}
     </div>
     <div class="center" style="margin-top:18px; display:flex; gap:10px; justify-content:center">
       <button class="btn-ghost" id="btn_prev" ${STATE.idx===0?'disabled':''}>이전</button>
@@ -449,6 +482,7 @@ function next(){
   else{ submitAllSafe(); }
 }
 function prev(){ if(STATE.idx>0){ STATE.idx--; render(); } }
+
 document.addEventListener('keydown', (e)=>{
   if(STATE.step!=='test') return;
   if(e.key==='ArrowRight'){ next(); }
@@ -464,7 +498,7 @@ function aggregateScores(ans){
   DOMAINS.forEach(d=>{ const v=(sum[d]||0)/n*4; raw[d]=Math.max(0,Math.round(v*10)/10); });
   return raw;
 }
-const adjust=v=>Math.round((2 + v/2) * 10)/10;
+const adjust=v=>Math.round((2 + v/2) * 10)/10; // 0→2.0, 4→4.0
 function band(v){ if(v>=3.6) return 'S'; if(v>=3.2) return 'A'; if(v>=2.8) return 'A-'; if(v>=2.4) return 'B+'; if(v>=2.0) return 'B'; if(v>=1.6) return 'B-'; if(v>=1.0) return 'C+'; return 'C'; }
 const DETAIL = {
   '관찰력':(n)=>`${n}님은 대상의 특징을 캐치하는 눈이 좋아요. 작은 변화도 포착해 표현의 밀도를 높입니다.`,
@@ -494,6 +528,58 @@ const MISSIONS={
   '꾸준성':['5일 연속 15분 체크','작은 목표 설정→완료 표시','진행사진 2장 남기기']
 };
 
+/* 강점 이론/전문가 텍스트 */
+const THEORY = {
+  '색감각':{
+    theoryTitle:'Itten의 색채이론',
+    theory:'색채감각은 색상·명도·채도의 조화를 인지하고 활용하는 능력으로, 감정 표현과 미적 감수성의 중요한 지표입니다.',
+    expert:'“색채감각이 우수한 아동은 감정 표현력과 창의적 사고력이 함께 발달합니다.”',
+    direction:'색상환 학습, 색채 대비 실험, 자연색 관찰 활동을 통해 체계적으로 개발할 수 있습니다.'
+  },
+  '디테일':{
+    theoryTitle:'Csikszentmihalyi의 몰입이론',
+    theory:'디테일 능력은 집중력과 완성도 추구 성향으로, 작품의 완결성과 정밀성을 결정하는 중요한 특성입니다.',
+    expert:'“디테일이 높은 아동은 자기조절능력과 성취동기가 강합니다.”',
+    direction:'세밀화 연습, 정밀한 공예활동, 단계적 완성 프로젝트를 통해 기를 수 있습니다.'
+  },
+  '서사력':{
+    theoryTitle:'Bruner의 서사적 사고이론',
+    theory:'서사력은 이야기를 구성하고 시각적으로 표현하는 능력으로, 상상력과 논리적 구성력이 결합된 복합적 사고능력입니다.',
+    expert:'“서사력이 뛰어난 아동은 언어능력과 시각적 표현력이 균형 있게 발달합니다.”',
+    direction:'그림일기, 만화 제작, 스토리보드 활동 등을 통해 향상시킬 수 있습니다.'
+  },
+  '공간감':{
+    theoryTitle:'지각심리 & 원근법',
+    theory:'공간감은 형태 간 상대적 위치와 깊이를 파악하는 능력으로, 장면 구성의 안정감을 높입니다.',
+    expert:'“구도와 원근을 안정적으로 적용하면 몰입도 높은 장면 연출이 가능합니다.”',
+    direction:'상자/기본형으로 거리감 실험, 소실점 훈련, 모형 배치 관찰 등을 권장합니다.'
+  },
+  '관찰력':{
+    theoryTitle:'게슈탈트 지각 이론',
+    theory:'관찰력은 대상을 구조적으로 파악해 특징을 포착하는 능력으로 표현의 밀도를 좌우합니다.',
+    expert:'“관찰력은 사실적 표현과 창작 변형의 기반이 됩니다.”',
+    direction:'광원 변화 관찰, 확대 스케치, 재질 탐구를 루틴화하세요.'
+  },
+  '도전성':{
+    theoryTitle:'Dweck의 성장 마인드셋',
+    theory:'도전성은 새로운 과제에 대한 개방성과 실패 후 학습의지로, 창의적 시도를 촉진합니다.',
+    expert:'“성장형 마인드셋은 예술적 탐색과 혁신의 핵심입니다.”',
+    direction:'새 도구 실험 기록, 변형 과제, 실패작 재해석을 수행하세요.'
+  },
+  '소통력':{
+    theoryTitle:'비주얼 리터러시',
+    theory:'소통력은 시각적 의도를 언어와 시각 요소로 설명·설득하는 능력입니다.',
+    expert:'“설득력 있는 발표는 작품의 맥락을 강화합니다.”',
+    direction:'작가노트 3문장, 피드백 1개 반영, 제목 3안 중 선택 활동을 권합니다.'
+  },
+  '꾸준성':{
+    theoryTitle:'자기조절 학습',
+    theory:'꾸준성은 계획-실행-점검의 루틴을 유지하는 능력으로, 장기 성장의 핵심입니다.',
+    expert:'“짧고 빈번한 완성이 동기 유지를 돕습니다.”',
+    direction:'5일 연속 15분 루틴, 체크리스트, 진행사진 기록을 습관화하세요.'
+  }
+};
+
 /* ===== 제출 & 결과 ===== */
 function nowKST(){ const d=new Date(),p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())} KST`; }
 
@@ -519,115 +605,45 @@ async function submitAllSafe(){
 let CHARTS=[];
 function destroyCharts(){ CHARTS.forEach(c=>c.destroy?.()); CHARTS=[]; }
 
-/* ===== PDF: #app 전체 멀티페이지 ===== */
-async function waitFrame(){ return new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))); }
-function sanitizeFilename(s){ return (s||'결과').replace(/[^\w가-힣_\-]+/g,''); }
-async function buildPdfBlob(){
-  if(!window.html2pdf){ alert('PDF 모듈 로드 실패'); throw new Error('html2pdf missing'); }
-  document.body.classList.add('pdf-capture');
-  const hide = document.querySelectorAll('.no-pdf');
-  const prev = [...hide].map(el=>el.style.display);
-  hide.forEach(el=>el.style.display='none');
-
-  await waitFrame();
-  const target = $('app');
-  const opt = {
-    margin: 10,
-    filename: 'result.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: {
-      scale: 2, useCORS: true, allowTaint: true, backgroundColor: '#ffffff',
-      scrollX: 0, scrollY: 0,
-      windowWidth:  document.documentElement.scrollWidth,
-      windowHeight: Math.max(document.documentElement.scrollHeight, target.scrollHeight)
-    },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    pagebreak: { mode: ['css','legacy'] }
-  };
-  const blob = await html2pdf().set(opt).from(target).toPdf().outputPdf('blob');
-
-  hide.forEach((el,i)=>el.style.display=prev[i]);
-  document.body.classList.remove('pdf-capture');
-  return blob;
-}
-function downloadBlob(blob, filename){
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = filename; a.click();
-  URL.revokeObjectURL(url);
-}
-async function blobToBase64(blob){
-  const buf = await blob.arrayBuffer();
-  let binary = ''; const bytes = new Uint8Array(buf);
-  for (let i=0;i<bytes.length;i++) binary += String.fromCharCode(bytes[i]);
-  return btoa(binary);
-}
-
-/* ===== 이메일 모달/전송 ===== */
-function openEmailModal(){
-  const m = $('emailModal');
-  $('emailSubject').value = `${STATE?.profile?.child_name || '학생'} 테스트 결과입니다`;
-  $('emailTo').value = STATE?.profile?.email || '';
-  $('emailMsg').textContent = '';
-  m.classList.add('show');
-}
-function closeEmailModal(){ $('emailModal').classList.remove('show'); }
-document.getElementById('emailCancel').onclick = closeEmailModal;
-document.getElementById('emailModal').addEventListener('click', (e)=>{ if(e.target.id==='emailModal') closeEmailModal(); });
-
-async function handleEmailSend(){
-  const to = $('emailTo').value.trim();
-  const subject = $('emailSubject').value.trim();
-  const msg = $('emailMsg');
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)){ msg.textContent='이메일 형식을 확인해 주세요.'; return; }
-  try{
-    $('emailSend').disabled = true; msg.textContent = 'PDF 생성 중...';
-    const blob = await buildPdfBlob();
-    const base64 = await blobToBase64(blob);
-    const filename = `${sanitizeFilename(STATE?.profile?.child_name)}_미술적성_결과.pdf`;
-    msg.textContent = '메일 전송 중...';
-
-    const resp = await fetch('/.netlify/functions/send-email', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        to, subject,
-        fileName: filename,
-        pdfBase64: base64,
-        childName: STATE?.profile?.child_name || '',
-        campus: STATE?.profile?.campus || ''
-      })
-    });
-
-    if(resp.ok){
-      msg.textContent = '전송 완료! 메일함을 확인해 주세요.';
-      setTimeout(closeEmailModal, 1200);
-    }else{
-      const errTxt = await resp.text().catch(()=> '');
-      msg.textContent = `전송 실패 (${resp.status}). 함수 경로: /.netlify/functions/send-email ${errTxt?'- '+errTxt:''}`;
-    }
-  }catch(e){
-    msg.textContent = '오류: ' + (e?.message || e);
-  }finally{
-    $('emailSend').disabled = false;
-  }
-}
-document.getElementById('emailSend').onclick = handleEmailSend;
-
-/* ===== 버튼 핸들러 ===== */
-async function downloadPdf(){
-  const blob = await buildPdfBlob();
-  const filename = `${sanitizeFilename(STATE?.profile?.child_name)}_미술적성_결과.pdf`;
-  downloadBlob(blob, filename);
+function theoryItem(idx, key, score){
+  const t = THEORY[key] || {theoryTitle:'이론', theory:'-', expert:'-', direction:'-'};
+  return `
+  <div class="theoryWrap">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div style="font-weight:900;font-size:18px">${idx}. ${key}</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="small">현재 수준: <b>${score.toFixed(1)}</b></span>
+        <span class="tchip">강점 영역</span>
+      </div>
+    </div>
+    <div class="tgrid">
+      <div class="tcard hint">
+        <div style="font-weight:900;margin-bottom:6px">📍 이론적 근거</div>
+        <div class="small" style="color:#2f5aff;font-weight:900">${t.theoryTitle}</div>
+        <div class="small" style="margin-top:4px">${t.theory}</div>
+      </div>
+      <div class="tcard">
+        <div style="font-weight:900;margin-bottom:6px">🧑‍🏫 전문가 의견</div>
+        <div class="small" style="background:#f7f1ff;border:1px solid #eddcff;border-radius:10px;padding:10px">${t.expert}</div>
+      </div>
+      <div class="tcard" style="grid-column:1/-1">
+        <div style="font-weight:900;margin-bottom:6px">🡅 발달 방향</div>
+        <div class="small">${t.direction}</div>
+      </div>
+    </div>
+  </div>`;
 }
 
 function viewResult(){
   const r=STATE.result, s=r?.scores||{};
   const overall = Math.round((Object.values(s).reduce((a,b)=>a+(+b||0),0))*10)/10 || 0;
+
   const T = r.top3;
   const summary = `${STATE.profile.child_name}님은 <b>${T[0]}</b>를 중심으로 <b>${T[1]}</b>, <b>${T[2]}</b>에서 강점이 뚜렷합니다. 화면을 읽고 선택하는 과정이 안정적이며, 시도에 대한 두려움이 낮아 발전 속도가 빠른 유형이에요. 강점 영역을 루틴으로 확장해 ‘작은 완성’을 자주 만드는 것이 동기 유지에 특히 효과적입니다.`;
 
-  app().innerHTML=`<div id="resultCard">
+  const topBlocks = T.map((k,i)=>theoryItem(i+1,k,+(s[k]||0))).join('');
+
+  app().innerHTML=`<div id="pdfArea">
     <div class="block callout" style="text-align:center">
       <div class="chip" style="margin:0 auto 8px;display:inline-block">테스트 완료</div>
       <h2 style="margin:0 0 10px"><b>${STATE.profile.child_name}</b>님, 멋진 집중력이었습니다!</h2>
@@ -636,14 +652,8 @@ function viewResult(){
     </div>
 
     <div class="result-row">
-      <div class="block">
-        <h3 class="center">영역별 관심도(레이다)</h3>
-        <div class="chartBox"><canvas id="radar"></canvas></div>
-      </div>
-      <div class="block">
-        <h3 class="center">뛰어난 영역(막대)</h3>
-        <div class="chartBox"><canvas id="bars"></canvas></div>
-      </div>
+      <div class="block"><h3 class="center">영역별 관심도(레이다)</h3><div class="chartBox"><canvas id="radar" height="200"></canvas></div></div>
+      <div class="block"><h3 class="center">뛰어난 영역(막대)</h3><div class="chartBox"><canvas id="bars" height="200"></canvas></div></div>
     </div>
 
     <div class="block">
@@ -656,6 +666,7 @@ function viewResult(){
       <div class="grid" style="grid-template-columns:1fr 1fr">
         ${DOMAINS.map(k=>{
           const v=+(s[k]||0), b=band(v), w=Math.min(100,(v/4)*100);
+          const praiseFn = PRAISE[b] || (()=>`${k}에서 꾸준히 성장 중입니다.`);
           const mission = (MISSIONS[k]||[])[0] || '관찰·스케치 1장';
           return `<div style="border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff;box-shadow:0 10px 26px rgba(16,24,40,.06)">
             <div style="display:flex;justify-content:space-between;align-items:flex-end">
@@ -664,11 +675,76 @@ function viewResult(){
             </div>
             <div class="topprogress" style="height:10px;margin:8px 0 10px"><div style="width:${w}%;height:100%;background:linear-gradient(90deg,#B9C8FF,#9DE5D5,#FFD9BE)"></div></div>
             <div class="small" style="color:#0f172a">${DETAIL[k](STATE.profile.child_name)}</div>
-            <div class="small" style="margin-top:6px;color:#0f172a">${(PRAISE[band(v)]||(()=>''))(k)}</div>
+            <div class="small" style="margin-top:6px;color:#0f172a">${praiseFn(k)}</div>
             <div class="small" style="margin-top:4px">오늘의 15분: <b>${mission}</b></div>
           </div>`;
         }).join('')}
       </div>
+    </div>
+
+    <!-- 전문가 평가 & 이론적 배경 -->
+    <div class="block">
+      <h3 style="display:flex;gap:8px;align-items:center">📘 전문가 평가 및 이론적 배경</h3>
+      <p class="small muted" style="margin-top:2px">${STATE.profile.child_name}님의 강점 영역을 이론적으로 해석하고 발달 방향을 제시합니다.</p>
+      ${topBlocks}
+    </div>
+
+    <!-- 종합 전문가 소견 -->
+    <div class="panel" style="margin-top:14px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <div class="ic">◎</div><div style="font-weight:900">종합 전문가 소견</div>
+      </div>
+      <div class="row">
+        <div class="block" style="background:#fff">
+          <div style="font-weight:900;margin-bottom:6px">바른미술학원 전문 평가팀</div>
+          <div class="small">
+            <b>${STATE.profile.child_name}</b>(${STATE.profile.age}세, ${STATE.profile.grade}) 아동은
+            <b>${T[0]}</b> 영역에서 또래 대비 상위 수준의 능력을 보이며,
+            <b>${T[1]}</b>, <b>${T[2]}</b>도 안정적으로 발달하고 있습니다.
+            현재는 표현 역량과 감수성이 급속히 확장되는 <b>결정적 시기</b>로, 적절한 교육적 지원이 중요합니다.
+          </div>
+          <div style="margin-top:10px">
+            <div class="line"><div class="ic">✓</div><div><b>개별화 교육</b>: 강점 영역 중심의 맞춤형 커리큘럼 적용</div></div>
+            <div class="line"><div class="ic">✓</div><div><b>단계적 발달</b>: 현재 수준에서 점진적 난이도 상승</div></div>
+            <div class="line"><div class="ic">✓</div><div><b>통합적 접근</b>: 약점 영역 보완을 위한 다각도 활동</div></div>
+          </div>
+          <div class="small" style="margin-top:10px;color:#6b7280">장기 전망: 체계적 훈련 시 중·고등학교 시기 <b>미술 특기자</b> 과정 진입 및 전문 분야 진로 탐색이 충분히 가능합니다.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 추천 프로그램 -->
+    <div class="block" style="margin-top:14px">
+      <h3>추천 교육 프로그램</h3>
+      <div class="programs">
+        <div class="prog">
+          <h4>⭐ 기초 실기반</h4>
+          <div class="small"><span class="check">✓</span> 주 2회, 90분 수업</div>
+          <div class="small"><span class="check">✓</span> 소수정예 6–8명</div>
+          <div class="small"><span class="check">✓</span> 개별 포트폴리오 관리</div>
+          <div class="price">월 12만원</div>
+        </div>
+        <div class="prog">
+          <h4>🎓 심화 특기반</h4>
+          <div class="small"><span class="check">✓</span> 주 3회, 120분 수업</div>
+          <div class="small"><span class="check">✓</span> 전문가 1:4 수업</div>
+          <div class="small"><span class="check">✓</span> 공모전 출품 지도</div>
+          <div class="price">월 18만원</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 상담 예약 -->
+    <div class="reserve" style="margin-top:14px">
+      <div style="display:flex;align-items:center;gap:8px"><div class="ic" style="background:#ffe7d1;border-color:#ffd9be;color:#b45309">🗓</div><div class="title">전문가 방문 상담 예약</div></div>
+      <div class="small" style="margin-top:6px">아이의 테스트 결과를 바탕으로 <b>개별 맞춤 교육 계획</b>을 수립하고, <b>작품 포트폴리오</b> 검토를 통한 전문적인 진단과 상담을 제공합니다.</div>
+      <div class="items">
+        <div class="pill"><div class="pt">전문가 진단</div><div class="small muted">미술교육 전문가의 1:1 개별 진단</div></div>
+        <div class="pill"><div class="pt">맞춤 계획</div><div class="small muted">특성에 맞는 교육 로드맵 제시</div></div>
+        <div class="pill"><div class="pt">주기적 관리</div><div class="small muted">3개월마다 발전상황 점검</div></div>
+      </div>
+      <button class="btn btn-mint no-pdf" onclick="alert('상담 예약은 곧 준비됩니다!')">상담 예약하기</button>
+      <div class="note">상담료: 무료 | 소요시간: 60분</div>
     </div>
 
     <p class="credit">※ 본 결과는 교육 가이드 목적이며 의학·임상 진단이 아닙니다.</p>
@@ -681,21 +757,118 @@ function viewResult(){
   </div>`;
 
   destroyCharts();
-  const commonOpts = {responsive:true, maintainAspectRatio:true, aspectRatio:1.2, plugins:{legend:{display:false}}};
-
-  new Chart(document.getElementById('radar').getContext('2d'),{
-    type:'radar',
+  const rctx=document.getElementById('radar').getContext('2d');
+  CHARTS.push(new Chart(rctx,{type:'radar',
     data:{labels:DOMAINS, datasets:[{data:DOMAINS.map(k=>s[k]||0), borderColor:'#FFB98A', backgroundColor:'rgba(255,185,138,.22)', borderWidth:2, pointRadius:3, fill:true}]},
-    options:{animation:{duration:800}, scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#eef2f7'},angleLines:{color:'#eef2f7'}}}, ...commonOpts}
-  });
-  new Chart(document.getElementById('bars').getContext('2d'),{
-    type:'bar',
+    options:{animation:{duration:800}, scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#eef2f7'},angleLines:{color:'#eef2f7'}}}, plugins:{legend:{display:false}}}
+  }));
+  const bctx=document.getElementById('bars').getContext('2d');
+  CHARTS.push(new Chart(bctx,{type:'bar',
     data:{labels:r.top3, datasets:[{data:r.top3.map(k=>s[k]||0), borderRadius:12, borderSkipped:false, backgroundColor:['#FFD9BE','#E6E2FF','#CFF7EE']}]},
-    options:{animation:{duration:700}, scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}}, ...commonOpts}
-  });
+    options:{animation:{duration:700}, scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}}, plugins:{legend:{display:false}}}
+  }));
 
-  $('btn_pdf').onclick = downloadPdf;
+  $('btn_pdf').onclick = handleSavePdf;
   $('btn_email').onclick = openEmailModal;
+}
+
+/* ===== PDF 저장 ===== */
+async function handleSavePdf(){
+  const node = $('pdfArea');
+  document.body.classList.add('pdf-capture');
+
+  const filename = `${STATE.profile.child_name}_미술적성테스트_V1_BASIC.pdf`;
+
+  const opt = {
+    margin:       [8,8,8,8],
+    filename,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS:true, backgroundColor:'#ffffff', windowWidth: 980 },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+
+  try{
+    await html2pdf().set(opt).from(node).save();
+  }finally{
+    document.body.classList.remove('pdf-capture');
+  }
+}
+
+/* ===== 이메일 전송 ===== */
+function openEmailModal(){
+  $('emailModal').classList.add('show');
+  $('emailSubject').value = `${STATE.profile.child_name} 테스트 결과입니다`;
+  $('emailTo').value = STATE.profile.email || '';
+  $('emailMsg').textContent='';
+}
+$('emailCancel').onclick=()=>$('emailModal').classList.remove('show');
+
+function blobToBase64(blob){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onloadend = ()=> resolve(reader.result.split(',')[1]); // pure base64
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+$('emailSend').onclick = async ()=>{
+  const to = $('emailTo').value.trim();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)){ $('emailMsg').textContent='이메일 형식을 확인해 주세요.'; return; }
+
+  $('emailMsg').textContent='PDF 생성 중...';
+  document.body.classList.add('pdf-capture');
+  const node = $('pdfArea');
+  const filename = `${STATE.profile.child_name}_미술적성테스트_V1_BASIC.pdf`;
+  const opt = {
+    margin:[8,8,8,8],
+    image:{type:'jpeg',quality:0.98},
+    html2canvas:{scale:2, useCORS:true, backgroundColor:'#ffffff', windowWidth:980},
+    jsPDF:{unit:'mm', format:'a4', orientation:'portrait'}
+  };
+  let base64='';
+  try{
+    const blob = await html2pdf().set(opt).from(node).output('blob');
+    base64 = await blobToBase64(blob);
+  }catch(e){
+    $('emailMsg').textContent='PDF 생성에 실패했습니다.';
+    document.body.classList.remove('pdf-capture');
+    return;
+  }
+  document.body.classList.remove('pdf-capture');
+
+  $('emailMsg').textContent='이메일 전송 중...';
+  const subject = $('emailSubject').value.trim() || `${STATE.profile.child_name} 테스트 결과입니다`;
+  const htmlBody = `
+    <div style="font-family:Pretendard,Apple SD Gothic Neo,Segoe UI,Arial">
+      <h2 style="margin:0 0 8px">${APP_TITLE}</h2>
+      <p><b>${STATE.profile.child_name}</b> 님의 결과지를 첨부했습니다.</p>
+      <p>캠퍼스: ${STATE.profile.campus||'-'} / 연락처: ${STATE.profile.phone||'-'}</p>
+      <p style="color:#6b7280;font-size:12px;margin-top:12px">본 메일은 자동 발송되었습니다.</p>
+    </div>`;
+
+  try{
+    const res = await fetch(EMAIL_FUNCTION_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        to, subject,
+        html: htmlBody,
+        attachmentName: filename,
+        attachmentBase64: base64
+      })
+    });
+    const ok = res.ok;
+    const data = await res.json().catch(()=>({}));
+    if(ok){
+      $('emailMsg').textContent='전송 완료! 메일함을 확인해 주세요.';
+      setTimeout(()=>$('emailModal').classList.remove('show'), 1200);
+    }else{
+      $('emailMsg').textContent='전송 실패: '+(data.error||res.statusText);
+    }
+  }catch(err){
+    $('emailMsg').textContent='전송 중 오류가 발생했습니다.';
+  }
 }
 
 /* ===== Router ===== */
@@ -706,8 +879,9 @@ function render(){ renderNav(); updateTopProgress();
   if(STATE.step==='test') return viewTest();
   if(STATE.step==='result') return viewResult();
 }
+render();
 
-/* ===== Fallback 문항 ===== */
+/* ===== Fallback용 문항 ===== */
 function W(w){ const o={}; DOMAINS.forEach(k=>o[k]=0); Object.entries(w).forEach(([k,v])=>o[k]=v); return o; }
 function localQuestions(){
   const S=(q,p,a,b,c,d)=>({id:q,order:+q.replace('q',''),prompt:p,options:[
@@ -716,7 +890,7 @@ function localQuestions(){
     {key:'C',label:c[0],imageUrl:c[1],weights:W(c[2])},
     {key:'D',label:d[0],imageUrl:d[1],weights:W(d[2])},
   ]});
-  const IMG=(kw)=>`https://images.unsplash.com/photo-150${Math.floor(Math.random()*899+100)}?auto=format&fit=crop&w=600&q=60&${encodeURIComponent(kw)}`;
+  const IMG=(kw)=>`https://images.unsplash.com/photo-150${Math.floor(Math.random()*899+100)}?auto=format&fit=crop&w=900&q=60&${encodeURIComponent(kw)}`;
 
   return [
     S('q1','새로운 미술 도구를 발견했어요! 무엇을 먼저 해볼까요?',
@@ -815,16 +989,6 @@ function localQuestions(){
     return q;
   });
 }
-
-/* ===== 안전 실행 ===== */
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', render);
-} else {
-  render();
-}
-/* 디버그 콘솔 */
-window.addEventListener('error', e => console.error('JS error:', e.error || e.message));
-window.addEventListener('unhandledrejection', e => console.error('Promise rejection:', e.reason));
 </script>
 </body>
 </html>
