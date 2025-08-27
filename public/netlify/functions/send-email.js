@@ -1,9 +1,7 @@
 // netlify/functions/send-email.js
-// Node 18+ (Netlify 런타임)에서 fetch 내장
-const ALLOWED_ORIGIN = '*'; // 같은 도메인에서만 쓴다면 필요없지만, 안전하게 허용
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
 
 exports.handler = async (event) => {
-  // CORS preflight
   if (event.httpMethod === 'OPTIONS') {
     return {
       statusCode: 204,
@@ -26,7 +24,6 @@ exports.handler = async (event) => {
 
   try {
     const { to, subject, fileName, pdfBase64, childName, campus } = JSON.parse(event.body || '{}');
-
     if (!to || !pdfBase64) {
       return {
         statusCode: 400,
@@ -35,8 +32,13 @@ exports.handler = async (event) => {
       };
     }
 
-    // 크기 가드(권장: 10~15MB 이하) — base64 길이로 대략 체크
-    const approxBytes = Math.floor((pdfBase64.length * 3) / 4);
+    // 1) data URI 프리픽스 제거
+    const base64 = pdfBase64.includes(',')
+      ? pdfBase64.split(',')[1]
+      : pdfBase64;
+
+    // 2) 크기 가드(≈ base64 길이→바이트 추정)
+    const approxBytes = Math.floor((base64.length * 3) / 4);
     if (approxBytes > 15 * 1024 * 1024) {
       return {
         statusCode: 413,
@@ -45,7 +47,8 @@ exports.handler = async (event) => {
       };
     }
 
-    const from = process.env.RESEND_FROM || 'onboarding@resend.dev'; // 도메인 인증 전 테스트 OK
+    const from = process.env.RESEND_FROM || 'onboarding@resend.dev'; // 도메인 검증 전 테스트용
+
     const text = [
       `${childName || '학생'}의 미술적성 테스트 결과를 보내드립니다.`,
       campus ? `캠퍼스: ${campus}` : '',
@@ -61,10 +64,14 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         from,
-        to,
+        to,                        // 문자열/배열 모두 허용됨
         subject: subject || '테스트 결과 안내',
         text,
-        attachments: [{ filename: fileName || 'result.pdf', content: pdfBase64 }]
+        attachments: [{
+          filename: fileName || 'result.pdf',
+          content: base64,
+          contentType: 'application/pdf' // ← 명시
+        }]
       })
     });
 
