@@ -141,14 +141,15 @@ label{font-size:14px; color:#374151}
 
 .checkRow{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
 
-/* 동의 체크: 한 줄씩 + 체크박스 우측 정렬 */
+/* 동의 체크 */
 .agreeList{display:grid; gap:10px; margin-top:10px}
 .agree-row{display:flex; align-items:center; justify-content:space-between; gap:14px; padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:#fff}
 .agree-row .txt{font-size:14px; color:#0f172a; line-height:1.55}
 .agree-row input[type="checkbox"]{width:20px; height:20px; accent-color:#FFB98A;}
 
-/* 결과 그래프 행: 레이더+막대 한 줄 */
-.result-row{display:grid; grid-template-columns:1.2fr .8fr; gap:16px}
+/* 결과 그래프 행: 동일 너비(두 개가 A4 폭의 절반보다 작게) */
+.result-row{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+.chartBox{max-width:340px; margin:0 auto;}
 @media (max-width:900px){ .result-row{grid-template-columns:1fr} }
 
 /* 인쇄 */
@@ -170,6 +171,12 @@ label{font-size:14px; color:#374151}
 .modal h3{margin:0 0 10px}
 .modal .row{display:grid; gap:8px; margin:10px 0}
 .modal .actions{display:flex; gap:8px; justify-content:flex-end; margin-top:10px}
+
+/* PDF 캡처 전용 오버라이드 */
+body.pdf-capture{ background:#fff !important; }
+body.pdf-capture::before{ display:none !important; }
+body.pdf-capture #app{ max-width:720px !important; }
+.pdf-capture .no-pdf{ display:none !important; }
 </style>
 </head>
 <body>
@@ -232,7 +239,7 @@ const F = {
   timestamp:'entry.1261684833'
 };
 
-const ASSET_BASE = '/img'; // Netlify publish=public 기준
+const ASSET_BASE = '/img';
 const DOMAINS = ["관찰력","색감각","서사력","공간감","디테일","도전성","소통력","꾸준성"];
 const STEPS = [{key:'start',label:'시작'},{key:'consent',label:'동의'},{key:'profile',label:'프로필'},{key:'test',label:'테스트'},{key:'result',label:'결과'}];
 const STATE = { step:'start', consent:false, profile:{}, questions:[], idx:0, answers:[], result:null };
@@ -521,22 +528,32 @@ async function waitFrame(){ return new Promise(r=>requestAnimationFrame(()=>requ
 function sanitizeFilename(s){ return (s||'결과').replace(/[^\w가-힣_\-]+/g,''); }
 async function buildPdfBlob(){
   if(!window.html2pdf){ alert('PDF 모듈 로드 실패'); throw new Error('html2pdf missing'); }
+  document.body.classList.add('pdf-capture');                 // 흐릿 배경 제거 & 폭 제한
+  const hide = document.querySelectorAll('.no-pdf');          // 버튼 제외
+  const prev = [...hide].map(el=>el.style.display);
+  hide.forEach(el=>el.style.display='none');
+
   await waitFrame(); // 차트/레이아웃 안정화
-  const target = $('app'); // ← 요청대로 #app 전체
+  const target = $('app');
   const opt = {
-    margin:       10,
-    filename:     'result.pdf',
-    image:        { type: 'jpeg', quality: 0.96 },
-    html2canvas:  {
+    margin: 10,
+    filename: 'result.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: {
       scale: 2, useCORS: true, allowTaint: true, imageTimeout: 15000,
+      backgroundColor: '#ffffff',
       scrollX: 0, scrollY: 0,
       windowWidth:  document.documentElement.scrollWidth,
-      windowHeight: target.scrollHeight
+      windowHeight: Math.max(document.documentElement.scrollHeight, target.scrollHeight)
     },
-    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    pagebreak:    { mode: ['css','legacy'] }  // block에 page-break-inside:avoid 적용됨
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: ['css','legacy'] }
   };
-  return await html2pdf().set(opt).from(target).toPdf().outputPdf('blob');
+  const blob = await html2pdf().set(opt).from(target).toPdf().outputPdf('blob');
+
+  hide.forEach((el,i)=>el.style.display=prev[i]);
+  document.body.classList.remove('pdf-capture');
+  return blob;
 }
 function downloadBlob(blob, filename){
   const url = URL.createObjectURL(blob);
@@ -546,8 +563,7 @@ function downloadBlob(blob, filename){
 }
 async function blobToBase64(blob){
   const buf = await blob.arrayBuffer();
-  let binary = '';
-  const bytes = new Uint8Array(buf);
+  let binary = ''; const bytes = new Uint8Array(buf);
   for (let i=0;i<bytes.length;i++) binary += String.fromCharCode(bytes[i]);
   return btoa(binary);
 }
@@ -579,7 +595,8 @@ async function handleEmailSend(){
     const filename = `${sanitizeFilename(STATE?.profile?.child_name)}_미술적성_결과.pdf`;
     msg.textContent = '메일 전송 중...';
 
-    const resp = await fetch('/api/send-email', {
+    // 함수 경로를 직접 호출 (리다이렉트 불필요)
+    const resp = await fetch('/.netlify/functions/send-email', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
@@ -595,11 +612,11 @@ async function handleEmailSend(){
       msg.textContent = '전송 완료! 메일함을 확인해 주세요.';
       setTimeout(closeEmailModal, 1200);
     }else{
-      const err = await resp.json().catch(()=>({}));
-      msg.textContent = '전송 실패: ' + (err?.error || resp.status);
+      const errTxt = await resp.text().catch(()=> '');
+      msg.textContent = `전송 실패 (${resp.status}). Netlify 함수 경로 확인: /.netlify/functions/send-email ${errTxt?'- '+errTxt:''}`;
     }
   }catch(e){
-    msg.textContent = '오류가 발생했습니다: ' + e.message;
+    msg.textContent = '오류: ' + (e?.message || e);
   }finally{
     $('emailSend').disabled = false;
   }
@@ -629,8 +646,14 @@ function viewResult(){
     </div>
 
     <div class="result-row">
-      <div class="block"><h3 class="center">영역별 관심도(레이다)</h3><canvas id="radar" height="260"></canvas></div>
-      <div class="block"><h3 class="center">뛰어난 영역(막대)</h3><canvas id="bars" height="260"></canvas></div>
+      <div class="block">
+        <h3 class="center">영역별 관심도(레이다)</h3>
+        <div class="chartBox"><canvas id="radar"></canvas></div>
+      </div>
+      <div class="block">
+        <h3 class="center">뛰어난 영역(막대)</h3>
+        <div class="chartBox"><canvas id="bars"></canvas></div>
+      </div>
     </div>
 
     <div class="block">
@@ -662,22 +685,25 @@ function viewResult(){
     <p class="credit">※ 본 결과는 교육 가이드 목적이며 의학·임상 진단이 아닙니다.</p>
   </div>
 
-  <div class="center" style="margin-top:16px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap">
+  <div class="center no-pdf" style="margin-top:16px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap">
     <button class="btn-ghost" onclick="STATE.step='start'; render()">처음으로</button>
     <button class="btn btn-mint" id="btn_pdf">PDF 저장</button>
     <button class="btn btn-accent" id="btn_email">이메일로 보내기</button>
   </div>`;
 
   destroyCharts();
-  const rctx=document.getElementById('radar').getContext('2d');
-  CHARTS.push(new Chart(rctx,{type:'radar',
+  const commonOpts = {responsive:true, maintainAspectRatio:true, aspectRatio:1.2, plugins:{legend:{display:false}}};
+
+  CHARTS.push(new Chart(document.getElementById('radar').getContext('2d'),{
+    type:'radar',
     data:{labels:DOMAINS, datasets:[{data:DOMAINS.map(k=>s[k]||0), borderColor:'#FFB98A', backgroundColor:'rgba(255,185,138,.22)', borderWidth:2, pointRadius:3, fill:true}]},
-    options:{animation:{duration:800}, scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#eef2f7'},angleLines:{color:'#eef2f7'}}}, plugins:{legend:{display:false}}}
+    options:{animation:{duration:800}, scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#eef2f7'},angleLines:{color:'#eef2f7'}}}, ...commonOpts}
   }));
-  const bctx=document.getElementById('bars').getContext('2d');
-  CHARTS.push(new Chart(bctx,{type:'bar',
+
+  CHARTS.push(new Chart(document.getElementById('bars').getContext('2d'),{
+    type:'bar',
     data:{labels:r.top3, datasets:[{data:r.top3.map(k=>s[k]||0), borderRadius:12, borderSkipped:false, backgroundColor:['#FFD9BE','#E6E2FF','#CFF7EE']}]},
-    options:{animation:{duration:700}, scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}}, plugins:{legend:{display:false}}}
+    options:{animation:{duration:700}, scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}}, ...commonOpts}
   }));
 
   $('btn_pdf').onclick = downloadPdf;
@@ -693,7 +719,7 @@ function render(){ renderNav(); updateTopProgress();
   if(STATE.step==='result') return viewResult();
 }
 
-/* ===== Fallback용 15문항 ===== */
+/* ===== Fallback 문항 ===== */
 function W(w){ const o={}; DOMAINS.forEach(k=>o[k]=0); Object.entries(w).forEach(([k,v])=>o[k]=v); return o; }
 function localQuestions(){
   const S=(q,p,a,b,c,d)=>({id:q,order:+q.replace('q',''),prompt:p,options:[
@@ -802,7 +828,7 @@ function localQuestions(){
   });
 }
 
-/* ===== 안전 실행: DOM 준비 후 render ===== */
+/* ===== 안전 실행 ===== */
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', render);
 } else {
