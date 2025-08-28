@@ -138,7 +138,7 @@ label{font-size:14px;color:#374151}
 .reserve .pill{width:100%;max-width:360px;background:#fff;border:1px solid #ffe1c9;border-radius:14px;padding:12px}
 .reserve .pill .pt{font-weight:900;margin-bottom:6px}.reserve .note{font-size:12px;color:#6b7280;margin-top:8px}
 
-/* 프린트 & pdf */
+/* 프린트 & PDF */
 @media print{.header,.sticky,.btn,.btn-ghost,.sideNav,.no-pdf{display:none !important}.card{box-shadow:none;border:1px solid #ddd}.block{break-inside:avoid-page}}
 .pdf-screen-width{width:794px;margin:0 auto} /* A4 폭 고정 */
 
@@ -228,7 +228,7 @@ function navGo(step){STATE.step=step;if(step==='test'&&STATE.questions.length===
 function parseGViz(text){const s=text.indexOf('{'),e=text.lastIndexOf('}');if(s<0||e<0)return[];const obj=JSON.parse(text.slice(s,e+1));const cols=obj.table.cols.map(c=>c.label);return obj.table.rows.map(r=>r.c.map(c=>c?(c.f??c.v):'')).map(a=>Object.fromEntries(cols.map((k,i)=>[k,a[i]])))}
 async function loadQuestions(){try{const txt=await(await fetch(GVIZ_URL)).text();const rows=parseGViz(txt)||[];const act=rows.filter(r=>String(r.active).toUpperCase()==='TRUE').sort((a,b)=>(+a.order-+b.order));if(act.length){STATE.questions=act.map(r=>{const mkWeights=k=>{try{return JSON.parse(r[`${k}_weights`])||{}}catch{return{}}};const mkOpt=k=>({key:k,label:(r[`${k}_label`]||'').trim(),imageUrl:(r[`${k}_image`]||'').trim(),weights:mkWeights(k)});const opts=['A','B','C','D'].map(mkOpt).filter(o=>{const hasLabel=o.label.length>0;const hasImage=o.imageUrl.length>0;const hasWeight=Object.values(o.weights||{}).some(v=>Number(v||0)!==0);return hasLabel||hasImage||hasWeight});const safeOpts=opts.length>=2?opts:['A','B'].map(mkOpt);return{id:r.id||`q${r.order}`,order:+r.order,prompt:r.prompt||'',options:safeOpts}});return;}}catch(e){}STATE.questions=localQuestions()}
 
-/* 시작 화면 (개인정보 버튼 제거) */
+/* 시작 화면 */
 function startScreen(){
   return `
     <div class="hero">
@@ -403,7 +403,7 @@ function viewResult(){
   $('btn_pdf').onclick=handleSavePdf;$('btn_email').onclick=openEmailModal;
 }
 
-/* 자세한 결과 (추천 프로그램/상담 중앙정렬 + 색채) + 전문가 소견 유지 */
+/* 자세한 결과 */
 function theoryItem(i,key,score){const t=THEORY[key]||{theoryTitle:'이론',theory:'-',expert:'-',direction:'-'};return `<div class="theoryWrap"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div style="font-weight:900;font-size:18px">${i}. ${key}</div><div style="display:flex;gap:8px;align-items:center"><span class="small">현재 수준: <b>${score.toFixed(1)}</b></span><span class="tchip">강점 영역</span></div></div><div class="tgrid"><div class="tcard hint"><div style="font-weight:900;margin-bottom:6px">📍 이론적 근거</div><div class="small" style="color:#2f5aff;font-weight:900">${t.theoryTitle}</div><div class="small" style="margin-top:4px">${t.theory}</div></div><div class="tcard"><div style="font-weight:900;margin-bottom:6px">🧑‍🏫 전문가 의견</div><div class="small" style="background:#f7f1ff;border:1px solid #eddcff;border-radius:10px;padding:10px">${t.expert}</div></div><div class="tcard" style="grid-column:1/-1"><div style="font-weight:900;margin-bottom:6px">🡅 발달 방향</div><div class="small">${t.direction}</div></div></div></div>`}
 function viewDetails(){
   const r=STATE.result,s=r?.scores||{};const T=r?.top3||[];const topBlocks=T.map((k,i)=>theoryItem(i+1,k,+(s[k]||0))).join('');
@@ -474,17 +474,21 @@ function viewDetails(){
   </div>`;
 }
 
-/* ===== PDF 생성 (빈/잘림 방지) ===== */
+/* ===== PDF 생성 (백지 방지: 에셋 대기 + 캔버스 복사 + 이중 전략) ===== */
 function buildPdfWrapperFrom(node){
   const wrap=document.createElement('div');
   wrap.style.position='fixed';wrap.style.left='-10000px';wrap.style.top='0';
   wrap.style.width='794px';wrap.style.background='#fff';wrap.style.zIndex='-1';
   const clone=node.cloneNode(true);
 
+  // 이미지 CORS 안전
   clone.querySelectorAll('img').forEach(img=>{
-    img.setAttribute('crossorigin','anonymous');img.referrerPolicy='no-referrer';img.src=img.src;
+    img.setAttribute('crossorigin','anonymous');
+    img.referrerPolicy='no-referrer';
+    img.src=img.src;
   });
 
+  // 차트 캔버스 내용 복사
   const srcC=node.querySelectorAll('canvas');const dstC=clone.querySelectorAll('canvas');
   srcC.forEach((src,i)=>{const dst=dstC[i];if(!dst)return;dst.width=src.width;dst.height=src.height;dst.getContext('2d').drawImage(src,0,0)});
 
@@ -497,15 +501,42 @@ function waitForAssets(root){
   const fontsReady=('fonts'in document)?document.fonts.ready:Promise.resolve();
   return Promise.all([fontsReady,...imgPromises]);
 }
+async function html2pdfBlob(wrapper){
+  const opt={margin:[8,8,8,8],image:{type:'jpeg',quality:0.98},
+    html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',removeContainer:true},
+    pagebreak:{mode:['css','legacy']},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}};
+  return await html2pdf().set(opt).from(wrapper).output('blob');
+}
+async function canvasSlicerBlob(wrapper){
+  // 전체를 하나의 캔버스로 렌더 후 페이지 슬라이스
+  const canvas=await html2canvas(wrapper,{scale:2,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,windowWidth:wrapper.scrollWidth,windowHeight:wrapper.scrollHeight});
+  const {jsPDF}=window.jspdf || window;
+  const pdf=new jsPDF({unit:'mm',format:'a4',orientation:'portrait'});
+  const pxToMm=210/canvas.width; // 210mm가 폭
+  const pageHeightPx=Math.floor(297/pxToMm);
+  let y=0, page=0;
+  while(y<canvas.height){
+    const sliceHeight=Math.min(pageHeightPx,canvas.height-y);
+    const pageCanvas=document.createElement('canvas');
+    pageCanvas.width=canvas.width;pageCanvas.height=sliceHeight;
+    const ctx=pageCanvas.getContext('2d');ctx.drawImage(canvas,0,y,canvas.width,sliceHeight,0,0,canvas.width,sliceHeight);
+    const img=pageCanvas.toDataURL('image/jpeg',0.98);
+    const mmHeight=sliceHeight*pxToMm;
+    if(page>0) pdf.addPage();
+    pdf.addImage(img,'JPEG',0,0,210,mmHeight);
+    y+=sliceHeight;page++;
+  }
+  return pdf.output('blob');
+}
 async function exportPdfBlob(node){
   const wrapper=buildPdfWrapperFrom(node);
   await waitForAssets(wrapper);
-  const opt={margin:[8,8,8,8],image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',removeContainer:true},pagebreak:{mode:['css','legacy']},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}};
   try{
-    const worker=html2pdf().set(opt).from(wrapper);
-    const blob=await worker.toPdf().get('pdf').then(pdf=>pdf.output('blob'));
+    let blob=await html2pdfBlob(wrapper);
+    // 드물게 html2pdf가 빈 페이지를 줄 때(용량 비정상 작음) 백업 경로로 재생성
+    if(!blob || blob.size<5000){ blob=await canvasSlicerBlob(wrapper); }
     return blob;
-  }finally{wrapper.remove();}
+  }finally{ wrapper.remove(); }
 }
 async function handleSavePdf(){
   const node=$('pdfArea');
@@ -515,7 +546,7 @@ async function handleSavePdf(){
     const blob=await exportPdfBlob(node);
     const filename=`${STATE.profile.child_name}_미술적성테스트_V1_BASIC.pdf`;
     const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
-  }catch(e){alert('PDF 저장 중 오류가 발생했습니다.');}
+  }catch(e){alert('PDF 저장 중 오류가 발생했습니다.')}
   finally{node.classList.remove('pdf-screen-width');}
 }
 
