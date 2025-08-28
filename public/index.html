@@ -8,8 +8,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
-<!-- Chart.js & html2pdf -->
+<!-- 그래프/캡처 라이브러리 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<!-- 폴백용: html2canvas & jsPDF를 명시적으로 로드 -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<!-- 기본 경로: html2pdf (bundle) -->
 <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
 
 <style>
@@ -47,7 +51,7 @@ body{margin:0;color:var(--ink);font-family:"Pretendard",ui-sans-serif,system-ui,
 h1{font-size:34px;margin:0 0 6px}h2{font-size:24px;margin:0 0 10px}h3{font-size:18px;margin:16px 0 8px}
 p{margin:8px 0}.small{font-size:13px}.muted{color:var(--muted)}.center{text-align:center}
 
-/* 시작 화면 (개인정보 버튼 제거) */
+/* 시작 화면(개인정보 버튼 제거) */
 .hero{position:relative;padding:44px 22px;border-radius:22px;border:1px solid var(--line);
   background:radial-gradient(900px 260px at 15% -40%, #FFE6CF 0%, transparent 60%),radial-gradient(900px 260px at 85% -40%, #E6E2FF 0%, transparent 60%),linear-gradient(180deg,#ffffff 0%, #fff9f3 100%)}
 .hero .title{font-size:44px;font-weight:900;letter-spacing:.2px;margin:2px 0 6px;color:#111827}
@@ -100,7 +104,7 @@ label{font-size:14px;color:#374151}
 .block h3{margin:0 0 10px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{background:linear-gradient(90deg,#FFE6CF,#FFD9BE);color:#5a3f2f;border:1px solid #ffe8d6;padding:8px 12px;border-radius:999px;font-weight:900}
-.kpi{display:flex;align-items:flex-end;gap:10px}.kpi .num{font-size:44px;font-weight:900;line-height:1}.kpi .unit{font-size:14px;color:#6b7280}
+.kpi{display:flex;align-items:flex-end;gap:10px}.kpi .num{font-size:44px;font-weight:900;line-height:1}.kpi .unit{font-size:14px;color:var(--muted)}
 .callout{position:relative;background:linear-gradient(135deg,#FFF2E6,#F8FBFF);padding:22px;border-radius:18px;border:1px solid var(--line);box-shadow:0 12px 34px rgba(255,185,138,.25)}
 .callout:before{content:"";position:absolute;inset:-1px;border-radius:18px;padding:1px;background:linear-gradient(90deg,#FFD9BE,#E6E2FF,#CFF7EE);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 
@@ -121,7 +125,7 @@ label{font-size:14px;color:#374151}
 .tcard.hint{background:#f9fbff}
 .tchip{background:#e6eeff;color:#2f5aff;border:1px solid #d9e3ff;padding:6px 10px;border-radius:999px;font-weight:800;font-size:12px}
 
-/* 프로그램/예약 (가운데 정렬 + 파스텔) */
+/* 프로그램/예약(가운데 정렬) */
 .programs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;justify-items:center;align-items:stretch;text-align:center}
 .prog{width:100%;max-width:420px;background:linear-gradient(180deg,#ffffff,#f0fbff);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 12px 30px rgba(16,24,40,.06)}
 .prog:nth-child(2){background:linear-gradient(180deg,#ffffff,#f9f1ff)}.prog h4{margin:0 0 8px}
@@ -140,9 +144,10 @@ label{font-size:14px;color:#374151}
 
 /* 프린트 & PDF */
 @media print{.header,.sticky,.btn,.btn-ghost,.sideNav,.no-pdf{display:none !important}.card{box-shadow:none;border:1px solid #ddd}.block{break-inside:avoid-page}}
-.pdf-screen-width{width:794px;margin:0 auto} /* A4 폭 고정 */
+/* A4 폭(픽셀) 고정 레이아웃 */
+.pdf-screen-width{width:794px;max-width:none;margin:0 auto}
 
-/* 이메일 모달 (기본 숨김) */
+/* 이메일 모달(기본 숨김) */
 .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;z-index:999}
 .modal-backdrop.show{display:flex}
 .modal{width:min(520px,92vw);background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 60px rgba(16,24,40,.18);padding:18px}
@@ -340,7 +345,7 @@ function next(){if(STATE.step!=='test')return;if(!STATE.answers[STATE.idx]){aler
 function prev(){if(STATE.idx>0){STATE.idx--;render();}}
 document.addEventListener('keydown',e=>{if(STATE.step!=='test')return;if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')prev();if(e.key==='Enter'){if(!$('btn_next').disabled)next();}});
 
-/* 점수 */
+/* 점수/멘트 */
 function aggregateScores(ans){const sum={};DOMAINS.forEach(d=>sum[d]=0);ans.forEach(a=>Object.entries(a.weights||{}).forEach(([k,v])=>sum[k]=(sum[k]||0)+Number(v||0)));const n=ans.length||1;const raw={};DOMAINS.forEach(d=>{const v=(sum[d]||0)/n*4;raw[d]=Math.max(0,Math.round(v*10)/10)});return raw}
 const adjust=v=>Math.round((2+v/2)*10)/10;function band(v){if(v>=3.6)return'S';if(v>=3.2)return'A';if(v>=2.8)return'A-';if(v>=2.4)return'B+';if(v>=2.0)return'B';if(v>=1.6)return'B-';if(v>=1.0)return'C+';return'C'}
 const DETAIL={'관찰력':n=>`${n}님은 대상의 특징을 캐치하는 눈이 좋아요. 작은 변화도 포착해 표현의 밀도를 높입니다.`,'색감각':n=>`${n}님은 색의 분위기를 읽고 조합하는 감이 탁월합니다. 미묘한 톤 차이도 안정적으로 다룹니다.`,'서사력':n=>`${n}님은 장면 속에 이야기를 심는 데 강점이 있어요. 감정과 사건을 자연스럽게 연결합니다.`,'공간감':n=>`${n}님은 원근·스케일을 활용해 입체감을 살립니다. 장면의 깊이를 안정적으로 구성합니다.`,'디테일':n=>`${n}님은 마감과 질감 표현이 섬세해요. 작품 완성도를 올리는 집중력이 강점입니다.`,'도전성':n=>`${n}님은 새로운 도구와 방식에 두려움이 적어요. 실험적인 프로젝트에서 성장 속도가 빠릅니다.`,'소통력':n=>`${n}님은 의도를 언어로 풀어내는 힘이 좋아요. 발표·비평 활동에서 설득력이 있습니다.`,'꾸준성':n=>`${n}님은 루틴을 유지하며 완성까지 밀어붙이는 힘이 돋보입니다. 학습 지속력이 강합니다.`}
@@ -396,9 +401,9 @@ function viewResult(){
     <button class="btn-ghost" onclick="STATE.step='details'; render()">자세한 결과 보기</button>
   </div>`;
   destroyCharts();
-  const rctx=document.getElementById('radar').getContext('2d');
+  const rctx=document.getElementById('radar').getContext('2d',{willReadFrequently:true});
   CHARTS.push(new Chart(rctx,{type:'radar',data:{labels:DOMAINS,datasets:[{data:DOMAINS.map(k=>s[k]||0),borderColor:'#FFB98A',backgroundColor:'rgba(255,185,138,.22)',borderWidth:2,pointRadius:3,fill:true}]},options:{animation:{duration:800},scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#eef2f7'},angleLines:{color:'#eef2f7'}}},plugins:{legend:{display:false}}}}));
-  const bctx=document.getElementById('bars').getContext('2d');
+  const bctx=document.getElementById('bars').getContext('2d',{willReadFrequently:true});
   CHARTS.push(new Chart(bctx,{type:'bar',data:{labels:r.top3,datasets:[{data:r.top3.map(k=>s[k]||0),borderRadius:12,borderSkipped:false,backgroundColor:['#FFD9BE','#E6E2FF','#CFF7EE']}]},options:{animation:{duration:700},scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}},plugins:{legend:{display:false}}}}));
   $('btn_pdf').onclick=handleSavePdf;$('btn_email').onclick=openEmailModal;
 }
@@ -474,7 +479,7 @@ function viewDetails(){
   </div>`;
 }
 
-/* ===== PDF 생성 (백지 방지: 에셋 대기 + 캔버스 복사 + 이중 전략) ===== */
+/* ===== PDF: 에셋대기 + 캔버스복사 + 2단계 전략 ===== */
 function buildPdfWrapperFrom(node){
   const wrap=document.createElement('div');
   wrap.style.position='fixed';wrap.style.left='-10000px';wrap.style.top='0';
@@ -488,9 +493,9 @@ function buildPdfWrapperFrom(node){
     img.src=img.src;
   });
 
-  // 차트 캔버스 내용 복사
+  // 차트 캔버스 픽셀 복사
   const srcC=node.querySelectorAll('canvas');const dstC=clone.querySelectorAll('canvas');
-  srcC.forEach((src,i)=>{const dst=dstC[i];if(!dst)return;dst.width=src.width;dst.height=src.height;dst.getContext('2d').drawImage(src,0,0)});
+  srcC.forEach((src,i)=>{const dst=dstC[i];if(!dst)return;dst.width=src.width;dst.height=src.height;dst.getContext('2d',{willReadFrequently:true}).drawImage(src,0,0)});
 
   wrap.appendChild(clone);document.body.appendChild(wrap);
   return wrap;
@@ -502,24 +507,27 @@ function waitForAssets(root){
   return Promise.all([fontsReady,...imgPromises]);
 }
 async function html2pdfBlob(wrapper){
-  const opt={margin:[8,8,8,8],image:{type:'jpeg',quality:0.98},
-    html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',removeContainer:true},
-    pagebreak:{mode:['css','legacy']},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}};
+  const opt={margin:[8,8,8,8],
+    image:{type:'jpeg',quality:0.98},
+    html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',removeContainer:true,windowWidth:wrapper.scrollWidth,windowHeight:wrapper.scrollHeight},
+    pagebreak:{mode:['css','legacy']},
+    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}};
   return await html2pdf().set(opt).from(wrapper).output('blob');
 }
 async function canvasSlicerBlob(wrapper){
-  // 전체를 하나의 캔버스로 렌더 후 페이지 슬라이스
-  const canvas=await html2canvas(wrapper,{scale:2,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,windowWidth:wrapper.scrollWidth,windowHeight:wrapper.scrollHeight});
-  const {jsPDF}=window.jspdf || window;
+  const h2c=window.html2canvas;
+  const canvas=await h2c(wrapper,{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,windowWidth:wrapper.scrollWidth,windowHeight:wrapper.scrollHeight});
+  const {jsPDF}=window.jspdf;
   const pdf=new jsPDF({unit:'mm',format:'a4',orientation:'portrait'});
-  const pxToMm=210/canvas.width; // 210mm가 폭
+  const pxToMm=210/canvas.width;
   const pageHeightPx=Math.floor(297/pxToMm);
-  let y=0, page=0;
+  let y=0,page=0;
   while(y<canvas.height){
     const sliceHeight=Math.min(pageHeightPx,canvas.height-y);
     const pageCanvas=document.createElement('canvas');
     pageCanvas.width=canvas.width;pageCanvas.height=sliceHeight;
-    const ctx=pageCanvas.getContext('2d');ctx.drawImage(canvas,0,y,canvas.width,sliceHeight,0,0,canvas.width,sliceHeight);
+    const ctx=pageCanvas.getContext('2d',{willReadFrequently:true});
+    ctx.drawImage(canvas,0,y,canvas.width,sliceHeight,0,0,canvas.width,sliceHeight);
     const img=pageCanvas.toDataURL('image/jpeg',0.98);
     const mmHeight=sliceHeight*pxToMm;
     if(page>0) pdf.addPage();
@@ -533,24 +541,30 @@ async function exportPdfBlob(node){
   await waitForAssets(wrapper);
   try{
     let blob=await html2pdfBlob(wrapper);
-    // 드물게 html2pdf가 빈 페이지를 줄 때(용량 비정상 작음) 백업 경로로 재생성
-    if(!blob || blob.size<5000){ blob=await canvasSlicerBlob(wrapper); }
+    if(!blob || blob.size<5000){ // 비정상 크기면 폴백
+      console.warn('html2pdf 결과 용량이 작아 폴백 실행', blob && blob.size);
+      blob=await canvasSlicerBlob(wrapper);
+    }
     return blob;
+  }catch(e){
+    console.error('html2pdf 실패, 폴백 실행', e);
+    try{ return await canvasSlicerBlob(wrapper); }
+    catch(e2){ console.error('폴백도 실패', e2); throw e2; }
   }finally{ wrapper.remove(); }
 }
 async function handleSavePdf(){
   const node=$('pdfArea');
   node.classList.add('pdf-screen-width');
-  await new Promise(r=>setTimeout(r,20));
+  await new Promise(r=>setTimeout(r,50)); // 레이아웃 안정화
   try{
     const blob=await exportPdfBlob(node);
     const filename=`${STATE.profile.child_name}_미술적성테스트_V1_BASIC.pdf`;
     const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
-  }catch(e){alert('PDF 저장 중 오류가 발생했습니다.')}
+  }catch(e){console.error(e);alert('PDF 저장 중 오류가 발생했습니다.')}
   finally{node.classList.remove('pdf-screen-width');}
 }
 
-/* 이메일 모달 (버튼 클릭 시만 표시) */
+/* 이메일 모달 */
 function setModalVisible(show){const m=$('emailModal');if(show){m.classList.add('show');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}else{m.classList.remove('show');m.setAttribute('aria-hidden','true');document.body.style.overflow=''}}
 function openEmailModal(){setModalVisible(true);$('emailSubject').value=`${STATE.profile.child_name} 테스트 결과입니다`;$('emailTo').value=STATE.profile.email||'';$('emailMsg').textContent=''}
 $('emailCancel').onclick=()=>setModalVisible(false);document.addEventListener('keydown',e=>{if(e.key==='Escape')setModalVisible(false)})
