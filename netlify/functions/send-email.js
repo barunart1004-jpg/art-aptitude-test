@@ -56,7 +56,7 @@ exports.handler = async (event) => {
       };
     }
 
-    const from = process.env.RESEND_FROM || 'onboarding@resend.dev';
+    const from = process.env.RESEND_FROM || 'result@barunart.com';
     const textLines = [
       `${body.childName || '학생'}의 미술적성 테스트 결과를 보내드립니다.`,
       body.campus ? `캠퍼스: ${body.campus}` : '',
