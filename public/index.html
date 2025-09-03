@@ -439,13 +439,20 @@ function viewResult(){
     <div class="block"><h3>항목별 해석</h3>
       <div class="grid" style="grid-template-columns:1fr 1fr">
         ${DOMAINS.map(k=>{
-          const v=+(s[k]||0),b=band(v);
-          const praiseFn=PRAISE[b]||(()=>`${k}에서 꾸준히 성장 중입니다.`);
-          return `<div style="border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff;box-shadow:0 10px 26px rgba(16,24,40,.06)">
-            <div style="font-weight:900;margin-bottom:6px">${k}</div>
-            <div class="small" style="color:#0f172a">${DETAIL[k](STATE.profile.child_name)}</div>
-            <div class="small" style="margin-top:6px;color:#0f172a">${praiseFn(k)}</div>
-          </div>`
+          const v = +(s[k]||0);
+          const w = Math.min(100,(v/4)*100); // 막대 길이만 시각적으로 표시, 숫자 텍스트 없음
+          const b = band(v);
+          const praiseFn = PRAISE[b] || (()=>`${k}에서 꾸준히 성장 중입니다.`);
+          return `
+            <div style="border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff;box-shadow:0 10px 26px rgba(16,24,40,.06)">
+              <div style="font-weight:900;margin-bottom:6px">${k}</div>
+              <div class="topprogress" style="height:10px;margin:8px 0 10px" aria-label="${k} 진행도">
+                <div style="width:${w}%;height:100%;background:linear-gradient(90deg,#B9C8FF,#9DE5D5,#FFD9BE)"
+                     role="progressbar" aria-valuenow="${Math.round(w)}" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <div class="small" style="color:#0f172a">${DETAIL[k](STATE.profile.child_name)}</div>
+              <div class="small" style="margin-top:6px;color:#0f172a">${praiseFn(k)}</div>
+            </div>`;
         }).join('')}
       </div>
     </div>
