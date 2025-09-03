@@ -34,7 +34,7 @@ body{margin:0;color:var(--ink);font-family:"Pretendard",ui-sans-serif,system-ui,
 .brand span{font-weight:900;letter-spacing:.2px;display:flex;align-items:center;gap:8px}
 .badge{font-size:11px;font-weight:900;padding:4px 8px;border-radius:999px;background:linear-gradient(90deg,#FFE6CF,#FFD9BE);color:#5a3f2f;border:1px solid #ffe0c9}
 
-/* 진행바 */
+/* 진행바 (굵게 + 분할 + 중앙 라벨) */
 .sticky{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:16px;box-shadow:var(--soft);padding:8px 10px;display:flex;flex-direction:column;gap:10px}
 .navbar{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
 .step{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;cursor:pointer;background:#fff;color:#374151;font-weight:850;border:1px solid var(--line);box-shadow:var(--soft);transition:transform .12s}
@@ -42,8 +42,15 @@ body{margin:0;color:var(--ink);font-family:"Pretendard",ui-sans-serif,system-ui,
 .step .num{width:20px;height:20px;border-radius:50%;display:inline-grid;place-items:center;background:#fff;border:1px solid var(--line);font-size:12px}
 .step.active{background:linear-gradient(90deg,#FFE6CF,#E6E2FF);color:#111827;box-shadow:0 12px 30px rgba(255,214,176,.28)}
 .step.done{background:#f2fffa;border-color:#dff7ef}
-.topprogress{height:10px;background:#f6f7fb;border-radius:999px;overflow:hidden}
-.topprogress>div{height:100%;width:0;background:linear-gradient(90deg,#B9C8FF,#9DE5D5,#FFD9BE);transition:width .35s ease}
+
+.topprogress{--steps:15;position:relative;height:30px;background:#f6f7fb;border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+.topprogress .bar{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,#B9C8FF,#9DE5D5,#FFD9BE);border-radius:999px;z-index:1;transition:width .35s ease}
+.topprogress::before{
+  content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  background-image:linear-gradient(to right, rgba(17,24,39,.08) 0, rgba(17,24,39,.08) 1px, transparent 1px, transparent calc(100%/var(--steps)));
+  background-size:calc(100%/var(--steps)) 100%;
+}
+.topprogress .toplabel{position:absolute;inset:0;display:grid;place-items:center;z-index:3;font-weight:900;font-size:14px;color:#111827;text-shadow:0 1px 0 rgba(255,255,255,.85),0 0 6px rgba(255,255,255,.9)}
 .statusline{font-size:12px;color:var(--muted);text-align:center}
 
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);animation:fade .35s ease both}
@@ -104,7 +111,6 @@ label{font-size:14px;color:#374151}
 .block h3{margin:0 0 10px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{background:linear-gradient(90deg,#FFE6CF,#FFD9BE);color:#5a3f2f;border:1px solid #ffe8d6;padding:8px 12px;border-radius:999px;font-weight:900}
-.kpi{display:flex;align-items:flex-end;gap:10px}.kpi .num{font-size:44px;font-weight:900;line-height:1}.kpi .unit{font-size:14px;color:var(--muted)}
 .callout{position:relative;background:linear-gradient(135deg,#FFF2E6,#F8FBFF);padding:22px;border-radius:18px;border:1px solid var(--line);box-shadow:0 12px 34px rgba(255,185,138,.25)}
 .callout:before{content:"";position:absolute;inset:-1px;border-radius:18px;padding:1px;background:linear-gradient(90deg,#FFD9BE,#E6E2FF,#CFF7EE);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 
@@ -166,7 +172,11 @@ label{font-size:14px;color:#374151}
   <main class="main" aria-live="polite">
     <div class="sticky">
       <nav class="navbar" id="topnav"></nav>
-      <div class="topprogress"><div id="topbar"></div></div>
+      <!-- 진행바: 분할 + 중앙 (n/총) 라벨 -->
+      <div class="topprogress" id="topprogress">
+        <div id="topbar" class="bar"></div>
+        <div id="toplabel" class="toplabel"></div>
+      </div>
       <div class="statusline" id="statusline">진행률 0%</div>
     </div>
     <section class="card" id="app"></section>
@@ -216,17 +226,42 @@ const $=id=>document.getElementById(id);
 const app=()=>$('app');
 
 /* NAV + Progress */
-function renderNav(){const cur=STEPS.findIndex(s=>s.key===STATE.step);$('topnav').innerHTML=STEPS.map((s,i)=>`<div class="step ${s.key===STATE.step?'active':''} ${cur>i?'done':''}" onclick="navGo('${s.key}')"><span class="num">${i+1}</span><span>${s.label}</span></div>`).join('')}
-function updateTopProgress(){
-  if(STATE.step==='test'&&STATE.questions.length){
-    const q=Math.round((STATE.idx)/STATE.questions.length*100);
-    $('topbar').style.width=q+'%';$('statusline').textContent=`테스트 진행 ${STATE.idx+1}/${STATE.questions.length} (${q}%)`;
-    $('sideLeft').style.display='block';$('sideRight').style.display='block';return;
-  }
-  $('sideLeft').style.display='none';$('sideRight').style.display='none';
-  let pct=(STEPS.findIndex(s=>s.key===STATE.step))/(STEPS.length-1)*100;
-  $('topbar').style.width=Math.round(pct)+'%';$('statusline').textContent=`진행률 ${Math.round(pct)}%`;
+function renderNav(){
+  const cur=STEPS.findIndex(s=>s.key===STATE.step);
+  $('topnav').innerHTML=STEPS.map((s,i)=>`<div class="step ${s.key===STATE.step?'active':''} ${cur>i?'done':''}" onclick="navGo('${s.key}')"><span class="num">${i+1}</span><span>${s.label}</span></div>`).join('')
 }
+
+function updateTopProgress(){
+  const topbar=$('topbar'); const toplabel=$('toplabel'); const tp=$('topprogress'); const status=$('statusline');
+
+  if(STATE.step==='test'&&STATE.questions.length){
+    // 진행 텍스트(예: "테스트 진행 1/15 (0%)")는 숨김
+    status.style.display='none';
+
+    const total=STATE.questions.length;
+    const curIndex=STATE.idx+1; // 1-based
+    const pct=Math.max(0, Math.min(100, Math.round((STATE.idx)/total*100)));
+
+    topbar.style.width=pct+'%';
+    toplabel.textContent=`(${curIndex}/${total})`;
+    tp.style.setProperty('--steps', String(total));
+
+    $('sideLeft').style.display='block';
+    $('sideRight').style.display='block';
+    return;
+  }
+
+  // 테스트 외 단계: 기본 진행률 표시
+  $('sideLeft').style.display='none';
+  $('sideRight').style.display='none';
+  toplabel.textContent='';
+  status.style.display='block';
+
+  let pct=(STEPS.findIndex(s=>s.key===STATE.step))/(STEPS.length-1)*100;
+  topbar.style.width=Math.round(pct)+'%';
+  $('statusline').textContent=`진행률 ${Math.round(pct)}%`;
+}
+
 function navGo(step){STATE.step=step;if(step==='test'&&STATE.questions.length===0){startTest();return;}render();}
 
 /* GViz 파서 */
@@ -245,7 +280,7 @@ function startScreen(){
       <h2 style="text-align:center;font-weight:900">테스트 특징</h2>
       <p class="sub" style="text-align:center;color:#6b7280;margin:0 0 16px">아이의 미술 흥미·성향을 파악해 도움 되는 교육 포인트를 제시합니다</p>
       <div class="grid" style="grid-template-columns:repeat(3,1fr);gap:14px">
-        <div class="card" style="display:flex;align-items:center;gap:12px"><div class="badge" style="font-size:18px">⏱</div><div><b>빠른 테스트</b><div class="small muted">6–8분 내 완료</div></div></div>
+        <div class="card" style="display:flex;align-items:center;gap:12px"><div class="badge" style="font-size:18px">⏱</div><div><b>빠른 테스트</b><div class="small muted">5–8분 내 완료</div></div></div>
         <div class="card" style="display:flex;align-items:center;gap:12px"><div class="badge" style="font-size:18px">🎯</div><div><b>맞춤 분석</b><div class="small muted">강점/교육 포인트</div></div></div>
         <div class="card" style="display:flex;align-items:center;gap:12px"><div class="badge" style="font-size:18px">⚡</div><div><b>즉시 결과</b><div class="small muted">저장/이메일 전송</div></div></div>
       </div>
@@ -350,7 +385,6 @@ function aggregateScores(ans){const sum={};DOMAINS.forEach(d=>sum[d]=0);ans.forE
 const adjust=v=>Math.round((2+v/2)*10)/10;function band(v){if(v>=3.6)return'S';if(v>=3.2)return'A';if(v>=2.8)return'A-';if(v>=2.4)return'B+';if(v>=2.0)return'B';if(v>=1.6)return'B-';if(v>=1.0)return'C+';return'C'}
 const DETAIL={'관찰력':n=>`${n}님은 대상의 특징을 캐치하는 눈이 좋아요. 작은 변화도 포착해 표현의 밀도를 높입니다.`,'색감각':n=>`${n}님은 색의 분위기를 읽고 조합하는 감이 탁월합니다. 미묘한 톤 차이도 안정적으로 다룹니다.`,'서사력':n=>`${n}님은 장면 속에 이야기를 심는 데 강점이 있어요. 감정과 사건을 자연스럽게 연결합니다.`,'공간감':n=>`${n}님은 원근·스케일을 활용해 입체감을 살립니다. 장면의 깊이를 안정적으로 구성합니다.`,'디테일':n=>`${n}님은 마감과 질감 표현이 섬세해요. 작품 완성도를 올리는 집중력이 강점입니다.`,'도전성':n=>`${n}님은 새로운 도구와 방식에 두려움이 적어요. 실험적인 프로젝트에서 성장 속도가 빠릅니다.`,'소통력':n=>`${n}님은 의도를 언어로 풀어내는 힘이 좋아요. 발표·비평 활동에서 설득력이 있습니다.`,'꾸준성':n=>`${n}님은 루틴을 유지하며 완성까지 밀어붙이는 힘이 돋보입니다. 학습 지속력이 강합니다.`}
 const PRAISE={'S':k=>`와, ${k}에서 <b>타고난 재능</b>이 돋보입니다. 높은 난이도도 스스로 기획해볼 수 있어요.`,'A':k=>`${k} 감각이 <b>뛰어납니다</b>. 한 단계 높은 과제도 무리 없이 소화합니다.`,'A-':k=>`${k} 실력이 <b>탄탄</b>합니다. 약간의 다듬기로 금방 상위권을 노려요.`,'B+':k=>`${k}이 안정적입니다. 새로운 시도에도 잘 적응합니다.`,'B':k=>`${k} 기본기가 좋습니다. 루틴을 넓히면 <b>성장 가속</b>!`}
-const MISSIONS={'관찰력':['집 안 사물 3개 5분 관찰스케치','광원 바꿔 동일물체 2장','식물 잎사귀 확대 스케치'],'색감각':['한정 팔레트 3색으로 소품 칠하기','보색 포인트 한 장면','따뜻/차가움 나누어 색채 실험'],'서사력':['3컷 만화로 오늘 사건','장면 전/후 바꾸어 2컷','캐릭터 감정 변화 4표정'],'공간감':['앞-중-뒤 나눠 배치하기','상자 5개로 거리감 실험','한 방의 바닥/소실점 잡기'],'디테일':['재질 3종(금속/천/나무) 표현','선 굵기 3단계로 정리','작은 패턴 반복으로 밀도 올리기'],'도전성':['새 도구 1개 체험 기록','실패작 수정해 새 결과 만들기','사진 보고 과감한 변형'],'소통력':['작가노트 3문장 쓰기','친구/가족에게 설명하고 피드백 1개 반영','제목 3개 짓고 채택'],'꾸준성':['5일 연속 15분 체크','작은 목표 설정→완료 표시','진행사진 2장 남기기']}
 
 /* 이론/전문가 */
 const THEORY={'색감각':{theoryTitle:'Itten의 색채이론',theory:'색채감각은 색상·명도·채도의 조화를 인지하고 활용하는 능력으로, 감정 표현과 미적 감수성의 중요한 지표입니다.',expert:'“색채감각이 우수한 아동은 감정 표현력과 창의적 사고력이 함께 발달합니다.”',direction:'색상환 학습, 색채 대비 실험, 자연색 관찰 활동을 통해 체계적으로 개발할 수 있습니다.'},'디테일':{theoryTitle:'Csikszentmihalyi의 몰입이론',theory:'디테일 능력은 집중력과 완성도 추구 성향으로, 작품의 완결성과 정밀성을 결정하는 중요한 특성입니다.',expert:'“디테일이 높은 아동은 자기조절능력과 성취동기가 강합니다.”',direction:'세밀화 연습, 정밀한 공예활동, 단계적 완성 프로젝트를 통해 기를 수 있습니다.'},'서사력':{theoryTitle:'Bruner의 서사적 사고이론',theory:'서사력은 이야기를 구성하고 시각적으로 표현하는 능력으로, 상상력과 논리적 구성력이 결합된 복합적 사고능력입니다.',expert:'“서사력이 뛰어난 아동은 언어능력과 시각적 표현력이 균형 있게 발달합니다.”',direction:'그림일기, 만화 제작, 스토리보드 활동 등을 통해 향상시킬 수 있습니다.'},'공간감':{theoryTitle:'지각심리 & 원근법',theory:'공간감은 형태 간 상대적 위치와 깊이를 파악하는 능력으로, 장면 구성의 안정감을 높입니다.',expert:'“구도와 원근을 안정적으로 적용하면 몰입도 높은 장면 연출이 가능합니다.”',direction:'상자/기본형으로 거리감 실험, 소실점 훈련, 모형 배치 관찰 등을 권장합니다.'},'관찰력':{theoryTitle:'게슈탈트 지각 이론',theory:'관찰력은 대상을 구조적으로 파악해 특징을 포착하는 능력으로 표현의 밀도를 좌우합니다.',expert:'“관찰력은 사실적 표현과 창작 변형의 기반이 됩니다.”',direction:'광원 변화 관찰, 확대 스케치, 재질 탐구를 루틴화하세요.'},'도전성':{theoryTitle:'Dweck의 성장 마인드셋',theory:'도전성은 새로운 과제에 대한 개방성과 실패 후 학습의지로, 창의적 시도를 촉진합니다.',expert:'“성장형 마인드셋은 예술적 탐색과 혁신의 핵심입니다.”',direction:'새 도구 실험 기록, 변형 과제, 실패작 재해석을 수행하세요.'},'소통력':{theoryTitle:'비주얼 리터러시',theory:'소통력은 시각적 의도를 언어와 시각 요소로 설명·설득하는 능력입니다.',expert:'“설득력 있는 발표는 작품의 맥락을 강화합니다.”',direction:'작가노트 3문장, 피드백 1개 반영, 제목 3안 중 선택 활동을 권합니다.'},'꾸준성':{theoryTitle:'자기조절 학습',theory:'꾸준성은 계획-실행-점검의 루틴을 유지하는 능력으로, 장기 성장의 핵심입니다.',expert:'“짧고 빈번한 완성이 동기 유지를 돕습니다.”',direction:'5일 연속 15분 루틴, 체크리스트, 진행사진 기록을 습관화하세요.'}}
@@ -374,46 +408,96 @@ async function submitAllSafe(){
 let CHARTS=[];function destroyCharts(){CHARTS.forEach(c=>c.destroy?.());CHARTS=[]}
 
 function viewResult(){
-  const r=STATE.result,s=r?.scores||{};const overall=Math.round((Object.values(s).reduce((a,b)=>a+(+b||0),0))*10)/10||0;const T=r.top3;
+  const r=STATE.result,s=r?.scores||{};const T=r.top3;
+
+  // 상위 4개만 레이다용
+  const top4=Object.keys(s).sort((a,b)=>s[b]-s[a]).slice(0,4);
+
   const longSummary=[`${STATE.profile.child_name}님은 <b>${T[0]}</b>를 중심으로 <b>${T[1]}</b>, <b>${T[2]}</b>에서 강점이 뚜렷합니다.`,`선택 과정에서 주의집중이 안정적이며, 과제를 빠르게 파악해 핵심을 잡는 유형입니다.`,`${T[0]} 기반의 표현에서 높은 완성도를 보이고, ${T[1]}·${T[2]} 영역의 조합이 좋아 작품의 전체 메시지를 설득력 있게 만듭니다.`,`새로운 과제에서도 학습 전이가 원활하여 성장 속도가 빠른 편입니다.`,`강점을 루틴으로 확장해 ‘작은 완성’을 자주 만드는 전략이 동기 유지에 특히 효과적입니다.`].join(' ');
+
   app().innerHTML=`<div id="pdfArea" class="pdf-screen-width">
     <div class="block callout" style="text-align:center">
       <div class="chip" style="margin:0 auto 8px;display:inline-block">테스트 완료</div>
       <h2 style="margin:0 0 10px"><b>${STATE.profile.child_name}</b>님, 멋진 집중력이었습니다!</h2>
-      <div class="kpi" style="justify-content:center"><div class="num" style="font-size:52px">${overall.toFixed(1)}</div><div class="unit">/ 32 (8영역 합산)</div></div>
       <div class="chips" style="margin-top:10px;justify-content:center">${r.top3.map(t=>`<span class="chip">뛰어난 영역: ${t}</span>`).join('')}</div>
     </div>
+
     <div class="result-row">
-      <div class="block"><h3 class="center">영역별 관심도(레이다)</h3><div class="chartBox"><canvas id="radar" height="200"></canvas></div></div>
-      <div class="block"><h3 class="center">뛰어난 영역(막대)</h3><div class="chartBox"><canvas id="bars" height="200"></canvas></div></div>
+      <div class="block">
+        <h3 class="center">영역별 관심도</h3>
+        <div class="chartBox"><canvas id="radar" height="200"></canvas></div>
+      </div>
+      <div class="block">
+        <h3 class="center">뛰어난 영역</h3>
+        <div class="chartBox"><canvas id="bars" height="200"></canvas></div>
+      </div>
     </div>
+
     <div class="block"><h3>총평</h3><p style="color:#0f172a;font-size:15px;line-height:1.7">${longSummary}</p></div>
-    <div class="block"><h3>항목별 해석 & 일일 15분 훈련</h3>
+
+    <!-- 항목별 해석: 점수/바/일일15분 제거 -->
+    <div class="block"><h3>항목별 해석</h3>
       <div class="grid" style="grid-template-columns:1fr 1fr">
-        ${DOMAINS.map(k=>{const v=+(s[k]||0),b=band(v),w=Math.min(100,(v/4)*100);const praiseFn=PRAISE[b]||(()=>`${k}에서 꾸준히 성장 중입니다.`);const mission=(MISSIONS[k]||[])[0]||'관찰·스케치 1장';return `<div style="border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff;box-shadow:0 10px 26px rgba(16,24,40,.06)"><div style="display:flex;justify-content:space-between;align-items:flex-end"><strong>${k}</strong><div class="kpi"><div class="num" style="font-size:28px">${v.toFixed(1)}</div><div class="unit">/ 4.0</div></div></div><div class="topprogress" style="height:10px;margin:8px 0 10px"><div style="width:${w}%;height:100%;background:linear-gradient(90deg,#B9C8FF,#9DE5D5,#FFD9BE)"></div></div><div class="small" style="color:#0f172a">${DETAIL[k](STATE.profile.child_name)}</div><div class="small" style="margin-top:6px;color:#0f172a">${praiseFn(k)}</div><div class="small" style="margin-top:4px">오늘의 15분: <b>${mission}</b></div></div>`}).join('')}
+        ${DOMAINS.map(k=>{
+          const v=+(s[k]||0),b=band(v);
+          const praiseFn=PRAISE[b]||(()=>`${k}에서 꾸준히 성장 중입니다.`);
+          return `<div style="border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff;box-shadow:0 10px 26px rgba(16,24,40,.06)">
+            <div style="font-weight:900;margin-bottom:6px">${k}</div>
+            <div class="small" style="color:#0f172a">${DETAIL[k](STATE.profile.child_name)}</div>
+            <div class="small" style="margin-top:6px;color:#0f172a">${praiseFn(k)}</div>
+          </div>`
+        }).join('')}
       </div>
     </div>
   </div>
+
   <div class="center no-pdf" style="margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
     <button class="btn-ghost" onclick="STATE.step='start'; render()">처음으로</button>
     <button class="btn btn-mint" id="btn_pdf">PDF 저장</button>
     <button class="btn btn-accent" id="btn_email">이메일로 보내기</button>
     <button class="btn-ghost" onclick="STATE.step='details'; render()">자세한 결과 보기</button>
   </div>`;
+
   destroyCharts();
+
+  // 레이다: 상위 4개만
   const rctx=document.getElementById('radar').getContext('2d',{willReadFrequently:true});
-  CHARTS.push(new Chart(rctx,{type:'radar',data:{labels:DOMAINS,datasets:[{data:DOMAINS.map(k=>s[k]||0),borderColor:'#FFB98A',backgroundColor:'rgba(255,185,138,.22)',borderWidth:2,pointRadius:3,fill:true}]},options:{animation:{duration:800},scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#eef2f7'},angleLines:{color:'#eef2f7'}}},plugins:{legend:{display:false}}}}));
+  CHARTS.push(new Chart(rctx,{type:'radar',
+    data:{labels:top4,datasets:[{data:top4.map(k=>s[k]||0),borderColor:'#FFB98A',backgroundColor:'rgba(255,185,138,.22)',borderWidth:2,pointRadius:3,fill:true}]},
+    options:{animation:{duration:800},scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'#eef2f7'},angleLines:{color:'#eef2f7'}}},plugins:{legend:{display:false}}}
+  }));
+
+  // 막대: 상위 3개
   const bctx=document.getElementById('bars').getContext('2d',{willReadFrequently:true});
-  CHARTS.push(new Chart(bctx,{type:'bar',data:{labels:r.top3,datasets:[{data:r.top3.map(k=>s[k]||0),borderRadius:12,borderSkipped:false,backgroundColor:['#FFD9BE','#E6E2FF','#CFF7EE']}]},options:{animation:{duration:700},scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{stepSize:1},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}},plugins:{legend:{display:false}}}}));
+  CHARTS.push(new Chart(bctx,{type:'bar',
+    data:{labels:r.top3,datasets:[{data:r.top3.map(k=>s[k]||0),borderRadius:12,borderSkipped:false,backgroundColor:['#FFD9BE','#E6E2FF','#CFF7EE']}]},
+    options:{animation:{duration:700},scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}},plugins:{legend:{display:false}}}
+  }));
+
   $('btn_pdf').onclick=handleSavePdf;$('btn_email').onclick=openEmailModal;
 }
 
 /* 자세한 결과 */
-function theoryItem(i,key,score){const t=THEORY[key]||{theoryTitle:'이론',theory:'-',expert:'-',direction:'-'};return `<div class="theoryWrap"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div style="font-weight:900;font-size:18px">${i}. ${key}</div><div style="display:flex;gap:8px;align-items:center"><span class="small">현재 수준: <b>${score.toFixed(1)}</b></span><span class="tchip">강점 영역</span></div></div><div class="tgrid"><div class="tcard hint"><div style="font-weight:900;margin-bottom:6px">📍 이론적 근거</div><div class="small" style="color:#2f5aff;font-weight:900">${t.theoryTitle}</div><div class="small" style="margin-top:4px">${t.theory}</div></div><div class="tcard"><div style="font-weight:900;margin-bottom:6px">🧑‍🏫 전문가 의견</div><div class="small" style="background:#f7f1ff;border:1px solid #eddcff;border-radius:10px;padding:10px">${t.expert}</div></div><div class="tcard" style="grid-column:1/-1"><div style="font-weight:900;margin-bottom:6px">🡅 발달 방향</div><div class="small">${t.direction}</div></div></div></div>`}
+function theoryItem(i,key){
+  const t=THEORY[key]||{theoryTitle:'이론',theory:'-',expert:'-',direction:'-'};
+  return `<div class="theoryWrap">
+    <div style="font-weight:900;margin-bottom:8px">${i}. ${key} <span class="tchip">강점 영역</span></div>
+    <div class="tgrid">
+      <div class="tcard hint"><div style="font-weight:900;margin-bottom:6px">📍 이론적 근거</div><div class="small" style="color:#2f5aff;font-weight:900">${t.theoryTitle}</div><div class="small" style="margin-top:4px">${t.theory}</div></div>
+      <div class="tcard"><div style="font-weight:900;margin-bottom:6px">🧑‍🏫 전문가 의견</div><div class="small" style="background:#f7f1ff;border:1px solid #eddcff;border-radius:10px;padding:10px">${t.expert}</div></div>
+      <div class="tcard" style="grid-column:1/-1"><div style="font-weight:900;margin-bottom:6px">🡅 발달 방향</div><div class="small">${t.direction}</div></div>
+    </div>
+  </div>`;
+}
 function viewDetails(){
-  const r=STATE.result,s=r?.scores||{};const T=r?.top3||[];const topBlocks=T.map((k,i)=>theoryItem(i+1,k,+(s[k]||0))).join('');
+  const r=STATE.result,s=r?.scores||{};const T=r?.top3||[];
+  const topBlocks=T.map((k,i)=>theoryItem(i+1,k)).join('');
+
   app().innerHTML=`<div class="detail-hero"><div class="ic">📘</div><div class="detail-title">전문가 평가 및 이론적 배경</div></div><p class="detail-sub"><b>${STATE.profile.child_name}</b>의 미술적성에 대한 심화 분석 보고서</p>
-  <div class="block" style="background:#f5f8ff;border-color:#e6eeff"><div style="font-weight:900;margin-bottom:6px;display:flex;align-items:center;gap:8px">🧩 강점 영역 이론적 배경 분석</div>${topBlocks}</div>
+  <div class="block" style="background:#f5f8ff;border-color:#e6eeff">
+    <div style="font-weight:900;margin-bottom:6px;display:flex;align-items:center;gap:8px">🧩 강점 영역 이론적 배경 분석</div>
+    ${topBlocks}
+  </div>
 
   <div class="panel" style="margin-top:14px">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
@@ -438,25 +522,7 @@ function viewDetails(){
     </div>
   </div>
 
-  <div class="block" style="margin-top:14px">
-    <h3 class="center">추천 교육 프로그램</h3>
-    <div class="programs">
-      <div class="prog">
-        <h4>⭐ 기초 실기반</h4>
-        <div class="small"><span class="check">✓</span> 주 2회, 90분 수업</div>
-        <div class="small"><span class="check">✓</span> 소수정예 6–8명</div>
-        <div class="small"><span class="check">✓</span> 개별 포트폴리오 관리</div>
-        <div class="price">월 12만원</div>
-      </div>
-      <div class="prog">
-        <h4>🎓 심화 특기반</h4>
-        <div class="small"><span class="check">✓</span> 주 3회, 120분 수업</div>
-        <div class="small"><span class="check">✓</span> 전문가 1:4 수업</div>
-        <div class="small"><span class="check">✓</span> 공모전 출품 지도</div>
-        <div class="price">월 18만원</div>
-      </div>
-    </div>
-  </div>
+  <!-- 요청에 따라 '추천 교육 프로그램' 섹션 삭제 -->
 
   <div class="reserve">
     <div style="display:flex;align-items:center;gap:8px;justify-content:center">
