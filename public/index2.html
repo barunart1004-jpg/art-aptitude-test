@@ -1,194 +1,179 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>바른미술학원 · 미술적성테스트 V2. ADVANCE</title>
 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
-<!-- Charts / Capture -->
+<!-- libs -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
 
 <style>
-/* ===== PDF 무드: 밝은 공방/종이 질감 + 파스텔 스티커 ===== */
+/* ================== THEME: ADVANCE (Dark Neon) ================== */
 :root{
-  --bg:#FFF7EF;              /* 전체 배경(따뜻한 종이) */
-  --paper:#ffffff;           /* 카드/섹션 배경(맑은 종이) */
-  --ink:#1f2937;             /* 본문 텍스트 */
-  --muted:#6b7280;           /* 서브 텍스트 */
-  --line:#efd9c9;            /* 연한 보더 */
-
-  /* 파스텔 포인트 */
-  --o1:#FFB98A;  /* 살구 */
-  --o2:#9DE5D5;  /* 민트 */
-  --o3:#B9C8FF;  /* 라일락 */
-  --o4:#FFD166;  /* 머스터드 */
-
+  --ink:#e5e7eb; --muted:#9ca3af; --bg:#0b0f16;
+  --panel:#0e1420; --glass:rgba(18,24,36,.6);
+  --line:rgba(255,255,255,.08);
+  --pri:#7dd3fc;  /* 네온 하늘 */
+  --sec:#c084fc;  /* 네온 보라 */
+  --tri:#fca5a5;  /* 네온 코랄 */
+  --accent:#34d399; /* 민트 */
+  --shadow:0 20px 60px rgba(0,0,0,.45);
+  --soft:0 12px 40px rgba(0,0,0,.35);
   --radius:22px;
-  --shadow:0 18px 60px rgba(16,24,40,.08);
-  --soft:0 12px 30px rgba(16,24,40,.10);
 }
-
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
   margin:0;color:var(--ink);
   font-family:"Pretendard",ui-sans-serif,system-ui,"Noto Sans KR",Segoe UI,Roboto,Arial;
   background:
-    radial-gradient(800px 280px at 0% -10%, rgba(255,185,138,.18), transparent 60%),
-    radial-gradient(800px 280px at 100% -10%, rgba(185,200,255,.18), transparent 60%),
+    radial-gradient(60vw 60vh at 10% -10%, rgba(124,58,237,.25), transparent 60%),
+    radial-gradient(60vw 60vh at 90% -20%, rgba(14,165,233,.22), transparent 60%),
+    radial-gradient(40vw 50vh at 50% 100%, rgba(20,184,166,.16), transparent 60%),
     var(--bg);
 }
-
-/* Container */
 .container{min-height:100dvh;display:flex;flex-direction:column;align-items:center}
-.main{width:100%;max-width:1100px;padding:18px;display:flex;flex-direction:column;gap:16px;margin:0 auto}
+.main{width:100%;max-width:1180px;padding:18px;display:flex;flex-direction:column;gap:16px;margin:0 auto}
 .header{width:100%;display:flex;justify-content:center}
 .brand{
-  width:100%;max-width:1100px;margin-top:10px;display:flex;align-items:center;gap:12px;
-  padding:12px 16px;border-radius:999px;background:var(--paper);border:1px solid var(--line);
-  box-shadow:var(--soft)
+  width:100%;max-width:1180px;margin-top:10px;
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;border-radius:999px;
+  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  border:1px solid var(--line);box-shadow:var(--soft);backdrop-filter:blur(8px)
 }
 .logo{width:28px;height:28px;border-radius:50%;
-  background:conic-gradient(from 0deg,var(--o1),var(--o2),var(--o3),var(--o4),var(--o1));
-  animation:spin 9s linear infinite paused
-}
+  background:conic-gradient(from 0deg,#f0abfc,#7dd3fc,#34d399,#fda4af,#f0abfc);
+  animation:spin 9s linear infinite paused}
 .brand:hover .logo{animation-play-state:running}
 @keyframes spin{to{transform:rotate(360deg)}}
 .brand span{font-weight:900;letter-spacing:.2px;display:flex;align-items:center;gap:8px}
 .badge{font-size:11px;font-weight:900;padding:4px 8px;border-radius:999px;
-  background:linear-gradient(90deg,var(--o1),var(--o3));
-  color:#5a3f2f;border:1px solid rgba(0,0,0,.05)
-}
+  background:linear-gradient(90deg,#7dd3fc22,#c084fc22);color:#cbd5e1;border:1px solid var(--line)}
 
-/* Sticky progress */
-.sticky{
-  position:sticky;top:0;z-index:10;background:rgba(255,255,255,.8);
-  backdrop-filter:blur(8px);
-  border:1px solid var(--line);border-radius:16px;box-shadow:var(--soft);padding:8px 10px;display:flex;flex-direction:column;gap:10px
-}
+/* sticky nav + progress */
+.sticky{position:sticky;top:0;z-index:10;background:rgba(13,18,30,.7);
+  border:1px solid var(--line);border-radius:16px;box-shadow:var(--soft);padding:8px 10px;backdrop-filter:blur(10px);
+  display:flex;flex-direction:column;gap:10px}
 .navbar{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
-.step{
-  display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;cursor:pointer;
-  background:var(--paper);color:#374151;font-weight:850;border:1px solid var(--line);box-shadow:var(--soft);transition:transform .12s
-}
+.step{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;cursor:pointer;
+  background:rgba(255,255,255,.04);color:#e5e7eb;font-weight:850;border:1px solid var(--line);box-shadow:0 8px 20px rgba(0,0,0,.2);transition:transform .12s}
 .step:hover{transform:translateY(-1px)}
-.step .num{width:20px;height:20px;border-radius:50%;display:inline-grid;place-items:center;background:#fff;border:1px solid var(--line);font-size:12px}
-.step.active{background:linear-gradient(90deg,#FFE6CF,#E6E2FF);color:#111827;box-shadow:0 12px 30px rgba(255,214,176,.28)}
-.step.done{background:#f2fffa;border-color:#dff7ef}
+.step .num{width:20px;height:20px;border-radius:50%;display:inline-grid;place-items:center;background:rgba(255,255,255,.06);border:1px solid var(--line);font-size:12px}
+.step.active{background:linear-gradient(90deg,#0ea5e9,#8b5cf6);color:#fff;box-shadow:0 16px 40px rgba(14,165,233,.35)}
+.step.done{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.35)}
 
-.topprogress{--steps:20;position:relative;height:30px;background:#f8f5f0;border-radius:999px;overflow:hidden;border:1px solid var(--line)}
-.topprogress .bar{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,var(--o3),var(--o2),var(--o1));border-radius:999px;z-index:1;transition:width .35s ease}
+.topprogress{--steps:20;position:relative;height:32px;background:rgba(255,255,255,.05);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+.topprogress .bar{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,#60a5fa,#22d3ee,#fb7185);border-radius:999px;z-index:1;transition:width .35s ease}
 .topprogress::before{
   content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
-  background-image:linear-gradient(to right, rgba(17,24,39,.08) 0, rgba(17,24,39,.08) 1px, transparent 1px, transparent calc(100%/var(--steps)));
+  background-image:linear-gradient(to right, rgba(255,255,255,.08) 0, rgba(255,255,255,.08) 1px, transparent 1px, transparent calc(100%/var(--steps)));
   background-size:calc(100%/var(--steps)) 100%;
 }
-.topprogress .toplabel{position:absolute;inset:0;display:grid;place-items:center;z-index:3;font-weight:900;font-size:14px;color:#111827;text-shadow:0 1px 0 rgba(255,255,255,.85),0 0 6px rgba(255,255,255,.9)}
+.topprogress .toplabel{position:absolute;inset:0;display:grid;place-items:center;z-index:3;font-weight:900;font-size:14px;color:#e2e8f0;text-shadow:0 1px 0 rgba(0,0,0,.45)}
 .statusline{font-size:12px;color:var(--muted);text-align:center}
 
-/* Cards */
-.card{
-  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:24px;
-  box-shadow:var(--shadow);animation:fade .35s ease both
-}
+/* cards */
+.card{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));
+  border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);animation:fade .35s ease both;backdrop-filter:blur(8px)}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 h1{font-size:34px;margin:0 0 6px}h2{font-size:24px;margin:0 0 10px}h3{font-size:18px;margin:16px 0 8px}
 p{margin:8px 0}.small{font-size:13px}.muted{color:var(--muted)}.center{text-align:center}
 
-/* Hero: PDF 톤(종이+스티커) */
-.hero{
-  position:relative;padding:44px 22px;border-radius:22px;border:1px solid var(--line);
-  background:
-    radial-gradient(700px 260px at 15% -40%, #FFE6CF 0%, transparent 60%),
-    radial-gradient(700px 260px at 85% -40%, #E6E2FF 0%, transparent 60%),
-    linear-gradient(180deg,#ffffff 0%, #fff9f3 100%)
-}
-.hero .title{font-size:44px;font-weight:900;letter-spacing:.2px;margin:2px 0 6px;color:#111827}
-.hero .sub{color:#6b7280;margin-bottom:18px}
+/* hero */
+.hero{position:relative;padding:44px 22px;border-radius:22px;border:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(2,8,23,.5),rgba(2,6,23,.35));box-shadow:var(--soft)}
+.hero .title{font-size:42px;font-weight:900;letter-spacing:.2px;margin:2px 0 6px;color:#e5e7eb}
+.hero .sub{color:#9ca3af;margin-bottom:18px}
 .hero .ctaRow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 
-/* Buttons */
-.btn{--bg:linear-gradient(90deg,var(--o1),var(--o3));--glow:rgba(255,185,138,.35);
-  background:var(--bg);color:#5a3f2f;border:none;padding:18px 28px;border-radius:18px;font-weight:900;cursor:pointer;box-shadow:0 16px 40px var(--glow);transition:transform .08s,filter .2s;font-size:20px}
-.btn:hover{transform:translateY(-1px);filter:brightness(1.03)}
-.btn-ghost{background:#fff;color:#111827;border:1px solid var(--line);padding:12px 14px;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:var(--soft)}
-.btn-mint{--bg:linear-gradient(90deg,var(--o2),var(--o3))}
-.btn-accent{--bg:linear-gradient(90deg,var(--o3),var(--o1))}
-.btn-xl{padding:22px 34px;font-size:22px;border-radius:22px}
+/* buttons */
+.btn{--g:linear-gradient(90deg,#22d3ee,#8b5cf6);background:var(--g);color:#0b0f16;border:none;padding:18px 28px;border-radius:18px;
+  font-weight:900;cursor:pointer;box-shadow:0 16px 40px rgba(139,92,246,.35);transition:transform .08s,filter .2s;font-size:20px}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.05)}
+.btn-ghost{background:rgba(255,255,255,.08);color:#e5e7eb;border:1px solid var(--line);padding:12px 14px;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:var(--soft)}
+.btn-mint{--g:linear-gradient(90deg,#22d3ee,#34d399)}.btn-accent{--g:linear-gradient(90deg,#8b5cf6,#fb7185)}.btn-xl{padding:22px 34px;font-size:22px;border-radius:22px}
 
-/* Inputs */
-input,select,textarea{width:100%;background:#fff;color:#111;border:1px solid var(--line);border-radius:12px;padding:12px;outline:none}
-input:focus,select:focus,textarea:focus{border-color:#FFD9BE;box-shadow:0 0 0 6px rgba(255,217,190,.26)}
-label{font-size:14px;color:#374151}
-.section{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+/* inputs */
+input,select,textarea{width:100%;background:rgba(255,255,255,.06);color:#e5e7eb;border:1px solid var(--line);border-radius:12px;padding:12px;outline:none}
+input::placeholder{color:#94a3b8}
+input:focus,select:focus,textarea:focus{border-color:#60a5fa;box-shadow:0 0 0 6px rgba(14,165,233,.15)}
+label{font-size:14px;color:#cbd5e1}
+.section{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:14px;padding:16px}
 
 .grid{display:grid;gap:14px}.grid-2{grid-template-columns:1fr 1fr}
 @media (max-width:860px){.grid-2{grid-template-columns:1fr}}
 
-/* Options */
-.opt{border:2px solid var(--line);border-radius:20px;overflow:hidden;cursor:pointer;background:#fff;box-shadow:var(--soft);transition:transform .12s,border-color .2s}
+/* options */
+.opt{border:2px solid var(--line);border-radius:20px;overflow:hidden;cursor:pointer;background:rgba(255,255,255,.04);box-shadow:var(--soft);transition:transform .12s,border-color .2s}
 .opt:hover{transform:translateY(-2px)}
 .opt img{width:100%;display:block;aspect-ratio:4/3;object-fit:cover}
-.opt .cap{padding:12px 14px;color:#374151;font-weight:800;font-size:16px;line-height:1.35}
+.opt .cap{padding:12px 14px;color:#e5e7eb;font-weight:800;font-size:16px;line-height:1.35}
 @media (min-width:1024px){
   .test-grid-4{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
   .test-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
   .sideNav{position:fixed;top:50%;transform:translateY(-50%);z-index:20}
   .sideNav.left{left:18px}.sideNav.right{right:18px}
-  .sideBtn{background:linear-gradient(90deg,#fff,#FFF4EC);border:1px solid var(--line);width:46px;height:46px;border-radius:50%;display:grid;place-items:center;box-shadow:var(--soft);cursor:pointer;font-weight:900}
+  .sideBtn{background:rgba(255,255,255,.06);border:1px solid var(--line);width:46px;height:46px;border-radius:50%;display:grid;place-items:center;box-shadow:0 12px 26px rgba(0,0,0,.4);cursor:pointer;font-weight:900;color:#e5e7eb}
   .sideBtn:hover{transform:translateY(-1px)}
 }
 @media (max-width:1023px){.sideNav{display:none}}
-.opt.sel{border-color:#FFD9BE;box-shadow:0 0 0 6px rgba(255,217,190,.25)}
+.opt.sel{border-color:#60a5fa;box-shadow:0 0 0 6px rgba(14,165,233,.2)}
 
-/* Accordion */
-.acc{border-radius:14px;overflow:hidden;border:1px solid var(--line)}
-.acc-item{border-top:1px solid var(--line)}
-.acc-head{padding:14px 16px;background:#FFF4EC;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
-.acc-head span{font-weight:900;font-size:17px}
-.acc-body{padding:14px 16px;display:none;background:#fff}
+/* accordions */
+.acc{border-radius:14px;overflow:hidden;border:1px solid var(--line);background:rgba(255,255,255,.03)}.acc-item{border-top:1px solid var(--line)}
+.acc-head{padding:14px 16px;background:rgba(255,255,255,.06);cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.acc-head span{font-weight:900;font-size:17px}.acc-body{padding:14px 16px;display:none}
 .acc-item.open .acc-body{display:block}
 .agreeList{display:grid;gap:10px;margin-top:10px}
-.agree-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff}
-.agree-row .txt{font-size:15px;color:#0f172a;line-height:1.55;font-weight:700}
-.agree-row input[type="checkbox"]{width:20px;height:20px;accent-color:#FFB98A}
+.agree-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.04)}
+.agree-row .txt{font-size:15px;color:#e2e8f0;line-height:1.55;font-weight:700}
+.agree-row input[type="checkbox"]{width:20px;height:20px;accent-color:#60a5fa}
 
-/* Report blocks & charts layout */
-.block{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 26px rgba(16,24,40,.06);page-break-inside:avoid;break-inside:avoid}
+/* report */
+.block{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--soft);page-break-inside:avoid;break-inside:avoid}
 .block h3{margin:0 0 10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:linear-gradient(90deg,#22d3ee33,#8b5cf633);color:#e2e8f0;border:1px solid var(--line);padding:8px 12px;border-radius:999px;font-weight:900}
+.callout{position:relative;background:linear-gradient(135deg,rgba(2,132,199,.18),rgba(124,58,237,.16));padding:22px;border-radius:18px;border:1px solid var(--line);box-shadow:0 12px 34px rgba(2,132,199,.25)}
+.callout:before{content:"";position:absolute;inset:-1px;border-radius:18px;padding:1px;background:linear-gradient(90deg,#22d3ee,#8b5cf6,#f472b6);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+
+/* 3-chart layout */
 .report-grid{display:grid;grid-template-columns:3fr 2fr;gap:16px}
 .right-stack{display:grid;grid-template-rows:1fr 1fr;gap:16px}
 .chartBox{width:100%;height:100%}
 .chartBox canvas{width:100% !important;height:100% !important}
 
-/* Chips */
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{background:linear-gradient(90deg,#FFE6CF,#E6E2FF);color:#5a3f2f;border:1px solid #ffe8d6;padding:8px 12px;border-radius:999px;font-weight:900}
+/* detail (multi pages) */
+.detail-hero{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:8px}
+.detail-hero .ic{width:48px;height:48px;border-radius:999px;background:rgba(124,58,237,.18);border:1px solid var(--line);display:grid;place-items:center;font-weight:900;color:#a78bfa}
+.detail-title{font-size:28px;font-weight:900}
+.detail-sub{color:#9ca3af;text-align:center;margin:-4px 0 10px}
+.section-title{font-weight:900;margin:8px 0 10px}
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tcard{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:14px;padding:14px}
+.tchip{background:rgba(124,58,237,.24);color:#e9d5ff;border:1px solid var(--line);padding:6px 10px;border-radius:999px;font-weight:800;font-size:12px}
 
-/* Callout */
-.callout{position:relative;background:linear-gradient(135deg,#FFF2E6,#F8FBFF);padding:22px;border-radius:18px;border:1px solid var(--line);box-shadow:0 12px 34px rgba(255,185,138,.25)}
-.callout:before{content:"";position:absolute;inset:-1px;border-radius:18px;padding:1px;background:linear-gradient(90deg,#FFD9BE,#E6E2FF,#CFF7EE);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
-.pageTitle{font-weight:900}
-
-/* Print/PDF */
-@media print{.header,.sticky,.btn,.btn-ghost,.sideNav,.no-pdf{display:none !important}.card{box-shadow:none;border:1px solid #ddd}.block{break-inside:avoid-page}}
+/* print/pdf */
+@media print{.header,.sticky,.btn,.btn-ghost,.sideNav,.no-pdf{display:none !important}.card{box-shadow:none;border:1px solid #222}.block{break-inside:avoid-page}}
 .pdf-screen-width{width:794px;max-width:none;margin:0 auto}
 
-/* Modal */
-.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;z-index:999}
+/* modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:999}
 .modal-backdrop.show{display:flex}
-.modal{width:min(520px,92vw);background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 60px rgba(16,24,40,.18);padding:18px}
+.modal{width:min(560px,92vw);background:rgba(17,24,39,.92);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 60px rgba(0,0,0,.6);padding:18px;color:#e5e7eb}
 .modal h3{margin:0 0 10px}.modal .row{display:grid;gap:8px;margin:10px 0}.modal .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
 </style>
 </head>
 <body>
-<div class="container" id="appRoot">
+<div class="container">
   <div class="header">
     <div class="brand">
       <div class="logo"></div>
@@ -212,7 +197,7 @@ label{font-size:14px;color:#374151}
 <div class="sideNav left" id="sideLeft" style="display:none"><button class="sideBtn" onclick="prev()" aria-label="이전">‹</button></div>
 <div class="sideNav right" id="sideRight" style="display:none"><button class="sideBtn" onclick="next()" aria-label="다음">›</button></div>
 
-<!-- 이메일 모달 -->
+<!-- email modal -->
 <div class="modal-backdrop" id="emailModal" aria-hidden="true" role="dialog" aria-modal="true">
   <div class="modal">
     <h3>이메일로 결과 보내기</h3>
@@ -233,560 +218,636 @@ label{font-size:14px;color:#374151}
 </div>
 
 <script>
-/* ===== Constants ===== */
-const APP_TITLE='바른미술학원 · 미술적성테스트 V2. ADVANCE';
-const SHEET_ID='14VLQBhDJtduxjCnfr7VEOstZ5ez8-CX3ArXy1OvYCQg';
-const GVIZ_SHEET='question2'; // ADVANCE 시트명
-const GVIZ_URL=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${encodeURIComponent(GVIZ_SHEET)}&tqx=out:json`;
-const FORM_ACTION='https://docs.google.com/forms/d/e/1FAIpQLSeRWq5YKN50zL0simiaQA6EBRsn6VXN__ZmLplAgDz1I1hyQA/formResponse';
-const EMAIL_FUNCTION_URL='/.netlify/functions/send-email';
+/* ================== CONSTANTS ================== */
+var APP_TITLE='바른미술학원 · 미술적성테스트 V2. ADVANCE';
 
-/* Google Form mapping */
-const F={child_name:'entry.684468179',age:'entry.1066070471',grade:'entry.1812672802',guardian:'entry.1666083184',phone:'entry.89824848',campus:'entry.490719219',answers:'entry.85364862',scores:'entry.1455508168',top3:'entry.2120338430',resultId:'entry.532514127',timestamp:'entry.1261684833'};
+/* 구글시트: question2 시트 우선, 실패 시 폴백 */
+var SHEET_ID='14VLQBhDJtduxjCnfr7VEOstZ5ez8-CX3ArXy1OvYCQg';
+var GVIZ_SHEETS=['question2','Question2','Questions2','ADVANCE','Advance','Questions'];
+function gvizUrl(sheet){return 'https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?sheet='+encodeURIComponent(sheet)+'&tqx=out:json'}
 
-/* Domains(11) */
-const DOM={OBS:'관찰력',COL:'색채감각',NAR:'서사력',SPA:'공간감',DET:'디테일',CHK:'도전성',GRT:'꾸준성',SOC:'소통력',CON:'개념화',CRT:'비판적 분석',EXP:'자기표현'};
-const DOM_KEYS=Object.keys(DOM);
+var FORM_ACTION='https://docs.google.com/forms/d/e/1FAIpQLSeRWq5YKN50zL0simiaQA6EBRsn6VXN__ZmLplAgDz1I1hyQA/formResponse';
+var EMAIL_FUNCTION_URL='/.netlify/functions/send-email';
 
-const STEPS=[{key:'start',label:'시작'},{key:'consent',label:'동의'},{key:'profile',label:'프로필'},{key:'test',label:'테스트'},{key:'result',label:'결과'},{key:'details',label:'자세한 결과'}];
-const STATE={step:'start',consent:false,profile:{},questions:[],idx:0,answers:[],result:null};
+/* Google Form mapping (같은 폼 사용) */
+var F={child_name:'entry.684468179',age:'entry.1066070471',grade:'entry.1812672802',guardian:'entry.1666083184',phone:'entry.89824848',campus:'entry.490719219',answers:'entry.85364862',scores:'entry.1455508168',top3:'entry.2120338430',resultId:'entry.532514127',timestamp:'entry.1261684833'};
 
-const ASSET_BASE='/img';
-const $=id=>document.getElementById(id);
-const app=()=>$('app');
+/* ADVANCE 차원 */
+var DIM=['SPA','DET','COL','NAR','CHK','CON','OBS','EXP','GRT','SOC','CRT'];
+var DIM_KR={
+  SPA:'공간·구도', DET:'디테일', COL:'색채', NAR:'서사', CHK:'도전',
+  CON:'개념화', OBS:'관찰', EXP:'표현성', GRT:'꾸준성', SOC:'소통', CRT:'비판적사고'
+};
+var STEPS=[{key:'start',label:'시작'},{key:'consent',label:'동의'},{key:'profile',label:'프로필'},{key:'test',label:'테스트'},{key:'result',label:'결과'},{key:'details',label:'리포트'}];
+var STATE={step:'start',consent:false,profile:{},questions:[],idx:0,answers:[],result:null};
 
-/* ===== Nav & Progress ===== */
+function $(id){return document.getElementById(id)}
+function app(){return $('app')}
+
+/* ================== NAV & PROGRESS ================== */
 function renderNav(){
-  const cur=STEPS.findIndex(s=>s.key===STATE.step);
-  $('topnav').innerHTML=STEPS.map((s,i)=>`<div class="step ${s.key===STATE.step?'active':''} ${cur>i?'done':''}" onclick="navGo('${s.key}')"><span class="num">${i+1}</span><span>${s.label}</span></div>`).join('');
+  var cur=STEPS.findIndex(function(s){return s.key===STATE.step});
+  $('topnav').innerHTML=STEPS.map(function(s,i){
+    return '<div class="step '+(s.key===STATE.step?'active':'')+' '+(cur>i?'done':'')+'" onclick="navGo(\''+s.key+'\')"><span class="num">'+(i+1)+'</span><span>'+s.label+'</span></div>';
+  }).join('');
 }
 function updateTopProgress(){
-  const topbar=$('topbar'),toplabel=$('toplabel'),tp=$('topprogress'),status=$('statusline');
-  if(STATE.step==='test'&&STATE.questions.length){
+  var topbar=$('topbar'), toplabel=$('toplabel'), tp=$('topprogress'), status=$('statusline');
+  if(STATE.step==='test' && STATE.questions.length){
     status.style.display='none';
-    const total=STATE.questions.length,curIndex=STATE.idx+1;
-    const pct=Math.max(0,Math.min(100,Math.round((STATE.idx)/total*100)));
-    topbar.style.width=pct+'%';toplabel.textContent=`(${curIndex}/${total})`;tp.style.setProperty('--steps',String(total));
-    $('sideLeft').style.display='block';$('sideRight').style.display='block';return;
+    var total=STATE.questions.length;
+    var curIndex=STATE.idx+1;
+    var pct=Math.max(0, Math.min(100, Math.round((STATE.idx)/total*100)));
+    topbar.style.width=pct+'%';
+    toplabel.textContent='('+curIndex+'/'+total+')';
+    tp.style.setProperty('--steps', String(total));
+    $('sideLeft').style.display='block';
+    $('sideRight').style.display='block';
+    return;
   }
-  $('sideLeft').style.display='none';$('sideRight').style.display='none';toplabel.textContent='';status.style.display='block';
-  let pct=(STEPS.findIndex(s=>s.key===STATE.step))/(STEPS.length-1)*100;
-  topbar.style.width=Math.round(pct)+'%';status.textContent=`진행률 ${Math.round(pct)}%`;
+  $('sideLeft').style.display='none'; $('sideRight').style.display='none';
+  toplabel.textContent=''; status.style.display='block';
+  var p=(STEPS.findIndex(function(s){return s.key===STATE.step}))/(STEPS.length-1)*100;
+  topbar.style.width=Math.round(p)+'%';
+  status.textContent='진행률 '+Math.round(p)+'%';
 }
-function navGo(step){STATE.step=step;if(step==='test'&&STATE.questions.length===0){startTest();return;}render();}
+function navGo(step){STATE.step=step;if(step==='test' && STATE.questions.length===0){startTest();return;}render()}
 
-/* ===== GViz ===== */
-function parseGViz(text){const s=text.indexOf('{'),e=text.lastIndexOf('}');if(s<0||e<0)return[];const obj=JSON.parse(text.slice(s,e+1));const cols=obj.table.cols.map(c=>c.label);return obj.table.rows.map(r=>r.c.map(c=>c?(c.f??c.v):'')).map(a=>Object.fromEntries(cols.map((k,i)=>[k,a[i]])))}
+/* ================== LOAD QUESTIONS ================== */
+function parseGViz(text){
+  var s=text.indexOf('{'), e=text.lastIndexOf('}');
+  if(s<0 || e<0) return [];
+  var obj=JSON.parse(text.slice(s,e+1));
+  var cols=obj.table.cols.map(function(c){return c.label});
+  return obj.table.rows.map(function(r){return r.c.map(function(c){return c?(c.f!=null?c.f:c.v):''})})
+           .map(function(a){return Object.fromEntries(cols.map(function(k,i){return [k,a[i]]}))});
+}
+async function tryLoadFromSheets(){
+  for(var i=0;i<GVIZ_SHEETS.length;i++){
+    try{
+      var res=await fetch(gvizUrl(GVIZ_SHEETS[i]));
+      var txt=await res.text();
+      var rows=parseGViz(txt)||[];
+      var act=rows.filter(function(r){return String(r.active).toUpperCase()==='TRUE'})
+                  .sort(function(a,b){return (+a.order)-(+b.order)});
+      if(act.length){
+        STATE.questions=act.map(function(r){
+          function mkWeights(k){try{return JSON.parse(r[k+'_weights'])||{}}catch(_){return {}}}
+          function mkOpt(k){
+            return {key:k,label:(r[k+'_label']||'').trim(),imageUrl:(r[k+'_image']||'').trim(),weights:mkWeights(k)};
+          }
+          var opts=['A','B','C','D'].map(mkOpt).filter(function(o){
+            var hasLabel=o.label.length>0, hasImage=o.imageUrl.length>0,
+                hasWeight=Object.values(o.weights||{}).some(function(v){return Number(v||0)!==0});
+            return hasLabel||hasImage||hasWeight;
+          });
+          if(opts.length<2) opts=['A','B'].map(mkOpt);
+          return {id:r.id||('q'+r.order),order:+r.order,prompt:r.prompt||'',options:opts};
+        });
+        return true;
+      }
+    }catch(e){}
+  }
+  return false;
+}
 async function loadQuestions(){
-  try{
-    const txt=await(await fetch(GVIZ_URL)).text();
-    const rows=parseGViz(txt)||[];const act=rows.filter(r=>String(r.active).toUpperCase()==='TRUE').sort((a,b)=>(+a.order-+b.order));
-    if(act.length){
-      STATE.questions=act.map(r=>{
-        const mkWeights=k=>{try{return JSON.parse(r[`${k}_weights`])||{}}catch(e){return{}}};
-        const mkOpt=k=>({key:k,label:(r[`${k}_label`]||'').trim(),imageUrl:(r[`${k}_image`]||'').trim(),weights:mkWeights(k)});
-        const opts=['A','B','C','D'].map(mkOpt).filter(o=>(o.label||o.imageUrl||Object.keys(o.weights||{}).length>0));
-        const safe=opts.length>=2?opts:['A','B'].map(mkOpt);
-        return{id:r.id||`q${r.order}`,order:+r.order,prompt:r.prompt||'',options:safe};
-      });
-      return;
-    }
-  }catch(e){}
-  STATE.questions=localQuestions();
+  var ok=await tryLoadFromSheets();
+  if(!ok){STATE.questions=localQuestions2()}
 }
 
-/* ===== Views ===== */
+/* ================== START / CONSENT ================== */
 function startScreen(){
-  return `
-    <div class="hero">
-      <div class="title center">${APP_TITLE}</div>
-      <div class="sub center">20문항 심화 진단 · 11차원 프로파일 · PDF 리포트(3–4p)</div>
-      <div class="ctaRow">
-        <button class="btn btn-xl" id="startBtn">ADVANCE 테스트 시작하기 →</button>
-        <a class="btn-ghost" href="index.html">BASIC으로 이동</a>
-      </div>
-    </div>`;
+  return '<div class="hero">'
+    +'<div class="title center">'+APP_TITLE+'</div>'
+    +'<div class="sub center">중·고입 대비 심층 테스트(만 12–15세). 20문항으로 <b>예술가 잠재력</b>을 다차원 분석합니다.</div>'
+    +'<div class="ctaRow"><button class="btn btn-xl" id="startBtn">ADVANCE 시작하기 →</button>'
+    +'<a class="btn-ghost" href="index.html">BASIC 테스트</a></div></div>';
 }
-function viewStart(){app().innerHTML=startScreen();$('startBtn').onclick=()=>navGo('consent');window.scrollTo({top:0,behavior:'smooth'})}
+function viewStart(){app().innerHTML=startScreen();$('startBtn').onclick=function(){navGo('consent')};window.scrollTo({top:0,behavior:'smooth'})}
 
-function accItem(t,html){return `<div class="acc-item open"><div class="acc-head"><span>${t}</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="acc-body small">${html}</div></div>`}
+function accItem(t,html){return '<div class="acc-item open"><div class="acc-head"><span>'+t+'</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="acc-body small">'+html+'</div></div>'}
 function viewConsent(){
-  app().innerHTML=`<h2 class="center">개인정보 수집·이용 동의서</h2>
-  <p class="muted small center">본 테스트는 <b>교육 가이드</b> 목적이며, 의학/임상 진단이 아닙니다.</p>
-  <div class="acc">
-    ${accItem('<b>1) 목적</b>','① 테스트 제공 및 결과 산출 ② 결과 안내·PDF 저장 지원 ③ 상담 품질 개선')}
-    ${accItem('<b>2) 수집 항목</b>','아동 이름·나이·학년 / 보호자 이름·연락처 / 응답 내용 (이메일은 선택)')}
-    ${accItem('<b>3) 보관 기간</b>','수집일로부터 <b>12개월</b> 보관 후 파기')}
-    ${accItem('<b>4) 보관/처리</b>','Google Forms/Sheets에 저장·처리')}
-    ${accItem('<b>5) 권리</b>','동의 거부 가능(거부 시 서비스 제한 가능)')}
-    ${accItem('<b>6) 문의</b>','barunart1004@gmail.com')}
-  </div>
-  <div class="section" style="margin-top:16px">
-    <div class="agreeList">
-      <div class="agree-row"><div class="txt">(필수) 개인정보 수집·이용에 <b>동의합니다.</b></div><input type="checkbox" id="chk_required" /></div>
-      <div class="agree-row"><div class="txt">(필수) 만 14세 미만 아동의 법정대리인으로서 <b>동의합니다.</b></div><input type="checkbox" id="chk_minor" /></div>
-    </div>
-  </div>
-  <div class="center" style="margin-top:16px;display:flex;gap:8px;justify-content:center">
-    <button class="btn" id="btn_consent" disabled>동의하고 진행</button>
-    <button class="btn-ghost" id="btn_expand">전문 펼치기</button>
-    <button class="btn-ghost" id="btn_collapse">모두 접기</button>
-  </div>`;
-  const validate=()=>{$('btn_consent').disabled=!( $('chk_required').checked && $('chk_minor').checked )};
-  $('chk_required').addEventListener('change',validate);$('chk_minor').addEventListener('change',validate);
-  $('btn_consent').onclick=()=>{STATE.consent=true;navGo('profile')};
-  $('btn_expand').onclick=()=>document.querySelectorAll('.acc-item').forEach(it=>it.classList.add('open'));
-  $('btn_collapse').onclick=()=>document.querySelectorAll('.acc-item').forEach(it=>it.classList.remove('open'));
-  document.querySelectorAll('.acc-head').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
+  app().innerHTML='<h2 class="center">개인정보 수집·이용 동의서</h2>'
+  +'<p class="muted small center">본 테스트는 <b>교육 가이드</b> 목적이며, 의학/임상 진단이 아닙니다.</p>'
+  +'<div class="acc">'
+    +accItem('<b>1) 목적</b>','① 테스트 제공 및 결과 산출 ② 심층 리포트 제공(PDF/이메일) ③ 상담 품질 개선')
+    +accItem('<b>2) 수집 항목</b>','이름·나이·학년 / 보호자 이름·연락처 / 응답·결과 (이메일은 선택)')
+    +accItem('<b>3) 보관 기간</b>','수집일로부터 <b>12개월</b> 보관 후 파기')
+    +accItem('<b>4) 보관/처리</b>','Google Forms/Sheets에 저장·처리')
+    +accItem('<b>5) 권리</b>','동의 거부 가능(거부 시 서비스 제한 가능)')
+    +accItem('<b>6) 문의</b>','barunart1004@gmail.com')
+  +'</div>'
+  +'<div class="section" style="margin-top:16px">'
+    +'<div class="agreeList">'
+      +'<div class="agree-row"><div class="txt">(필수) 개인정보 수집·이용에 <b>동의합니다.</b></div><input type="checkbox" id="chk_required"></div>'
+      +'<div class="agree-row"><div class="txt">(필수) 만 14세 미만 아동의 법정대리인으로서 <b>동의합니다.</b></div><input type="checkbox" id="chk_minor"></div>'
+    +'</div>'
+  +'</div>'
+  +'<div class="center" style="margin-top:16px;display:flex;gap:8px;justify-content:center">'
+    +'<button class="btn" id="btn_consent" disabled>동의하고 진행</button>'
+    +'<button class="btn-ghost" id="btn_expand">전문 펼치기</button>'
+    +'<button class="btn-ghost" id="btn_collapse">모두 접기</button>'
+  +'</div>';
+  function validate(){ $('btn_consent').disabled= !( $('chk_required').checked && $('chk_minor').checked ); }
+  $('chk_required').addEventListener('change',validate); $('chk_minor').addEventListener('change',validate);
+  $('btn_consent').onclick=function(){STATE.consent=true;navGo('profile')};
+  $('btn_expand').onclick=function(){document.querySelectorAll('.acc-item').forEach(function(it){it.classList.add('open')})};
+  $('btn_collapse').onclick=function(){document.querySelectorAll('.acc-item').forEach(function(it){it.classList.remove('open')})};
+  document.querySelectorAll('.acc-head').forEach(function(h){h.addEventListener('click',function(){h.parentElement.classList.toggle('open')})});
 }
 
-/* 프로필 (12–15세) */
-const AGE_TO_GRADE={12:'초6',13:'중1',14:'중2',15:'중3'};
-const GRADE_TO_AGE=Object.fromEntries(Object.entries(AGE_TO_GRADE).map(([a,g])=>[g,a]));
-const CAMPUSES=['압구정[본원]','반포 캠퍼스','한남 캠퍼스','방배 캠퍼스','목동 캠퍼스','송파 캠퍼스','서대문 캠퍼스','일산 캠퍼스','송도 캠퍼스','부산 캠퍼스'];
+/* ================== PROFILE (12–15) ================== */
+var AGE_TO_GRADE={12:'초6',13:'중1',14:'중2',15:'중3'};
+var GRADE_TO_AGE={'초6':'12','중1':'13','중2':'14','중3':'15'};
+var CAMPUSES=['압구정[본원]','반포','한남','방배','목동','송파','서대문','일산','탄현','김포','송도','부산'];
 
 function viewProfile(){
-  app().innerHTML=`<h2 class="center">프로필 정보</h2>
-  <div class="grid grid-2" style="margin-top:8px">
-    <div class="section"><label>아동 이름</label><input id="cname" placeholder="예: 홍길동"></div>
-    <div class="section"><label>보호자 이름</label><input id="gname" placeholder="예: 김보호자"></div>
-    <div class="section"><label>나이 (만)</label><select id="age">${[12,13,14,15].map(a=>`<option value="${a}">${a}</option>`).join('')}</select></div>
-    <div class="section"><label>학년</label><select id="grade">${Object.values(AGE_TO_GRADE).map(g=>`<option>${g}</option>`).join('')}</select></div>
-    <div class="section"><label>연락처</label><input id="phone" placeholder="010-0000-0000"></div>
-    <div class="section"><label>이메일(선택, 결과지 전송용)</label><input id="email" placeholder="example@email.com"></div>
-    <div class="section"><label>캠퍼스</label><select id="campus">${CAMPUSES.map(c=>`<option value="${c}">${c}</option>`).join('')}</select></div>
-  </div>
-  <div class="center" style="margin-top:16px"><button class="btn btn-mint" id="btn_starttest">테스트 시작</button></div>`;
-  $('age').addEventListener('change',e=>{$('grade').value=AGE_TO_GRADE[e.target.value]});
-  $('grade').addEventListener('change',e=>{$('age').value=GRADE_TO_AGE[e.target.value]});
+  app().innerHTML='<h2 class="center">프로필 정보</h2>'
+  +'<div class="grid grid-2" style="margin-top:8px">'
+  +'<div class="section"><label>학생 이름</label><input id="cname" placeholder="예: 홍길동"></div>'
+  +'<div class="section"><label>보호자 이름</label><input id="gname" placeholder="예: 김보호자"></div>'
+  +'<div class="section"><label>나이(만)</label><select id="age">'+[12,13,14,15].map(function(a){return '<option value="'+a+'">'+a+'</option>'}).join('')+'</select></div>'
+  +'<div class="section"><label>학년</label><select id="grade">'+Object.values(AGE_TO_GRADE).map(function(g){return '<option>'+g+'</option>'}).join('')+'</select></div>'
+  +'<div class="section"><label>연락처</label><input id="phone" placeholder="010-0000-0000"></div>'
+  +'<div class="section"><label>이메일(선택, 결과지 전송용)</label><input id="email" placeholder="example@email.com"></div>'
+  +'<div class="section"><label>캠퍼스</label><select id="campus">'+CAMPUSES.map(function(c){return '<option value="'+c+'">'+c+'</option>'}).join('')+'</select></div>'
+  +'</div>'
+  +'<div class="center" style="margin-top:16px"><button class="btn btn-mint" id="btn_starttest">테스트 시작</button></div>';
+  $('age').addEventListener('change',function(e){$('grade').value=AGE_TO_GRADE[e.target.value]});
+  $('grade').addEventListener('change',function(e){$('age').value=GRADE_TO_AGE[e.target.value]});
   $('btn_starttest').onclick=startTest;
 }
 async function startTest(){
-  STATE.profile={child_name:$('cname').value.trim(),guardian:$('gname').value.trim(),age:$('age').value,grade:$('grade').value,phone:$('phone').value.trim(),email:$('email').value.trim(),campus:$('campus').value};
-  if(!STATE.profile.child_name){alert('아동 이름을 입력해 주세요');return;}
+  STATE.profile={
+    child_name:$('cname').value.trim(),
+    guardian:$('gname').value.trim(),
+    age:$('age').value,
+    grade:$('grade').value,
+    phone:$('phone').value.trim(),
+    email:$('email').value.trim(),
+    campus:$('campus').value
+  };
+  if(!STATE.profile.child_name){alert('학생 이름을 입력해 주세요');return;}
   if(!/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(STATE.profile.phone||'')){alert('연락처 형식(010-0000-0000)을 확인해 주세요');return;}
-  await loadQuestions();STATE.idx=0;STATE.answers=[];STATE.step='test';render();
+  await loadQuestions(); STATE.idx=0; STATE.answers=[]; STATE.step='test'; render();
 }
 
-/* 테스트 */
+/* ================== TEST ================== */
 function pcGridClassFor(n){if(window.matchMedia('(min-width:1024px)').matches){return n===2?'test-grid-2':'test-grid-4'}return'grid grid-2'}
-function optionImageUrl(q,o){if(o.imageUrl)return o.imageUrl;const num=Number(q.order)||(STATE.idx+1);return `${ASSET_BASE}/${num}-${o.key}.png`}
+function optionImageUrl(q,o){if(o.imageUrl){return o.imageUrl}var num=Number(q.order)||(STATE.idx+1);return 'https://picsum.photos/seed/adv'+num+o.key+'/900/600'}
 function viewTest(){
-  const q=STATE.questions[STATE.idx];if(!q){app().innerHTML='<h3 class="center">문항을 불러오지 못했습니다. 관리자에 문의해 주세요.</h3>';return;}
-  const gridCls=pcGridClassFor(q.options.length);
-  app().innerHTML=`<div class="center small muted"><span class="chip">Q ${STATE.idx+1} / ${STATE.questions.length}</span></div>
-    <h2 class="center" style="margin-top:10px">${q.prompt||''}</h2>
-    <div class="${gridCls}" style="margin-top:12px">
-      ${q.options.map(o=>`<div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label||o.key}" data-key="${o.key}">
-        <img src="${optionImageUrl(q,o)}" alt="${o.label||o.key}" onerror="this.style.opacity=.2" loading="lazy">
-        <div class="cap center">${o.label||o.key}</div>
-      </div>`).join('')}
-    </div>
-    <div class="center" style="margin-top:18px;display:flex;gap:10px;justify-content:center">
-      <button class="btn-ghost" id="btn_prev" ${STATE.idx===0?'disabled':''}>이전</button>
-      <button class="btn" id="btn_next" disabled>다음</button>
-    </div>`;
-  q.options.forEach(o=>{const el=document.getElementById(`opt_${o.key}`);el.onclick=()=>choose(o.key);el.onkeydown=e=>{if(e.key==='Enter'||e.key===' ')choose(o.key)}});
-  $('btn_prev').onclick=prev;$('btn_next').onclick=next;
+  var q=STATE.questions[STATE.idx]; if(!q){app().innerHTML='<h3 class="center">문항을 불러오지 못했습니다. 관리자에 문의해 주세요.</h3>';return;}
+  var gridCls=pcGridClassFor(q.options.length);
+  app().innerHTML='<div class="center small muted"><span class="chip">Q '+(STATE.idx+1)+' / '+STATE.questions.length+'</span></div>'
+  +'<h2 class="center" style="margin-top:10px">'+(q.prompt||'')+'</h2>'
+  +'<div class="'+gridCls+'" style="margin-top:12px">'
+  + q.options.map(function(o){
+      return '<div class="opt" id="opt_'+o.key+'" tabindex="0" role="button" aria-label="'+(o.label||o.key)+'" data-key="'+o.key+'">'
+        +'<img src="'+optionImageUrl(q,o)+'" alt="'+(o.label||o.key)+'" onerror="this.style.opacity=.2" loading="lazy">'
+        +'<div class="cap center">'+(o.label||o.key)+'</div></div>';
+    }).join('')
+  +'</div>'
+  +'<div class="center" style="margin-top:18px;display:flex;gap:10px;justify-content:center">'
+    +'<button class="btn-ghost" id="btn_prev" '+(STATE.idx===0?'disabled':'')+'>이전</button>'
+    +'<button class="btn" id="btn_next" disabled>다음</button>'
+  +'</div>';
+  q.options.forEach(function(o){
+    var el=document.getElementById('opt_'+o.key);
+    el.onclick=function(){choose(o.key)};
+    el.onkeydown=function(e){if(e.key==='Enter'||e.key===' ')choose(o.key)};
+  });
+  $('btn_prev').onclick=prev; $('btn_next').onclick=next;
 }
 function choose(key){
-  const q=STATE.questions[STATE.idx];
-  q.options.forEach(k=>{const n=document.getElementById(`opt_${k.key}`);if(n)n.classList.remove('sel')});
-  const node=document.getElementById(`opt_${key}`);if(node){node.classList.add('sel');node.animate([{transform:'scale(1)'},{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:160})}
-  const opt=q.options.find(o=>o.key===key);STATE.answers[STATE.idx]={qid:q.id,key,weights:opt.weights||{}};$('btn_next').disabled=false;
+  var q=STATE.questions[STATE.idx];
+  q.options.forEach(function(k){var n=document.getElementById('opt_'+k.key); if(n){n.classList.remove('sel')}})
+  var node=document.getElementById('opt_'+key); if(node){node.classList.add('sel'); node.animate([{transform:'scale(1)'},{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:160})}
+  var opt=q.options.find(function(o){return o.key===key});
+  STATE.answers[STATE.idx]={qid:q.id,key:key,weights:opt.weights||{}};
+  $('btn_next').disabled=false;
 }
 function next(){if(STATE.step!=='test')return;if(!STATE.answers[STATE.idx]){alert('하나를 선택해 주세요');return;}if(STATE.idx<STATE.questions.length-1){STATE.idx++;render();}else{submitAllSafe();}}
 function prev(){if(STATE.idx>0){STATE.idx--;render();}}
-document.addEventListener('keydown',e=>{if(STATE.step!=='test')return;if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')prev();if(e.key==='Enter'){if(!$('btn_next').disabled)next();}});
+document.addEventListener('keydown',function(e){if(STATE.step!=='test')return;if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')prev();if(e.key==='Enter'){if(!$('btn_next').disabled)next();}});
 
-/* 점수/멘트 */
+/* ================== SCORING ================== */
 function aggregateScores(ans){
-  const sum={}; DOM_KEYS.forEach(k=>sum[k]=0);
-  ans.forEach(a=>Object.entries(a.weights||{}).forEach(([k,v])=>{ if(sum[k]!=null) sum[k]+=Number(v||0) }));
-  const n=ans.length||1; const raw={}; DOM_KEYS.forEach(k=>{const v=(sum[k]||0)/n*4; raw[k]=Math.max(0,Math.round(v*10)/10)});
+  var sum={}; DIM.forEach(function(d){sum[d]=0});
+  ans.forEach(function(a){
+    Object.keys(a.weights||{}).forEach(function(k){sum[k]=(sum[k]||0)+Number(a.weights[k]||0)});
+  });
+  var n=ans.length||1;
+  var raw={}; DIM.forEach(function(d){var v=(sum[d]||0)/n*4; raw[d]=Math.max(0,Math.round(v*10)/10)});
   return raw;
 }
-const adjust=v=>Math.round((2+v/2)*10)/10;
+function adjust(v){return Math.round((2+v/2)*10)/10}
 function band(v){if(v>=3.6)return'S';if(v>=3.2)return'A';if(v>=2.8)return'A-';if(v>=2.4)return'B+';if(v>=2.0)return'B';if(v>=1.6)return'B-';if(v>=1.0)return'C+';return'C'}
 
-const PRAISE={
-  'S':k=>`와, ${DOM[k]}에서 <b>타고난 재능</b>이 돋보입니다. 높은 난이도도 스스로 기획해볼 수 있어요.`,
-  'A':k=>`${DOM[k]} 감각이 <b>뛰어납니다</b>. 한 단계 높은 과제도 무리 없이 소화합니다.`,
-  'A-':k=>`${DOM[k]} 실력이 <b>탄탄</b>합니다. 약간의 다듬기로 금방 상위권을 노려요.`,
-  'B+':k=>`${DOM[k]}이 안정적입니다. 새로운 시도에도 잘 적응합니다.`,
-  'B':k=>`${DOM[k]} 기본기가 좋습니다. 루틴을 넓히면 <b>성장 가속</b>!`
+var PRAISE={
+  'S':function(k){return '와, '+k+'에서 <b>타고난 재능</b>이 돋보입니다. 난도 높은 과제를 스스로 기획해보세요.'},
+  'A':function(k){return k+'가 <b>뛰어납니다</b>. 한 단계 높은 과제도 무리 없이 소화합니다.'},
+  'A-':function(k){return k+'가 <b>탄탄</b>합니다. 약간의 다듬기로 상위권을 노려요.'},
+  'B+':function(k){return k+'이 안정적입니다. 새로운 시도에도 잘 적응합니다.'},
+  'B':function(k){return k+'의 기본기가 좋습니다. 루틴 확장으로 <b>성장 가속</b>!' }
 };
 
-const DETAIL={
-  OBS:n=>`${n}님은 대상을 구조적으로 파악하고 특징을 포착하는 눈이 좋아요.`,
-  COL:n=>`${n}님은 색의 분위기와 대비를 민감하게 읽어 조화로운 팔레트를 구성합니다.`,
-  NAR:n=>`${n}님은 장면 속에 이야기를 심고 감정 흐름을 설득력 있게 만듭니다.`,
-  SPA:n=>`${n}님은 원근·스케일을 활용해 안정적인 공간 구성을 만듭니다.`,
-  DET:n=>`${n}님은 질감과 마감에서 섬세함이 돋보입니다.`,
-  CHK:n=>`${n}님은 새로운 도구·기법에 적극적이며 실험을 즐깁니다.`,
-  GRT:n=>`${n}님은 루틴을 유지하며 완성까지 밀어붙이는 끈기가 강점입니다.`,
-  SOC:n=>`${n}님은 의도와 과정을 말로 풀어내고 피드백을 잘 활용합니다.`,
-  CON:n=>`${n}님은 주제·문제를 개념화하고 구조화하는 능력이 뛰어납니다.`,
-  CRT:n=>`${n}님은 근거를 들어 판단하고 개선점을 정확히 짚어냅니다.`,
-  EXP:n=>`${n}님은 자신의 감정과 생각을 시각 언어로 솔직하게 표현합니다.`
-};
-
-/* Theory (요약) */
-const THEORY={
-  COL:{theoryTitle:'Itten 색채이론',theory:'색상·명도·채도의 조화 인지 및 활용.',expert:'“색채감각은 감정 표현력과 미적 감수성을 끌어올립니다.”',direction:'색상환·대비 실험, 자연색 관찰'},
-  DET:{theoryTitle:'몰입이론(Flow)',theory:'정밀성·완결성 지향의 집중력.',expert:'“디테일은 완성도를 좌우합니다.”',direction:'세밀화, 공예, 단계적 완성'},
-  NAR:{theoryTitle:'Bruner 서사적 사고',theory:'이야기 구성과 시각 전달.',expert:'“서사력은 언어와 시각의 결합 능력입니다.”',direction:'그림일기, 만화, 스토리보드'},
-  SPA:{theoryTitle:'지각심리·원근법',theory:'깊이·비례·구도 안정.',expert:'“공간 감은 장면 몰입도를 높입니다.”',direction:'소실점, 박스 드로잉'},
-  OBS:{theoryTitle:'게슈탈트 지각',theory:'형태/규칙 탐지로 특징 포착.',expert:'“관찰력은 변형 창작의 기반입니다.”',direction:'광원·재질 관찰, 확대 스케치'},
-  CHK:{theoryTitle:'성장 마인드셋',theory:'실패 수용·시도 성향.',expert:'“도전성은 창의적 돌파의 토대입니다.”',direction:'새 도구 실험 기록'},
-  SOC:{theoryTitle:'비주얼 리터러시',theory:'의도 설명·피드백 수용.',expert:'“소통은 작품의 맥락을 강화합니다.”',direction:'작가노트, 발표'},
-  GRT:{theoryTitle:'자기조절 학습',theory:'계획-실행-점검 루틴.',expert:'“꾸준성은 장기 성장의 핵심입니다.”',direction:'15분 루틴'},
-  CON:{theoryTitle:'개념화/문제정의',theory:'주제 구조화·아이디어 조직.',expert:'“개념화는 기획의 품질을 좌우합니다.”',direction:'브리프·다이어그램'},
-  CRT:{theoryTitle:'비판적 사고',theory:'근거 기반 판단·평가.',expert:'“평가 기준을 세우면 성장 속도가 납니다.”',direction:'룰시트·근거표'},
-  EXP:{theoryTitle:'자기표현',theory:'정서/정체성 시각화.',expert:'“표현은 동기와 몰입을 촉진합니다.”',direction:'감정 팔레트'}
-};
-
-/* Career map */
-const CAREERS={
-  SPA:['건축가','산업/제품 디자이너','조경/공간 디자이너'],
-  DET:['프로덕트 디자이너','소품 디자이너','3D 모델러'],
-  COL:['컨셉 아티스트','컬러리스트','브랜딩 디자이너'],
-  NAR:['일러스트레이터','스토리보드 아티스트','애니 기획'],
-  OBS:['과학 일러스트레이터','다큐 드로잉'],
-  CHK:['미디어 아티스트','실험 미술가','크리에이티브 테크'],
-  GRT:['프로덕션 아티스트','게임 라이브오퍼 아트','프리프로덕션 핸드'],
-  SOC:['아트디렉터','전시/교육 큐레이터','워크숍 퍼실리테이터'],
-  CON:['UX 기획자','시각 전략가','디자인 리서처'],
-  CRT:['크리틱/리뷰어','피드백 코치','디자인 스튜디오 PM'],
-  EXP:['작가(회화/설치)','비주얼 스토리텔러','아트 테라피 보조']
-};
-
-/* 제출 */
-function nowKST(){const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())} KST`}
+/* ================== SUBMIT & RESULT ================== */
+function nowKST(){var d=new Date(),p=function(n){return String(n).padStart(2,'0')};return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())+' KST'}
 async function submitAllSafe(){
-  const raw=aggregateScores(STATE.answers);
-  const scores={}; DOM_KEYS.forEach(k=>scores[k]=adjust(raw[k]||0));
-  const ordered=[...DOM_KEYS].sort((a,b)=>scores[b]-scores[a]);
-  const top3=ordered.slice(0,3);
-  const potential=ordered.slice(3,7);
-  const resultId=crypto.randomUUID();
-  const form=new FormData();
+  var raw=aggregateScores(STATE.answers);
+  var scores=Object.fromEntries(Object.keys(raw).map(function(k){return [k,adjust(raw[k])]}));
+  var ordered=Object.keys(scores).sort(function(a,b){return scores[b]-scores[a]});
+  var top3=ordered.slice(0,3);
+  var potential=ordered.slice(3,7);
+  var resultId=(crypto && crypto.randomUUID)?crypto.randomUUID():('r'+Date.now());
+  var form=new FormData();
   form.append(F.child_name,STATE.profile.child_name);form.append(F.age,STATE.profile.age);form.append(F.grade,STATE.profile.grade);
   form.append(F.guardian,STATE.profile.guardian);form.append(F.phone,STATE.profile.phone);form.append(F.campus,STATE.profile.campus||'');
-  form.append(F.answers,JSON.stringify({profile:STATE.profile,questions:STATE.answers,top3,version:'V2_ADVANCE'}));
+  form.append(F.answers,JSON.stringify({profile:STATE.profile,questions:STATE.answers,top3:top3}));
   form.append(F.scores,JSON.stringify(scores));form.append(F.top3,top3.join(','));form.append(F.resultId,resultId);form.append(F.timestamp,nowKST());
   try{await fetch(FORM_ACTION,{method:'POST',mode:'no-cors',body:form});}catch(e){}
-  STATE.result={scores,top3,potential,ordered,resultId};STATE.step='result';render();
+  STATE.result={scores:scores,top3:top3,potential:potential,resultId:resultId};STATE.step='result';render();
 }
 
-let CHARTS=[];function destroyCharts(){CHARTS.forEach(c=>c.destroy&&c.destroy());CHARTS=[]}
+var CHARTS=[];
+function destroyCharts(){CHARTS.forEach(function(c){try{c.destroy()}catch(_){}});CHARTS=[]}
 
-/* ===== 결과(3–4p) ===== */
+/* RESULT (3 charts) */
 function viewResult(){
-  const r=STATE.result||{scores:{},top3:[],potential:[]}, s=r.scores, name=STATE.profile.child_name;
-  const ordered=[...DOM_KEYS].sort((a,b)=> (s[b]||0)-(s[a]||0));
-  const top9=ordered.slice(0,9);
-  const top3=r.top3||ordered.slice(0,3);
-  const potential=r.potential||ordered.slice(3,7);
+  var r=STATE.result||{}; var s=r.scores||{}; var T=r.top3||[]; var ordered=Object.keys(s).sort(function(a,b){return s[b]-s[a]});
+  var topRadar=ordered.slice(0,Math.min(8,ordered.length));
+  var potential=r.potential||ordered.slice(3,7);
 
-  const summary1=`${name}님은 <b>${(DOM[top3[0]]||'-')}</b>를 중심으로 <b>${(DOM[top3[1]]||'-')}</b>, <b>${(DOM[top3[2]]||'-')}</b>에서 우수한 성향을 보입니다.`;
-  const summary2=`새로운 과제에서도 학습 전이가 빠르며, <b>${DOM[top3[0]]||'-'}</b> 기반 활동에서 높은 완성도를 기대할 수 있습니다.`;
-  const summary3=`<b>가능성 영역</b>(${potential.map(k=>DOM[k]).join('·')})은 현재 강점을 확장할 때 함께 성장할 축입니다.`;
+  var summary=[
+    STATE.profile.child_name+'님은 <b>'+ (DIM_KR[T[0]]||'-') +'</b>를 중심으로 <b>'+(DIM_KR[T[1]]||'-')+'</b>, <b>'+(DIM_KR[T[2]]||'-')+'</b>에서 강점이 뚜렷합니다.',
+    '도전 과제에서도 학습 전이가 빠르고, 시각·개념 두 영역의 균형이 좋아 <b>창작 기획</b>에 강점이 있습니다.',
+    '강점을 루틴화하여 작은 완성을 자주 만들면 동기가 유지되고, 약점 영역은 <b>저난도 반복</b>으로 보완하면 좋습니다.'
+  ].join(' ');
 
-  app().innerHTML=`<div id="pdfArea" class="pdf-screen-width">
-    <!-- Page 1: 요약 -->
-    <div class="block callout">
-      <div class="pageTitle">요약 · ADVANCE 진단 결과</div>
-      <div class="small muted">학생: <b>${name}</b> (${STATE.profile.age}세, ${STATE.profile.grade}) · 캠퍼스: ${STATE.profile.campus||'-'}</div>
-      <div class="chips" style="margin-top:10px">${top3.map(k=>`<span class="chip">TOP: ${DOM[k]}</span>`).join('')}</div>
-      <p class="muted" style="margin-top:8px">${summary1}</p>
-      <p class="muted">${summary2}</p>
-      <p class="muted">${summary3}</p>
-    </div>
+  app().innerHTML='<div id="pdfArea" class="pdf-screen-width">'
+    +'<div class="block callout" style="text-align:center">'
+      +'<div class="chip" style="margin:0 auto 8px;display:inline-block">ADVANCE 결과 요약</div>'
+      +'<h2 style="margin:0 0 10px"><b>'+STATE.profile.child_name+'</b>님, 집중력과 상상력이 돋보였어요!</h2>'
+      +'<div class="chips" style="margin-top:10px;justify-content:center">'+T.map(function(t){return '<span class="chip">Top: '+(DIM_KR[t]||t)+'</span>'}).join('')+'</div>'
+    +'</div>'
 
-    <!-- Page 2: 3 Charts -->
-    <div class="block">
-      <div class="pageTitle">프로파일 & 주요 지표</div>
-      <div class="report-grid" style="height:420px;margin-top:6px">
-        <div class="chartBox" style="border:1px solid var(--line);border-radius:14px;padding:10px;background:#fff">
-          <div class="small muted" style="font-weight:900;margin:0 0 6px">영역별 관심도(레이다)</div>
-          <canvas id="radar"></canvas>
-        </div>
-        <div class="right-stack">
-          <div class="chartBox" style="border:1px solid var(--line);border-radius:14px;padding:10px;background:#fff">
-            <div class="small muted" style="font-weight:900;margin:0 0 6px">뛰어난 영역 (TOP3)</div>
-            <canvas id="barsTop3"></canvas>
-          </div>
-          <div class="chartBox" style="border:1px solid var(--line);border-radius:14px;padding:10px;background:#fff">
-            <div class="small muted" style="font-weight:900;margin:0 0 6px">가능성 영역 (차순 4개)</div>
-            <canvas id="barsPotential"></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
+    +'<div class="block">'
+      +'<h3 class="center">핵심 지표</h3>'
+      +'<div class="report-grid" style="height:440px;margin-top:8px">'
+        +'<div class="chartBox" style="border:1px solid var(--line);border-radius:14px;padding:10px">'
+          +'<div class="small muted" style="font-weight:900;margin:0 0 6px">영역별 프로파일(레이더)</div>'
+          +'<canvas id="radar"></canvas>'
+        +'</div>'
+        +'<div class="right-stack">'
+          +'<div class="chartBox" style="border:1px solid var(--line);border-radius:14px;padding:10px">'
+            +'<div class="small muted" style="font-weight:900;margin:0 0 6px">뛰어난 영역 (TOP3)</div>'
+            +'<canvas id="barsTop3"></canvas>'
+          +'</div>'
+          +'<div class="chartBox" style="border:1px solid var(--line);border-radius:14px;padding:10px">'
+            +'<div class="small muted" style="font-weight:900;margin:0 0 6px">가능성 영역 (차순 4개)</div>'
+            +'<canvas id="barsPotential"></canvas>'
+          +'</div>'
+        +'</div>'
+      +'</div>'
+    +'</div>'
 
-    <!-- Page 3: 강점 & 로드맵 -->
-    <div class="block">
-      <div class="pageTitle">강점 진단 & 성장 로드맵 (90일)</div>
-      <div class="grid" style="grid-template-columns:1fr 1fr;gap:14px">
-        ${top3.map(k=>{
-          var fn=PRAISE[band(s[k]||0)];
-          var praiseText=typeof fn==='function'?fn(k):'';
-          return `
-          <div class="section">
-            <div style="font-weight:900;margin-bottom:6px">${DOM[k]} • 강점 분석</div>
-            <div class="small">${DETAIL[k](name)}</div>
-            <div class="small" style="margin-top:6px">${praiseText}</div>
-            <div class="small" style="margin-top:8px"><b>추천 루틴</b> · 30/60/90일
-              <ul>
-                <li>30일: 핵심 스킬 드릴(15분/일) · <i>${DOM[k]}</i> 전용 과제 6회</li>
-                <li>60일: 중간 프로젝트 1개 완성 · 피드백 2회 수렴</li>
-                <li>90일: 포트폴리오용 작업 1개 + 과정 기록(기획→완성)</li>
-              </ul>
-            </div>
-          </div>`;}).join('')}
-      </div>
-      <div class="section" style="margin-top:14px">
-        <div style="font-weight:900;margin-bottom:6px">가능성 영역 활용 전략</div>
-        <div class="small">TOP3와의 조합을 고려해 ${potential.map(k=>`<b>${DOM[k]}</b>`).join(', ')} 역량을 보조축으로 설계하세요. 예: ${DOM[top3[0]]}×${DOM[potential[0]]} 통합 과제.</div>
-      </div>
-    </div>
+    +'<div class="block"><h3>총평</h3><p class="small" style="line-height:1.8">'+summary+'</p></div>'
 
-    <!-- Page 4: 직업군 매칭 -->
-    <div class="block">
-      <div class="pageTitle">미래 직업군과의 연계성</div>
-      <div class="grid" style="grid-template-columns:repeat(3,1fr);gap:12px">
-        ${top3.map(k=>{
-          const jobs=(CAREERS[k]||[]).slice(0,3);
-          return `<div class="section">
-            <div style="font-weight:900;margin-bottom:6px">${DOM[k]} → 유망 직업</div>
-            <ul class="small" style="margin:6px 0">${jobs.map(j=>`<li>${j}</li>`).join('')}</ul>
-            <div class="small"><b>포트폴리오 힌트</b>: ${DOM[k]}을 드러내는 3작품(관찰→실험→완성) 세트를 구성하세요.</div>
-          </div>`}).join('')}
-      </div>
-      <div class="section" style="margin-top:14px">
-        <div style="font-weight:900;margin-bottom:6px">학기별 로드맵</div>
-        <ol class="small">
-          <li>1분기: 기초 스킬 스택(주 2회 미니 완성) · 관찰/색/공간 중 1축 고도화</li>
-          <li>2분기: 협업/피드백 라운드 도입 · 발표 1회</li>
-          <li>3분기: 장기 프로젝트 1개(8주) · 전시/공모 준비</li>
-          <li>4분기: 관심 직업군 시뮬레이션 과제 · 포트폴리오 정리</li>
-        </ol>
-      </div>
-    </div>
-  </div>
+    + makeInterpretationBlock(s)
 
-  <div class="center no-pdf" style="margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-    <button class="btn-ghost" onclick="STATE.step='start'; render()">처음으로</button>
-    <button class="btn btn-mint" id="btn_pdf">PDF 저장</button>
-    <button class="btn btn-accent" id="btn_email">이메일로 보내기</button>
-    <button class="btn-ghost" onclick="STATE.step='details'; render()">자세한 결과 보기</button>
-  </div>`;
+  +'</div>'
+
+  +'<div class="center no-pdf" style="margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">'
+    +'<button class="btn-ghost" onclick="STATE.step=\'start\'; render()">처음으로</button>'
+    +'<button class="btn btn-mint" id="btn_pdf">PDF 저장</button>'
+    +'<button class="btn btn-accent" id="btn_email">이메일로 보내기</button>'
+    +'<button class="btn-ghost" onclick="STATE.step=\'details\'; render()">심층 리포트 보기</button>'
+  +'</div>';
 
   destroyCharts();
 
-  /* Radar */
-  var rctx=document.getElementById('radar').getContext('2d',{willReadFrequently:true});
+  var rctx=$('radar').getContext('2d',{willReadFrequently:true});
   CHARTS.push(new Chart(rctx,{type:'radar',
-    data:{labels:top9.map(k=>DOM[k]),
-      datasets:[{data:top9.map(k=>s[k]||0),borderColor:'#FFB98A',backgroundColor:'rgba(255,185,138,.22)',borderWidth:2,pointRadius:2,fill:true}]},
-    options:{animation:{duration:800},plugins:{legend:{display:false}},
-      scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'#eef2f7'},angleLines:{color:'#eef2f7'},pointLabels:{color:'#374151',font:{weight:700}}}}
+    data:{labels:topRadar.map(function(k){return DIM_KR[k]||k}),datasets:[{data:topRadar.map(function(k){return s[k]||0}),borderColor:'#7dd3fc',backgroundColor:'rgba(125,211,252,.22)',borderWidth:2,pointRadius:3,fill:true}]},
+    options:{animation:{duration:800},scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'rgba(255,255,255,.08)'},angleLines:{color:'rgba(255,255,255,.08)'}}},plugins:{legend:{display:false}}}
   }));
 
-  /* TOP3 bars */
-  var b1=document.getElementById('barsTop3').getContext('2d',{willReadFrequently:true});
+  var b1=$('barsTop3').getContext('2d',{willReadFrequently:true});
   CHARTS.push(new Chart(b1,{type:'bar',
-    data:{labels:top3.map(k=>DOM[k]),
-      datasets:[{data:top3.map(k=>s[k]||0),borderRadius:12,borderSkipped:false,backgroundColor:['#FFD9BE','#E6E2FF','#CFF7EE']}]},
-    options:{animation:{duration:700},plugins:{legend:{display:false}},
-      scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'#f1f5f9'}},x:{ticks:{color:'#374151'},grid:{display:false}}}
+    data:{labels:T.map(function(k){return DIM_KR[k]||k}),datasets:[{data:T.map(function(k){return s[k]||0}),borderRadius:12,borderSkipped:false,backgroundColor:['#8b5cf6','#22d3ee','#fb7185']}]},
+    options:{animation:{duration:700},scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'rgba(255,255,255,.08)'}},x:{grid:{display:false}}},plugins:{legend:{display:false}}}
   }));
 
-  /* Potential bars */
-  var b2=document.getElementById('barsPotential').getContext('2d',{willReadFrequently:true});
+  var b2=$('barsPotential').getContext('2d',{willReadFrequently:true});
   CHARTS.push(new Chart(b2,{type:'bar',
-    data:{labels:potential.map(k=>DOM[k]),
-      datasets:[{data:potential.map(k=>s[k]||0),borderRadius:12,borderSkipped:false,backgroundColor:['#E6E2FF','#CFF7EE','#FFD9BE','#FFF2B2']}]},
-    options:{animation:{duration:700},plugins:{legend:{display:false}},
-      scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'#f1f5f9'}},x:{ticks:{color:'#374151'},grid:{display:false}}}
+    data:{labels:potential.map(function(k){return DIM_KR[k]||k}),datasets:[{data:potential.map(function(k){return s[k]||0}),borderRadius:12,borderSkipped:false,backgroundColor:['#22d3ee','#34d399','#8b5cf6','#fb7185']}]},
+    options:{animation:{duration:700},scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'rgba(255,255,255,.08)'}},x:{grid:{display:false}}},plugins:{legend:{display:false}}}
   }));
 
-  $('btn_pdf').onclick=handleSavePdf;$('btn_email').onclick=openEmailModal;
+  $('btn_pdf').onclick=handleSavePdf; $('btn_email').onclick=openEmailModal;
 }
 
-/* 자세한 결과(이론 3개) */
-function theoryItem(i,key){
-  const t=THEORY[key]||{theoryTitle:'이론',theory:'-',expert:'-',direction:'-'};
-  return `<div class="section">
-    <div style="font-weight:900;margin-bottom:6px">${i}. ${DOM[key]} <span class="chip" style="margin-left:6px">강점</span></div>
-    <div class="small"><b>이론</b>(${t.theoryTitle}) · ${t.theory}</div>
-    <div class="small" style="margin-top:6px"><b>전문가</b> · ${t.expert}</div>
-    <div class="small" style="margin-top:6px"><b>발달 방향</b> · ${t.direction}</div>
-  </div>`;
+function makeInterpretationBlock(scores){
+  return '<div class="block"><h3>항목별 해석</h3>'
+    +'<div class="grid" style="grid-template-columns:1fr 1fr">'
+    + DIM.map(function(k){
+        var v=+(scores[k]||0);
+        var w=Math.min(100,(v/4)*100);
+        var b=band(v);
+        var praise=(PRAISE[b]||function(){return '꾸준히 성장 중입니다.'})(DIM_KR[k]||k);
+        return '<div style="border:1px solid var(--line);border-radius:12px;padding:14px;background:rgba(255,255,255,.03);box-shadow:var(--soft)">'
+          +'<div style="font-weight:900;margin-bottom:6px">'+(DIM_KR[k]||k)+'</div>'
+          +'<div class="topprogress" style="height:10px;margin:8px 0 10px">'
+            +'<div style="width:'+w+'%;height:100%;background:linear-gradient(90deg,#22d3ee,#8b5cf6)"></div>'
+          +'</div>'
+          +'<div class="small">'+praise+'</div>'
+        +'</div>';
+      }).join('')
+    +'</div></div>';
 }
+
+/* ================== DETAIL REPORT (3~4 pages) ================== */
 function viewDetails(){
-  const r=STATE.result||{top3:[]};
-  const topBlocks=(r.top3||[]).map((k,i)=>theoryItem(i+1,k)).join('');
-  app().innerHTML=`<div class="block">
-    <div class="pageTitle">전문가 평가 및 이론적 배경</div>
-    <p class="muted"><b>${STATE.profile.child_name}</b>의 미술적성 심화 분석</p>
-    <div class="grid" style="grid-template-columns:1fr 1fr;gap:14px">${topBlocks || '<div class="small muted">강점 영역 산출 후 표시됩니다.</div>'}</div>
-  </div>
+  var r=STATE.result||{}; var s=r.scores||{}; var T=r.top3||[]; var P=r.potential||[];
+  var name=STATE.profile.child_name;
 
-  <div class="block" style="margin-top:14px">
-    <div class="pageTitle">상담 안내</div>
-    <div class="section">
-      <div class="small muted">테스트 결과를 바탕으로 <b>맞춤 로드맵</b>과 <b>포트폴리오</b> 구성을 상담해 드립니다. (무료, 60분)</div>
-      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-mint no-pdf" onclick="alert('상담 예약은 곧 준비됩니다!')">상담 예약하기</button>
-        <button class="btn-ghost" onclick="STATE.step='result'; render()">결과로 돌아가기</button>
-      </div>
-    </div>
-  </div>`;
+  function item(label,desc){return '<div style="display:flex;gap:8px"><div style="color:#60a5fa">•</div><div>'+desc+'</div></div>'}
+
+  var strengths=T.map(function(k){return item('','<b>'+(DIM_KR[k]||k)+'</b> : 해당 영역에서 상위 수준. '+(PRAISE['A'](DIM_KR[k]||k)).replace(/<[^>]+>/g,'') )}).join('');
+  var roadmap='<div class="tgrid">'
+    +'<div class="tcard"><div class="section-title">1) 단기(2주)</div>'+item('','Top 영역 기반 3회 <b>작은 완성</b> 만들기 (30–40분)')+item('','피드백 1개 반영하여 리터치')+'</div>'
+    +'<div class="tcard"><div class="section-title">2) 중기(8주)</div>'+item('','주 1회 <b>프로젝트 런</b> (주제-계획-완성-회고)')+item('','약점 2개 영역은 저난도 반복 루틴 15분')+'</div>'
+    +'<div class="tcard"><div class="section-title">3) 장기(6–12개월)</div>'+item('','테마 연작 6–8점으로 <b>미니 포트폴리오</b> 구성')+item('','공모/전시 1회 도전')+'</div>'
+  +'</div>';
+
+  function jobsBlock(){
+    var map={
+      SPA:['건축가','환경·전시 디자이너','모델러'],
+      DET:['제품/주얼리 디자이너','테크니컬 일러스트레이터'],
+      COL:['컬러리스트','그래픽/브랜딩 디자이너','콘셉트 아티스트'],
+      NAR:['스토리보드 아티스트','일러스트레이터','애니메이터'],
+      CHK:['미디어/인터랙션 아티스트','크리에이티브 테크놀로지스트'],
+      CON:['아트디렉터','콘셉트 디자이너','큐레이터'],
+      OBS:['과학 일러스트레이터','자연사 아티스트'],
+      EXP:['비주얼 아티스트','아트테라피 보조'],
+      GRT:['작가/크리에이터(지속 제작)','공예가'],
+      SOC:['전시/교육 기획','아트에듀케이터'],
+      CRT:['리서처/비평가','아트기반 전략기획']
+    };
+    var uniq=[].concat(T,P).filter(function(x, i, a){return a.indexOf(x)===i});
+    return '<div class="tgrid">'+uniq.slice(0,6).map(function(k){
+      return '<div class="tcard"><div class="section-title">'+(DIM_KR[k]||k)+' → 유망 직업</div><div class="small">'+(map[k]||[]).join(' · ')+'</div></div>';
+    }).join('')+'</div>';
+  }
+
+  app().innerHTML=
+  '<div class="detail-hero"><div class="ic">📘</div><div class="detail-title">예술가 잠재력 진단 리포트</div></div>'
+  +'<p class="detail-sub"><b>'+name+'</b> (만 '+STATE.profile.age+'세, '+STATE.profile.grade+') — 심층 분석</p>'
+
+  +'<div class="block">'
+    +'<div class="section-title">1. 강점 요약</div>'
+    +'<div class="tgrid">'
+      +'<div class="tcard"><div class="tchip">Top 역량</div><div class="small" style="margin-top:6px">'+T.map(function(k){return DIM_KR[k]||k}).join(' · ')+'</div></div>'
+      +'<div class="tcard"><div class="tchip">가능성(차순)</div><div class="small" style="margin-top:6px">'+P.map(function(k){return DIM_KR[k]||k}).join(' · ')+'</div></div>'
+    +'</div>'
+    +'<div class="small" style="margin-top:10px">'+strengths+'</div>'
+  +'</div>'
+
+  +'<div class="block"><div class="section-title">2. 성장 로드맵</div>'+roadmap+'</div>'
+
+  +'<div class="block"><div class="section-title">3. 직업 연계</div>'+jobsBlock()+'</div>'
+
+  +'<div class="center no-pdf" style="margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">'
+    +'<button class="btn-ghost" onclick="STATE.step=\'result\'; render()">결과로 돌아가기</button>'
+    +'<button class="btn" onclick="STATE.step=\'start\'; render()">처음으로</button>'
+  +'</div>';
 }
 
-/* ===== PDF helpers ===== */
+/* ================== PDF / EMAIL ================== */
 function buildPdfWrapperFrom(node){
-  const wrap=document.createElement('div');
+  var wrap=document.createElement('div');
   wrap.style.position='fixed';wrap.style.left='-10000px';wrap.style.top='0';
-  wrap.style.width='794px';wrap.style.background='#fff';wrap.style.zIndex='-1';
-  const clone=node.cloneNode(true);
-  clone.querySelectorAll('img').forEach(img=>{img.setAttribute('crossorigin','anonymous');img.referrerPolicy='no-referrer';img.src=img.src;});
-  const srcC=node.querySelectorAll('canvas');const dstC=clone.querySelectorAll('canvas');
-  srcC.forEach((src,i)=>{const dst=dstC[i];if(!dst)return;dst.width=src.width;dst.height=src.height;dst.getContext('2d',{willReadFrequently:true}).drawImage(src,0,0)});
-  wrap.appendChild(clone);document.body.appendChild(wrap);return wrap;
+  wrap.style.width='794px';wrap.style.background='#0b0f16';wrap.style.zIndex='-1';
+  var clone=node.cloneNode(true);
+  clone.querySelectorAll('img').forEach(function(img){
+    img.setAttribute('crossorigin','anonymous'); img.referrerPolicy='no-referrer'; img.src=img.src;
+  });
+  var srcC=node.querySelectorAll('canvas'); var dstC=clone.querySelectorAll('canvas');
+  srcC.forEach(function(src,i){var dst=dstC[i]; if(!dst)return; dst.width=src.width; dst.height=src.height; dst.getContext('2d',{willReadFrequently:true}).drawImage(src,0,0)});
+  wrap.appendChild(clone); document.body.appendChild(wrap); return wrap;
 }
 function waitForAssets(root){
-  const imgs=[...root.querySelectorAll('img')];
-  const imgPromises=imgs.map(img=>img.complete?Promise.resolve():new Promise(res=>{img.onload=()=>res();img.onerror=()=>res()}));
-  const fontsReady=('fonts'in document)?document.fonts.ready:Promise.resolve();
-  return Promise.all([fontsReady,...imgPromises]);
+  var imgs=[].slice.call(root.querySelectorAll('img'));
+  var imgPromises=imgs.map(function(img){return img.complete?Promise.resolve():new Promise(function(res){img.onload=function(){res()}; img.onerror=function(){res()}})});
+  var fontsReady=('fonts' in document)?document.fonts.ready:Promise.resolve();
+  return Promise.all([fontsReady].concat(imgPromises));
 }
 async function html2pdfBlob(wrapper){
-  const opt={margin:[8,8,8,8],
+  var opt={margin:[8,8,8,8],
     image:{type:'jpeg',quality:0.98},
-    html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',removeContainer:true,windowWidth:wrapper.scrollWidth,windowHeight:wrapper.scrollHeight},
+    html2canvas:{scale:2,useCORS:true,backgroundColor:'#0b0f16',removeContainer:true,windowWidth:wrapper.scrollWidth,windowHeight:wrapper.scrollHeight},
     pagebreak:{mode:['css','legacy']},
     jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}};
   return await html2pdf().set(opt).from(wrapper).output('blob');
 }
 async function canvasSlicerBlob(wrapper){
-  const h2c=window.html2canvas;
-  const canvas=await h2c(wrapper,{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,windowWidth:wrapper.scrollWidth,windowHeight:wrapper.scrollHeight});
-  const {jsPDF}=window.jspdf;
-  const pdf=new jsPDF({unit:'mm',format:'a4',orientation:'portrait'});
-  const pxToMm=210/canvas.width;
-  const pageHeightPx=Math.floor(297/pxToMm);
-  let y=0,page=0;
+  var h2c=window.html2canvas;
+  var canvas=await h2c(wrapper,{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#0b0f16',scrollX:0,scrollY:0,windowWidth:wrapper.scrollWidth,windowHeight:wrapper.scrollHeight});
+  var jsPDF=window.jspdf.jsPDF;
+  var pdf=new jsPDF({unit:'mm',format:'a4',orientation:'portrait'});
+  var pxToMm=210/canvas.width;
+  var pageHeightPx=Math.floor(297/pxToMm);
+  var y=0,page=0;
   while(y<canvas.height){
-    const sliceHeight=Math.min(pageHeightPx,canvas.height-y);
-    const pageCanvas=document.createElement('canvas');
-    pageCanvas.width=canvas.width;pageCanvas.height=sliceHeight;
-    const ctx=pageCanvas.getContext('2d',{willReadFrequently:true});
+    var sliceHeight=Math.min(pageHeightPx,canvas.height-y);
+    var pageCanvas=document.createElement('canvas');
+    pageCanvas.width=canvas.width; pageCanvas.height=sliceHeight;
+    var ctx=pageCanvas.getContext('2d',{willReadFrequently:true});
     ctx.drawImage(canvas,0,y,canvas.width,sliceHeight,0,0,canvas.width,sliceHeight);
-    const img=pageCanvas.toDataURL('image/jpeg',0.98);
-    const mmHeight=sliceHeight*pxToMm;
+    var img=pageCanvas.toDataURL('image/jpeg',0.98);
+    var mmHeight=sliceHeight*pxToMm;
     if(page>0) pdf.addPage();
     pdf.addImage(img,'JPEG',0,0,210,mmHeight);
-    y+=sliceHeight;page++;
+    y+=sliceHeight; page++;
   }
   return pdf.output('blob');
 }
 async function exportPdfBlob(node){
-  const wrapper=buildPdfWrapperFrom(node);
+  var wrapper=buildPdfWrapperFrom(node);
   await waitForAssets(wrapper);
   try{
-    let blob=await html2pdfBlob(wrapper);
+    var blob=await html2pdfBlob(wrapper);
     if(!blob || blob.size<5000){ blob=await canvasSlicerBlob(wrapper); }
     return blob;
   }catch(e){
-    try{ return await canvasSlicerBlob(wrapper); }
-    catch(e2){ throw e2; }
-  }finally{ wrapper.remove(); }
+    try{ return await canvasSlicerBlob(wrapper) } catch(e2){ throw e2 }
+  }finally{ wrapper.remove() }
 }
 async function handleSavePdf(){
-  const node=$('pdfArea');
-  node.classList.add('pdf-screen-width');
-  await new Promise(r=>setTimeout(r,50));
+  var node=$('pdfArea'); node.classList.add('pdf-screen-width'); await new Promise(function(r){setTimeout(r,50)});
   try{
-    const blob=await exportPdfBlob(node);
-    const filename=`${STATE.profile.child_name}_ADVANCE_진단리포트.pdf`;
-    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
-  }catch(e){console.error(e);alert('PDF 저장 중 오류가 발생했습니다.')}
-  finally{node.classList.remove('pdf-screen-width');}
+    var blob=await exportPdfBlob(node);
+    var filename=STATE.profile.child_name+'_미술적성테스트_ADVANCE.pdf';
+    var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  }catch(e){console.error(e); alert('PDF 저장 중 오류가 발생했습니다.')}
+  finally{ node.classList.remove('pdf-screen-width') }
 }
+function setModalVisible(show){var m=$('emailModal'); if(show){m.classList.add('show'); m.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'} else{m.classList.remove('show'); m.setAttribute('aria-hidden','true'); document.body.style.overflow=''}}
+function openEmailModal(){setModalVisible(true); $('emailSubject').value=STATE.profile.child_name+' 테스트 결과(ADVANCE)'; $('emailTo').value=STATE.profile.email||''; $('emailMsg').textContent=''}
+$('emailCancel').onclick=function(){setModalVisible(false)}; document.addEventListener('keydown',function(e){if(e.key==='Escape')setModalVisible(false)});
 
-/* Email modal */
-function setModalVisible(show){const m=$('emailModal');if(show){m.classList.add('show');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}else{m.classList.remove('show');m.setAttribute('aria-hidden','true');document.body.style.overflow=''}}
-function openEmailModal(){setModalVisible(true);$('emailSubject').value=`${APP_TITLE} – ${STATE.profile.child_name} 결과`;$('emailTo').value=STATE.profile.email||'';$('emailMsg').textContent=''}
-$('emailCancel').onclick=()=>setModalVisible(false);document.addEventListener('keydown',e=>{if(e.key==='Escape')setModalVisible(false)})
-
-function blobToBase64(blob){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onloadend=()=>resolve(reader.result.split(',')[1]);reader.onerror=reject;reader.readAsDataURL(blob)})}
-$('emailSend').onclick=async()=>{
-  const to=$('emailTo').value.trim();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)){ $('emailMsg').textContent='이메일 형식을 확인해 주세요.'; return; }
+function blobToBase64(blob){return new Promise(function(resolve,reject){var reader=new FileReader(); reader.onloadend=function(){resolve(reader.result.split(',')[1])}; reader.onerror=reject; reader.readAsDataURL(blob)})}
+$('emailSend').onclick=async function(){
+  var to=$('emailTo').value.trim(); if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)){ $('emailMsg').textContent='이메일 형식을 확인해 주세요.'; return; }
   $('emailMsg').textContent='PDF 생성 중...';
-  let base64='';try{const blob=await exportPdfBlob($('pdfArea'));base64=await blobToBase64(blob)}catch(e){$('emailMsg').textContent='PDF 생성에 실패했습니다.';return}
+  var base64=''; try{var blob=await exportPdfBlob($('pdfArea')); base64=await blobToBase64(blob)}catch(e){$('emailMsg').textContent='PDF 생성에 실패했습니다.'; return}
   $('emailMsg').textContent='이메일 전송 중...';
-  const subject=$('emailSubject').value.trim()||`${APP_TITLE} – ${STATE.profile.child_name} 결과`;
-  const htmlBody=`<div style="font-family:Pretendard,Apple SD Gothic Neo,Segoe UI,Arial">
-    <h2 style="margin:0 0 8px">${APP_TITLE}</h2>
-    <p><b>${STATE.profile.child_name}</b> 님의 결과지를 첨부했습니다.</p>
-    <p>캠퍼스: ${STATE.profile.campus||'-'} / 연락처: ${STATE.profile.phone||'-'}</p>
-    <p style="color:#6b7280;font-size:12px;margin-top:12px">본 메일은 자동 발송되었습니다.</p>
-  </div>`;
+  var subject=$('emailSubject').value.trim()|| (STATE.profile.child_name+' 테스트 결과(ADVANCE)');
+  var htmlBody='<div style="font-family:Pretendard,Segoe UI,Arial;color:#111"><h2 style="margin:0 0 8px">'+APP_TITLE+'</h2><p><b>'+STATE.profile.child_name+'</b> 님의 결과지를 첨부했습니다.</p><p>캠퍼스: '+(STATE.profile.campus||'-')+' / 연락처: '+(STATE.profile.phone||'-')+'</p><p style="color:#6b7280;font-size:12px;margin-top:12px">본 메일은 자동 발송되었습니다.</p></div>';
   try{
-    const res=await fetch(EMAIL_FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({to,subject,html:htmlBody,attachmentName:`${STATE.profile.child_name}_ADVANCE_진단리포트.pdf`,attachmentBase64:base64})});
-    const ok=res.ok;let data={};try{data=await res.json()}catch(_){}
-    if(ok){$('emailMsg').textContent='전송 완료! 메일함을 확인해 주세요.';setTimeout(()=>setModalVisible(false),1200)}
+    var res=await fetch(EMAIL_FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({to:to,subject:subject,html:htmlBody,attachmentName:STATE.profile.child_name+'_미술적성테스트_ADVANCE.pdf',attachmentBase64:base64})});
+    var ok=res.ok; var data={}; try{data=await res.json()}catch(_){}
+    if(ok){$('emailMsg').textContent='전송 완료! 메일함을 확인해 주세요.'; setTimeout(function(){setModalVisible(false)},1200)}
     else{$('emailMsg').textContent='전송 실패: '+(data.error||res.statusText)}
   }catch(err){$('emailMsg').textContent='전송 중 오류가 발생했습니다.'}
 }
 
-/* Router */
-function render(){
-  renderNav();updateTopProgress();
-  if(STATE.step==='start')return viewStart();
-  if(STATE.step==='consent')return viewConsent();
-  if(STATE.step==='profile')return viewProfile();
-  if(STATE.step==='test')return viewTest();
-  if(STATE.step==='result')return viewResult();
-  if(STATE.step==='details')return viewDetails();
-}
+/* ================== ROUTER ================== */
+function render(){renderNav();updateTopProgress();if(STATE.step==='start')return viewStart();if(STATE.step==='consent')return viewConsent();if(STATE.step==='profile')return viewProfile();if(STATE.step==='test')return viewTest();if(STATE.step==='result')return viewResult();if(STATE.step==='details')return viewDetails()}
 render();
 
-/* ===== Fallback 20문항 ===== */
-function W(w){const o={};DOM_KEYS.forEach(k=>o[k]=0);Object.entries(w).forEach(([k,v])=>{if(o[k]!=null)o[k]=v});return o}
-function localQuestions(){
-  const S=(i,p,a,b,c,d)=>({id:`q${i}`,order:i,prompt:p,options:[
-    {key:'A',label:a[0],imageUrl:'',weights:W(a[1])},
-    {key:'B',label:b[0],imageUrl:'',weights:W(b[1])},
-    {key:'C',label:c[0],imageUrl:'',weights:W(c[1])},
-    {key:'D',label:d[0],imageUrl:'',weights:W(d[1])}
-  ]});
-  const L=[
-    S(1,'이 그림을 볼 때, 가장 먼저 시선이 가는 곳은 어디인가요?',['전체 구도와 배치',{SPA:1}],['붓터치/세밀',{DET:1}],['강렬한 색 조합',{COL:1}],['숨은 상징/의미',{NAR:1}]),
-    S(2,'‘자유’를 그림으로 표현한다면?',['하늘과 새',{NAR:1,EXP:0.6}],['복잡한 선·도형',{CON:1}],['불규칙한 색 조합',{COL:1,CHK:0.6}],['신나게 뛰노는 사람들',{NAR:1,EXP:0.6}]),
-    S(3,'‘시작과 끝’ 연작 표현 방식은?',['상징 정물 2점',{CON:1,DET:0.6}],['서사 4컷',{NAR:1}],['색만 바꾸는 실험',{COL:1,CHK:0.6}],['버전 반복 완성',{GRT:1,DET:0.6}]),
-    S(4,'친구 작품 피드백에서 가장 볼 점은?',['이야기/감정',{NAR:1,EXP:0.6}],['형태/구도 안정',{SPA:1}],['사실적 묘사',{DET:1}],['새 시도 여부',{CHK:1}]),
-    S(5,'작품 속 주인공이라면 맡고 싶은 역할은?',['숨은 이야기 전달',{NAR:1,EXP:0.6}],['흩뿌려지는 점/선',{CHK:1,EXP:0.6}],['조화로운 배치',{SPA:1,SOC:0.6}],['강렬한 색채',{COL:1}]),
-    S(6,'새 재료를 받았을 때?',['먼저 만져보기',{CHK:1}],['구상/계획 세우기',{CON:1,SPA:0.6}],['주변 참고',{SOC:1}],['질감·형태 탐색',{DET:1,OBS:0.6}]),
-    S(7,'없는 공간을 그릴 때 가장 공 들일 부분은?',['가상의 존재',{NAR:1,EXP:0.6}],['현실과 다른 디테일',{DET:1,OBS:0.6}],['빛과 그림자 분위기',{SPA:1,COL:0.6}],['새 기법 실험',{CHK:1}]),
-    S(8,'“잘 그렸다”의 가장 중요한 요소는?',['정확한 형태/비례',{DET:1,OBS:0.6}],['독특한 아이디어',{CON:1,CHK:0.6}],['감정을 움직이는 힘',{EXP:1,NAR:0.6}],['안정적 구도',{SPA:1}]),
-    S(9,'경시 대회에서 망쳤다면?',['처음부터 다시',{CHK:1}],['수정하여 완성',{GRT:1,DET:0.6}],['다음 콘셉트 구상',{CON:1}],['의견 구하기',{SOC:1}]),
-    S(10,'부모님이 “이해하기 어렵다” 했을 때 기분은?',['난해했나 속상',{CRT:1}],['감정 오해',{EXP:1}],['의도 전달 고민',{NAR:1,SOC:0.6}],['독특/특별해서 그래',{EXP:1}]),
-    S(11,'가장 흥미로운 직업은?',['건축가',{SPA:1,CON:0.6}],['일러스트레이터',{NAR:1,DET:0.6}],['애니메이터',{EXP:1,NAR:0.6}],['조각가',{SPA:1,DET:0.6}]),
-    S(12,'평범한 신발을 비범하게 만들기',['해체/재조합',{CON:1,CHK:0.6}],['극사실 묘사',{DET:1,OBS:0.6}],['색/무늬 장식',{COL:1}],['스토리 부여',{NAR:1}]),
-    S(13,'작품을 보며 가장 먼저 드는 생각',['얼마나 시간 들였을까',{GRT:1,DET:0.6}],['다른 색 쓸 듯',{COL:1,CRT:0.6}],['의도와 스토리',{NAR:1,CON:0.6}],['작가의 삶',{EXP:1,NAR:0.6}]),
-    S(14,'감정을 가장 잘 표현하는 요소',['선 굵기/거친 질감',{DET:1}],['강/부드러운 색',{COL:1,EXP:0.6}],['표정',{NAR:1,EXP:0.6}],['분위기/구도',{SPA:1}]),
-    S(15,'1년 장기 프로젝트, 흥미로운 주제',['도시 풍경 세밀 기록',{OBS:1,GRT:0.6,DET:0.6}],['한 인물의 일생 연작',{NAR:1,GRT:0.6}],['새 기법 연속 실험',{CHK:1,GRT:0.6}],['심리 변화 시각화',{EXP:1,CON:0.6}]),
-    S(16,'가장 중요한 작품을 고르는 이유',['강한 감동',{EXP:1}],['사회적 메시지/아이디어',{CON:1,NAR:0.6}],['정교·사실적 묘사',{DET:1,OBS:0.6}],['독특한 색/형태',{COL:1,CHK:0.6}]),
-    S(17,'‘두려움’을 표현한다면',['복잡한 선/모양',{CHK:1,EXP:0.6}],['어둡고 차가운 색',{COL:1,EXP:0.6}],['아주 작은 인물/괴물',{DET:1,NAR:0.6,OBS:0.6}],['나만의 상징',{EXP:1,CON:0.6}]),
-    S(18,'큰 작품에서 가장 힘든 점',['계획과 달라짐',{CON:1,CRT:0.6}],['반복 리터치',{DET:1,GRT:0.6}],['끝없이 느껴짐',{GRT:1}],['의도 오해 불안',{SOC:1,EXP:0.6}]),
-    S(19,'심사 기준으로 가장 높은 점수',['기술 완성도',{DET:1,GRT:0.6,OBS:0.6}],['고정관념 파괴',{CHK:1,CON:0.6}],['깊은 감동',{EXP:1,NAR:0.6}],['여러 의미의 생각거리',{CON:1,NAR:0.6}]),
-    S(20,'보이지 않는 공기/소리/냄새를 표현',['도형/선으로',{SPA:1,CON:0.6}],['색과 분위기',{COL:1,EXP:0.6}],['흐름/움직임',{NAR:1,SPA:0.6}],['공간 채움의 복잡성',{DET:1,OBS:0.6,SPA:0.6}])
-  ];
-  return L;
+/* ================== LOCAL QUESTIONS (20) ================== */
+function W(w){var o={}; DIM.forEach(function(k){o[k]=0}); Object.keys(w).forEach(function(k){o[k]=w[k]}); return o}
+function L(q,p,a,b,c,d){return {id:q,order:+q.replace('q',''),prompt:p,options:[
+  {key:'A',label:a[0],imageUrl:a[1],weights:W(a[2])},
+  {key:'B',label:b[0],imageUrl:b[1],weights:W(b[2])},
+  {key:'C',label:c[0],imageUrl:c[1],weights:W(c[2])},
+  {key:'D',label:d[0],imageUrl:d[1],weights:W(d[2])}
+]}}
+function IMG(seed){return 'https://picsum.photos/seed/'+encodeURIComponent(seed)+'/900/600'}
+function localQuestions2(){
+  return [
+  L('q1','이 그림을 볼 때, 가장 먼저 시선이 가는 곳은 어디인가요?',
+    ['전체적인 구도와 사물들의 배치',IMG('spa1'),{SPA:1}],
+    ['붓 터치나 색칠의 세밀한 부분',IMG('det1'),{DET:1}],
+    ['강렬한 색깔 조합',IMG('col1'),{COL:1}],
+    ['그림 속에 숨겨진 상징이나 의미',IMG('nar1'),{NAR:1}]
+  ),
+  L('q2','“자유”를 그림으로 표현한다면, 가장 먼저 떠오르는 이미지는?',
+    ['시원한 하늘과 새들',IMG('free2a'),{CON:0.4,SPA:0.6}],
+    ['얽히고설킨 선/도형',IMG('free2b'),{CON:0.6,CHK:0.4}],
+    ['규칙에서 벗어난 색 조합',IMG('free2c'),{COL:0.8,CHK:0.4}],
+    ['한껏 뛰어노는 사람들',IMG('free2d'),{NAR:0.6,EXP:0.6}]
+  ),
+  L('q3','“시작과 끝” 연작을 만든다면?',
+    ['상징 정물 2점으로 표현',IMG('q3a'),{CON:0.6,DET:0.5}],
+    ['4컷 만화/서사적 진행',IMG('q3b'),{NAR:1}],
+    ['동일 도형+색만 바꾸는 실험',IMG('q3c'),{COL:0.7,CHK:0.6}],
+    ['완성 후 미세 변주로 여러 버전',IMG('q3d'),{GRT:0.6,DET:0.5}]
+  ),
+  L('q4','친구 작품 피드백에서 가장 중요하게 보는 것은?',
+    ['이야기/감정',IMG('q4a'),{NAR:0.6,EXP:0.4}],
+    ['형태/구도의 안정성',IMG('q4b'),{SPA:0.9}],
+    ['사실적·섬세한 묘사',IMG('q4c'),{DET:1}],
+    ['새로운 시도',IMG('q4d'),{CHK:1}]
+  ),
+  L('q5','당신이 작품의 주인공이라면, 어떤 역할?',
+    ['숨겨진 이야기를 들려주는 해설자',IMG('q5a'),{NAR:0.6,EXP:0.5}],
+    ['자유롭게 흩뿌려지는 점·선',IMG('q5b'),{CHK:0.8,EXP:0.4}],
+    ['다른 사물과 조화롭게 배치된 조연',IMG('q5c'),{SPA:0.7,SOC:0.4}],
+    ['시선을 압도하는 색채',IMG('q5d'),{COL:0.9}]
+  ),
+  L('q6','새 재료(예: 찰흙)를 받았을 때 보통은?',
+    ['만지며 질감 탐색',IMG('q6a'),{CHK:0.5}],
+    ['구상·계획 후 제작',IMG('q6b'),{CON:0.6,SPA:0.5}],
+    ['주변을 참고',IMG('q6c'),{SOC:0.7}],
+    ['세밀 질감·형태를 조물조물',IMG('q6d'),{DET:0.6,OBS:0.6}]
+  ),
+  L('q7','“없는 공간”을 그린다면 가장 공들이는 부분?',
+    ['가상의 존재/생명체',IMG('q7a'),{NAR:0.5,EXP:0.5}],
+    ['현실과 비슷하지만 다른 디테일',IMG('q7b'),{DET:0.7,OBS:0.5}],
+    ['빛과 그림자의 분위기',IMG('q7c'),{SPA:0.6,COL:0.5}],
+    ['안 써본 기법/재료 실험',IMG('q7d'),{CHK:0.9}]
+  ),
+  L('q8','“잘 그렸다”의 핵심은?',
+    ['정확한 형태·비례',IMG('q8a'),{DET:0.8,OBS:0.4}],
+    ['독특한 아이디어/창의성',IMG('q8b'),{CON:0.7,CHK:0.6}],
+    ['감정을 움직이는 힘',IMG('q8c'),{EXP:0.7,NAR:0.5}],
+    ['안정적인 구도',IMG('q8d'),{SPA:0.9}]
+  ),
+  L('q9','3시간 대회 중 1시간째 망쳤다면?',
+    ['처음부터 다시',IMG('q9a'),{CHK:0.7}],
+    ['수정해서 끝까지',IMG('q9b'),{GRT:0.8,DET:0.4}],
+    ['새 콘셉트 구상',IMG('q9c'),{CON:0.7}],
+    ['주변 의견 구함',IMG('q9d'),{SOC:0.7}]
+  ),
+  L('q10','부모님이 “이해 어렵다”고 할 때 기분은?',
+    ['난해했나 속상',IMG('q10a'),{CRT:0.5}],
+    ['감정을 이해 못하네',IMG('q10b'),{EXP:0.6}],
+    ['의도를 잘 전달하려 고민',IMG('q10c'),{NAR:0.6,SOC:0.5}],
+    ['독특하고 특별한가 보다',IMG('q10d'),{EXP:0.6}]
+  ),
+  L('q11','가장 흥미로운 직업은?',
+    ['건축가',IMG('q11a'),{SPA:0.8,CON:0.5}],
+    ['일러스트레이터',IMG('q11b'),{NAR:0.6,DET:0.5}],
+    ['애니메이터',IMG('q11c'),{EXP:0.6,NAR:0.6}],
+    ['조각가',IMG('q11d'),{SPA:0.6,DET:0.6}]
+  ),
+  L('q12','평범한 물건(신발)을 비범하게?',
+    ['형태 해체·재조합',IMG('q12a'),{CON:0.6,CHK:0.6}],
+    ['재질을 사실적으로',IMG('q12b'),{DET:0.8,OBS:0.5}],
+    ['색상·무늬 장식',IMG('q12c'),{COL:0.8}],
+    ['스토리를 담아 표현',IMG('q12d'),{NAR:0.8}]
+  ),
+  L('q13','작품을 볼 때 가장 먼저 드는 생각은?',
+    ['얼마나 시간 걸렸을까?',IMG('q13a'),{GRT:0.6,DET:0.5}],
+    ['나라면 다른 색 썼을 듯',IMG('q13b'),{COL:0.6,CRT:0.5}],
+    ['의도/스토리는?',IMG('q13c'),{NAR:0.6,CON:0.5}],
+    ['작가의 삶은?',IMG('q13d'),{EXP:0.6,NAR:0.4}]
+  ),
+  L('q14','감정을 가장 잘 표현하는 요소는?',
+    ['선의 굵기·거친 질감',IMG('q14a'),{DET:0.5}],
+    ['강렬/부드러운 색',IMG('q14b'),{COL:0.7,EXP:0.5}],
+    ['표정',IMG('q14c'),{NAR:0.6,EXP:0.5}],
+    ['분위기/구도',IMG('q14d'),{SPA:0.7}]
+  ),
+  L('q15','1년 장기 프로젝트, 가장 흥미로운 주제는?',
+    ['도시 풍경을 꼼꼼하게',IMG('q15a'),{OBS:0.6,GRT:0.7,DET:0.5}],
+    ['한 인물의 일생 12연작',IMG('q15b'),{NAR:0.7,GRT:0.6}],
+    ['새 재료·기법 지속 실험',IMG('q15c'),{CHK:0.8,GRT:0.5}],
+    ['심리 변화 기록·시각화',IMG('q15d'),{EXP:0.6,CON:0.6}]
+  ),
+  L('q16','가장 중요한 작품을 고른다면, 이유는?',
+    ['강한 감동',IMG('q16a'),{EXP:0.8}],
+    ['사회적 메시지/아이디어',IMG('q16b'),{CON:0.6,NAR:0.6}],
+    ['정교하고 사실적 묘사',IMG('q16c'),{DET:0.8,OBS:0.6}],
+    ['색/형태가 독특',IMG('q16d'),{COL:0.7,CHK:0.6}]
+  ),
+  L('q17','“두려움”을 시각화한다면?',
+    ['복잡한 선/모양',IMG('q17a'),{CHK:0.6,EXP:0.5}],
+    ['어둡고 차가운 색',IMG('q17b'),{COL:0.6,EXP:0.5}],
+    ['숨은 작은 존재',IMG('q17c'),{DET:0.5,NAR:0.5,OBS:0.5}],
+    ['나만의 상징',IMG('q17d'),{EXP:0.6,CON:0.6}]
+  ),
+  L('q18','큰 작품에서 가장 힘든 점은?',
+    ['계획과 달라지는 것',IMG('q18a'),{CON:0.5,CRT:0.5}],
+    ['작은 부분 반복 수정',IMG('q18b'),{DET:0.6,GRT:0.6}],
+    ['끝없이 느껴지는 지루함',IMG('q18c'),{GRT:0.6}],
+    ['의도가 이해 안 될 불안',IMG('q18d'),{SOC:0.6,EXP:0.4}]
+  ),
+  L('q19','심사위원이라면 높은 점수를 줄 요소는?',
+    ['기술적으로 완벽',IMG('q19a'),{DET:0.7,GRT:0.5,OBS:0.4}],
+    ['고정관념을 깨는 충격',IMG('q19b'),{CHK:0.8,CON:0.6}],
+    ['마음을 깊이 움직임',IMG('q19c'),{EXP:0.7,NAR:0.6}],
+    ['여러 의미를 던짐',IMG('q19d'),{CON:0.6,NAR:0.6}]
+  ),
+  L('q20','눈에 보이지 않는 공기/소리/냄새를 표현한다면?',
+    ['도형/선으로',IMG('q20a'),{SPA:0.6,CON:0.6}],
+    ['느낌에 맞는 색과 분위기',IMG('q20b'),{COL:0.7,EXP:0.5}],
+    ['움직임·흐름',IMG('q20c'),{NAR:0.6,SPA:0.5}],
+    ['공간 채움의 복잡성',IMG('q20d'),{DET:0.5,OBS:0.5,SPA:0.5}]
+  )
+  ].map(function(q){q.options=q.options.filter(function(o){return o.label||o.imageUrl}); if(q.options.length<2) q.options=q.options.slice(0,2); return q});
 }
 </script>
 </body>
