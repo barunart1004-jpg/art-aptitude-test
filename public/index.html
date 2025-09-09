@@ -10,10 +10,8 @@
 
 <!-- 그래프/캡처 라이브러리 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<!-- 폴백용: html2canvas & jsPDF를 명시적으로 로드 -->
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-<!-- 기본 경로: html2pdf (bundle) -->
 <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
 
 <style>
@@ -106,7 +104,7 @@ label{font-size:14px;color:#374151}
 .agree-row .txt{font-size:15px;color:#0f172a;line-height:1.55;font-weight:700}
 .agree-row input[type="checkbox"]{width:20px;height:20px;accent-color:#FFB98A}
 
-/* 결과/차트 */
+/* 결과/차트 — 새 레이아웃 유틸 */
 .block{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 26px rgba(16,24,40,.06);page-break-inside:avoid;break-inside:avoid}
 .block h3{margin:0 0 10px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -114,11 +112,11 @@ label{font-size:14px;color:#374151}
 .callout{position:relative;background:linear-gradient(135deg,#FFF2E6,#F8FBFF);padding:22px;border-radius:18px;border:1px solid var(--line);box-shadow:0 12px 34px rgba(255,185,138,.25)}
 .callout:before{content:"";position:absolute;inset:-1px;border-radius:18px;padding:1px;background:linear-gradient(90deg,#FFD9BE,#E6E2FF,#CFF7EE);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 
-.result-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.chartBox{max-width:200px;margin:0 auto}
-@media (max-width:900px){.result-row{grid-template-columns:1fr}}
-
-.qbadge{display:inline-block;padding:6px 12px;border-radius:999px;font-weight:900;color:#5a3f2f;background:linear-gradient(90deg,#FFE6CF,#FFD9BE);border:1px solid #ffd9be}
+/* ✨ 새 3차트 배치 */
+.report-grid{display:grid;grid-template-columns:3fr 2fr;gap:16px}
+.right-stack{display:grid;grid-template-rows:1fr 1fr;gap:16px}
+.chartBox{width:100%;height:100%}
+.chartBox canvas{width:100% !important;height:100% !important}
 
 /* 상세(블루) */
 .detail-hero{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:8px}
@@ -150,7 +148,6 @@ label{font-size:14px;color:#374151}
 
 /* 프린트 & PDF */
 @media print{.header,.sticky,.btn,.btn-ghost,.sideNav,.no-pdf{display:none !important}.card{box-shadow:none;border:1px solid #ddd}.block{break-inside:avoid-page}}
-/* A4 폭(픽셀) 고정 레이아웃 */
 .pdf-screen-width{width:794px;max-width:none;margin:0 auto}
 
 /* 이메일 모달(기본 숨김) */
@@ -230,38 +227,23 @@ function renderNav(){
   const cur=STEPS.findIndex(s=>s.key===STATE.step);
   $('topnav').innerHTML=STEPS.map((s,i)=>`<div class="step ${s.key===STATE.step?'active':''} ${cur>i?'done':''}" onclick="navGo('${s.key}')"><span class="num">${i+1}</span><span>${s.label}</span></div>`).join('')
 }
-
 function updateTopProgress(){
   const topbar=$('topbar'); const toplabel=$('toplabel'); const tp=$('topprogress'); const status=$('statusline');
-
   if(STATE.step==='test'&&STATE.questions.length){
-    // 진행 텍스트(예: "테스트 진행 1/15 (0%)")는 숨김
     status.style.display='none';
-
     const total=STATE.questions.length;
-    const curIndex=STATE.idx+1; // 1-based
+    const curIndex=STATE.idx+1;
     const pct=Math.max(0, Math.min(100, Math.round((STATE.idx)/total*100)));
-
     topbar.style.width=pct+'%';
     toplabel.textContent=`(${curIndex}/${total})`;
     tp.style.setProperty('--steps', String(total));
-
-    $('sideLeft').style.display='block';
-    $('sideRight').style.display='block';
-    return;
+    $('sideLeft').style.display='block'; $('sideRight').style.display='block'; return;
   }
-
-  // 테스트 외 단계: 기본 진행률 표시
-  $('sideLeft').style.display='none';
-  $('sideRight').style.display='none';
-  toplabel.textContent='';
-  status.style.display='block';
-
+  $('sideLeft').style.display='none'; $('sideRight').style.display='none'; toplabel.textContent=''; status.style.display='block';
   let pct=(STEPS.findIndex(s=>s.key===STATE.step))/(STEPS.length-1)*100;
   topbar.style.width=Math.round(pct)+'%';
   $('statusline').textContent=`진행률 ${Math.round(pct)}%`;
 }
-
 function navGo(step){STATE.step=step;if(step==='test'&&STATE.questions.length===0){startTest();return;}render();}
 
 /* GViz 파서 */
@@ -274,7 +256,10 @@ function startScreen(){
     <div class="hero">
       <div class="title center">${APP_TITLE}</div>
       <div class="sub center">아이의 미술 적성과 잠재력을 간단히 확인하고, 바로 결과를 저장·이메일 전송할 수 있어요.</div>
-      <div class="ctaRow"><button class="btn btn-xl" id="startBtn">테스트 시작하기 →</button></div>
+      <div class="ctaRow">
+        <button class="btn btn-xl" id="startBtn">테스트 시작하기 →</button>
+        <a class="btn-ghost" href="index2.html">ADVANCE 테스트</a>
+      </div>
     </div>
     <section class="features" style="margin:20px auto 8px;max-width:980px">
       <h2 style="text-align:center;font-weight:900">테스트 특징</h2>
@@ -355,7 +340,7 @@ function optionImageUrl(q,o){if(o.imageUrl)return o.imageUrl;const num=Number(q.
 function viewTest(){
   const q=STATE.questions[STATE.idx];if(!q){app().innerHTML='<h3 class="center">문항을 불러오지 못했습니다. 관리자에 문의해 주세요.</h3>';return;}
   const gridCls=pcGridClassFor(q.options.length);
-  app().innerHTML=`<div class="center small muted"><span class="qbadge">Q ${STATE.idx+1} / ${STATE.questions.length}</span></div>
+  app().innerHTML=`<div class="center small muted"><span class="chip">Q ${STATE.idx+1} / ${STATE.questions.length}</span></div>
     <h2 class="center" style="margin-top:10px">${q.prompt||''}</h2>
     <div class="${gridCls}" style="margin-top:12px">
       ${q.options.map(o=>`<div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label||o.key}" data-key="${o.key}">
@@ -394,7 +379,9 @@ function nowKST(){const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.
 async function submitAllSafe(){
   const raw=aggregateScores(STATE.answers);
   const scores=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,adjust(v)]));
-  const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3);
+  const ordered=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]);
+  const top3=ordered.slice(0,3);
+  const potential=ordered.slice(3,7); // 차순 4개
   const resultId=crypto.randomUUID();
   const form=new FormData();
   form.append(F.child_name,STATE.profile.child_name);form.append(F.age,STATE.profile.age);form.append(F.grade,STATE.profile.grade);
@@ -402,45 +389,55 @@ async function submitAllSafe(){
   form.append(F.answers,JSON.stringify({profile:STATE.profile,questions:STATE.answers,top3}));
   form.append(F.scores,JSON.stringify(scores));form.append(F.top3,top3.join(','));form.append(F.resultId,resultId);form.append(F.timestamp,nowKST());
   try{await fetch(FORM_ACTION,{method:'POST',mode:'no-cors',body:form});}catch(e){}
-  STATE.result={scores,top3,resultId};STATE.step='result';render();
+  STATE.result={scores,top3,potential,resultId};STATE.step='result';render();
 }
 
-let CHARTS=[];function destroyCharts(){CHARTS.forEach(c=>c.destroy?.());CHARTS=[]}
+let CHARTS=[];function destroyCharts(){CHARTS.forEach(c=>{if(c&&typeof c.destroy==='function'){try{c.destroy()}catch(_){}}});CHARTS=[]}
 
+/* ✅ 결과: 3개 그래프 배치(좌 레이더 / 우상 TOP3 / 우하 가능성) */
 function viewResult(){
-  const r=STATE.result,s=r?.scores||{};const T=r.top3;
+  const r=STATE.result,s=r?.scores||{};const T=r.top3||[];
+  const ordered=Object.keys(s).sort((a,b)=>s[b]-s[a]);
+  const top9=ordered.slice(0,Math.min(9,ordered.length));
+  const potential=r.potential||ordered.slice(3,7);
 
-  // 상위 4개만 레이다용
-  const top4=Object.keys(s).sort((a,b)=>s[b]-s[a]).slice(0,4);
-
-  const longSummary=[`${STATE.profile.child_name}님은 <b>${T[0]}</b>를 중심으로 <b>${T[1]}</b>, <b>${T[2]}</b>에서 강점이 뚜렷합니다.`,`선택 과정에서 주의집중이 안정적이며, 과제를 빠르게 파악해 핵심을 잡는 유형입니다.`,`${T[0]} 기반의 표현에서 높은 완성도를 보이고, ${T[1]}·${T[2]} 영역의 조합이 좋아 작품의 전체 메시지를 설득력 있게 만듭니다.`,`새로운 과제에서도 학습 전이가 원활하여 성장 속도가 빠른 편입니다.`,`강점을 루틴으로 확장해 ‘작은 완성’을 자주 만드는 전략이 동기 유지에 특히 효과적입니다.`].join(' ');
+  const longSummary=[`${STATE.profile.child_name}님은 <b>${T[0]||'-'}</b>를 중심으로 <b>${T[1]||'-'}</b>, <b>${T[2]||'-'}</b>에서 강점이 뚜렷합니다.`,`선택 과정에서 주의집중이 안정적이며, 과제를 빠르게 파악해 핵심을 잡는 유형입니다.`,`${T[0]||'-'} 기반의 표현에서 높은 완성도를 보이고, ${T[1]||'-'}·${T[2]||'-'} 영역의 조합이 좋아 작품의 전체 메시지를 설득력 있게 만듭니다.`,`새로운 과제에서도 학습 전이가 원활하여 성장 속도가 빠른 편입니다.`,`강점을 루틴으로 확장해 ‘작은 완성’을 자주 만드는 전략이 동기 유지에 특히 효과적입니다.`].join(' ');
 
   app().innerHTML=`<div id="pdfArea" class="pdf-screen-width">
     <div class="block callout" style="text-align:center">
       <div class="chip" style="margin:0 auto 8px;display:inline-block">테스트 완료</div>
       <h2 style="margin:0 0 10px"><b>${STATE.profile.child_name}</b>님, 멋진 집중력이었습니다!</h2>
-      <div class="chips" style="margin-top:10px;justify-content:center">${r.top3.map(t=>`<span class="chip">뛰어난 영역: ${t}</span>`).join('')}</div>
+      <div class="chips" style="margin-top:10px;justify-content:center">${T.map(t=>`<span class="chip">뛰어난 영역: ${t}</span>`).join('')}</div>
     </div>
 
-    <div class="result-row">
-      <div class="block">
-        <h3 class="center">영역별 관심도</h3>
-        <div class="chartBox"><canvas id="radar" height="200"></canvas></div>
-      </div>
-      <div class="block">
-        <h3 class="center">뛰어난 영역</h3>
-        <div class="chartBox"><canvas id="bars" height="200"></canvas></div>
+    <div class="block">
+      <h3 class="center">프로파일 & 주요 지표</h3>
+      <div class="report-grid" style="height:420px;margin-top:8px">
+        <div class="chartBox" style="border:1px solid var(--line);border-radius:14px;padding:10px;background:#fff">
+          <div class="small muted" style="font-weight:900;margin:0 0 6px">영역별 관심도(레이다)</div>
+          <canvas id="radar"></canvas>
+        </div>
+        <div class="right-stack">
+          <div class="chartBox" style="border:1px solid var(--line);border-radius:14px;padding:10px;background:#fff">
+            <div class="small muted" style="font-weight:900;margin:0 0 6px">뛰어난 영역 (TOP3)</div>
+            <canvas id="barsTop3"></canvas>
+          </div>
+          <div class="chartBox" style="border:1px solid var(--line);border-radius:14px;padding:10px;background:#fff">
+            <div class="small muted" style="font-weight:900;margin:0 0 6px">가능성 영역 (차순 4개)</div>
+            <canvas id="barsPotential"></canvas>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="block"><h3>총평</h3><p style="color:#0f172a;font-size:15px;line-height:1.7">${longSummary}</p></div>
 
-    <!-- 항목별 해석: 점수/바/일일15분 제거 -->
+    <!-- 항목별 해석: 점수/바/일일15분 제거(기존 유지) -->
     <div class="block"><h3>항목별 해석</h3>
       <div class="grid" style="grid-template-columns:1fr 1fr">
         ${DOMAINS.map(k=>{
           const v = +(s[k]||0);
-          const w = Math.min(100,(v/4)*100); // 막대 길이만 시각적으로 표시, 숫자 텍스트 없음
+          const w = Math.min(100,(v/4)*100);
           const b = band(v);
           const praiseFn = PRAISE[b] || (()=>`${k}에서 꾸준히 성장 중입니다.`);
           return `
@@ -467,17 +464,24 @@ function viewResult(){
 
   destroyCharts();
 
-  // 레이다: 상위 4개만
+  // 레이다: 상위 9개(최대)
   const rctx=document.getElementById('radar').getContext('2d',{willReadFrequently:true});
   CHARTS.push(new Chart(rctx,{type:'radar',
-    data:{labels:top4,datasets:[{data:top4.map(k=>s[k]||0),borderColor:'#FFB98A',backgroundColor:'rgba(255,185,138,.22)',borderWidth:2,pointRadius:3,fill:true}]},
+    data:{labels:top9,datasets:[{data:top9.map(k=>s[k]||0),borderColor:'#FFB98A',backgroundColor:'rgba(255,185,138,.22)',borderWidth:2,pointRadius:3,fill:true}]},
     options:{animation:{duration:800},scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'#eef2f7'},angleLines:{color:'#eef2f7'}}},plugins:{legend:{display:false}}}
   }));
 
-  // 막대: 상위 3개
-  const bctx=document.getElementById('bars').getContext('2d',{willReadFrequently:true});
-  CHARTS.push(new Chart(bctx,{type:'bar',
+  // TOP3 막대
+  const b1=document.getElementById('barsTop3').getContext('2d',{willReadFrequently:true});
+  CHARTS.push(new Chart(b1,{type:'bar',
     data:{labels:r.top3,datasets:[{data:r.top3.map(k=>s[k]||0),borderRadius:12,borderSkipped:false,backgroundColor:['#FFD9BE','#E6E2FF','#CFF7EE']}]},
+    options:{animation:{duration:700},scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}},plugins:{legend:{display:false}}}
+  }));
+
+  // 가능성 영역 막대(차순 4개)
+  const b2=document.getElementById('barsPotential').getContext('2d',{willReadFrequently:true});
+  CHARTS.push(new Chart(b2,{type:'bar',
+    data:{labels:potential,datasets:[{data:potential.map(k=>s[k]||0),borderRadius:12,borderSkipped:false,backgroundColor:['#E6E2FF','#CFF7EE','#FFD9BE','#FFF2B2']}]},
     options:{animation:{duration:700},scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}},plugins:{legend:{display:false}}}
   }));
 
@@ -529,8 +533,6 @@ function viewDetails(){
     </div>
   </div>
 
-  <!-- 요청에 따라 '추천 교육 프로그램' 섹션 삭제 -->
-
   <div class="reserve">
     <div style="display:flex;align-items:center;gap:8px;justify-content:center">
       <div class="badge" style="width:36px;height:36px;display:grid;place-items:center;border-radius:999px;font-size:18px">🗓</div>
@@ -558,18 +560,13 @@ function buildPdfWrapperFrom(node){
   wrap.style.position='fixed';wrap.style.left='-10000px';wrap.style.top='0';
   wrap.style.width='794px';wrap.style.background='#fff';wrap.style.zIndex='-1';
   const clone=node.cloneNode(true);
-
-  // 이미지 CORS 안전
   clone.querySelectorAll('img').forEach(img=>{
     img.setAttribute('crossorigin','anonymous');
     img.referrerPolicy='no-referrer';
     img.src=img.src;
   });
-
-  // 차트 캔버스 픽셀 복사
   const srcC=node.querySelectorAll('canvas');const dstC=clone.querySelectorAll('canvas');
   srcC.forEach((src,i)=>{const dst=dstC[i];if(!dst)return;dst.width=src.width;dst.height=src.height;dst.getContext('2d',{willReadFrequently:true}).drawImage(src,0,0)});
-
   wrap.appendChild(clone);document.body.appendChild(wrap);
   return wrap;
 }
@@ -614,21 +611,17 @@ async function exportPdfBlob(node){
   await waitForAssets(wrapper);
   try{
     let blob=await html2pdfBlob(wrapper);
-    if(!blob || blob.size<5000){ // 비정상 크기면 폴백
-      console.warn('html2pdf 결과 용량이 작아 폴백 실행', blob && blob.size);
-      blob=await canvasSlicerBlob(wrapper);
-    }
+    if(!blob || blob.size<5000){ blob=await canvasSlicerBlob(wrapper); }
     return blob;
   }catch(e){
-    console.error('html2pdf 실패, 폴백 실행', e);
     try{ return await canvasSlicerBlob(wrapper); }
-    catch(e2){ console.error('폴백도 실패', e2); throw e2; }
+    catch(e2){ throw e2; }
   }finally{ wrapper.remove(); }
 }
 async function handleSavePdf(){
   const node=$('pdfArea');
   node.classList.add('pdf-screen-width');
-  await new Promise(r=>setTimeout(r,50)); // 레이아웃 안정화
+  await new Promise(r=>setTimeout(r,50));
   try{
     const blob=await exportPdfBlob(node);
     const filename=`${STATE.profile.child_name}_미술적성테스트_V1_BASIC.pdf`;
@@ -640,7 +633,7 @@ async function handleSavePdf(){
 /* 이메일 모달 */
 function setModalVisible(show){const m=$('emailModal');if(show){m.classList.add('show');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}else{m.classList.remove('show');m.setAttribute('aria-hidden','true');document.body.style.overflow=''}}
 function openEmailModal(){setModalVisible(true);$('emailSubject').value=`${STATE.profile.child_name} 테스트 결과입니다`;$('emailTo').value=STATE.profile.email||'';$('emailMsg').textContent=''}
-$('emailCancel').onclick=()=>setModalVisible(false);document.addEventListener('keydown',e=>{if(e.key==='Escape')setModalVisible(false)})
+$('emailCancel').onclick=()=>setModalVisible(false);document.addEventListener('keydown',e=>{if(e.key==='Escape')setModalVisible=false})
 
 function blobToBase64(blob){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onloadend=()=>resolve(reader.result.split(',')[1]);reader.onerror=reject;reader.readAsDataURL(blob)})}
 $('emailSend').onclick=async()=>{
@@ -652,7 +645,7 @@ $('emailSend').onclick=async()=>{
   const htmlBody=`<div style="font-family:Pretendard,Apple SD Gothic Neo,Segoe UI,Arial"><h2 style="margin:0 0 8px">${APP_TITLE}</h2><p><b>${STATE.profile.child_name}</b> 님의 결과지를 첨부했습니다.</p><p>캠퍼스: ${STATE.profile.campus||'-'} / 연락처: ${STATE.profile.phone||'-'}</p><p style="color:#6b7280;font-size:12px;margin-top:12px">본 메일은 자동 발송되었습니다.</p></div>`;
   try{
     const res=await fetch(EMAIL_FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({to,subject,html:htmlBody,attachmentName:`${STATE.profile.child_name}_미술적성테스트_V1_BASIC.pdf`,attachmentBase64:base64})});
-    const ok=res.ok;const data=await res.json().catch(()=>({}));
+    const ok=res.ok;let data={};try{data=await res.json()}catch(_){}
     if(ok){$('emailMsg').textContent='전송 완료! 메일함을 확인해 주세요.';setTimeout(()=>setModalVisible(false),1200)}
     else{$('emailMsg').textContent='전송 실패: '+(data.error||res.statusText)}
   }catch(err){$('emailMsg').textContent='전송 중 오류가 발생했습니다.'}
