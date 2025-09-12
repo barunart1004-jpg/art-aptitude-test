@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
-<!-- 그래프/캡처 라이브러리 -->
+<!-- 차트 / 캡처 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
@@ -21,8 +21,8 @@
   --mint:#CFF7EE; --vio:#E6E2FF; --radius:22px;
   --shadow:0 18px 60px rgba(16,24,40,.12); --soft:0 12px 30px rgba(16,24,40,.08);
 }
-/* ↑ 전역 색상은 그대로, 폰트 크기만 전반적으로 +1px */
-*{box-sizing:border-box} html,body{height:100%}
+*{box-sizing:border-box}
+html,body{height:100%}
 body{margin:0;color:var(--ink);font-family:"Pretendard",ui-sans-serif,system-ui,"Noto Sans KR",Segoe UI,Roboto,Arial;background:var(--bg);font-size:17px}
 .container{min-height:100dvh;display:flex;flex-direction:column;align-items:center}
 .main{width:100%;max-width:1100px;padding:18px;display:flex;flex-direction:column;gap:16px;margin:0 auto}
@@ -33,7 +33,7 @@ body{margin:0;color:var(--ink);font-family:"Pretendard",ui-sans-serif,system-ui,
 .brand span{font-weight:900;letter-spacing:.2px;display:flex;align-items:center;gap:8px}
 .badge{font-size:12px;font-weight:900;padding:4px 8px;border-radius:999px;background:linear-gradient(90deg,#FFE6CF,#FFD9BE);color:#5a3f2f;border:1px solid #ffe0c9}
 
-/* 진행바 (굵게 + 분할 + 중앙 라벨) */
+/* 진행바 & 네비 */
 .sticky{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:16px;box-shadow:var(--soft);padding:8px 10px;display:flex;flex-direction:column;gap:10px}
 .navbar{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
 .step{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;cursor:pointer;background:#fff;color:#374151;font-weight:850;border:1px solid var(--line);box-shadow:var(--soft);transition:transform .12s}
@@ -57,7 +57,7 @@ body{margin:0;color:var(--ink);font-family:"Pretendard",ui-sans-serif,system-ui,
 h1{font-size:35px;margin:0 0 6px}h2{font-size:25px;margin:0 0 10px}h3{font-size:19px;margin:16px 0 8px}
 p{margin:8px 0}.small{font-size:14px}.muted{color:var(--muted)}.center{text-align:center}
 
-/* 시작 화면 */
+/* Hero */
 .hero{position:relative;padding:44px 22px;border-radius:22px;border:1px solid var(--line);
   background:radial-gradient(900px 260px at 15% -40%, #FFE6CF 0%, transparent 60%),radial-gradient(900px 260px at 85% -40%, #E6E2FF 0%, transparent 60%),linear-gradient(180deg,#ffffff 0%, #fff9f3 100%)}
 .hero .title{font-size:45px;font-weight:900;letter-spacing:.2px;margin:2px 0 6px;color:#111827}
@@ -70,27 +70,24 @@ p{margin:8px 0}.small{font-size:14px}.muted{color:var(--muted)}.center{text-alig
 .btn-ghost{background:#fff;color:#111827;border:1px solid var(--line);padding:12px 14px;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:var(--soft)}
 .btn-mint{--bg:linear-gradient(90deg,#FFE6CF,#FFD9BE)}.btn-accent{--bg:linear-gradient(90deg,#B9C8FF,#9DE5D5)}.btn-xl{padding:22px 34px;font-size:23px;border-radius:22px}
 
-/* 입력 */
+/* 입력/폼 카드 */
 input,select,textarea{width:100%;background:#fff;color:#111;border:1px solid var(--line);border-radius:12px;padding:13px;outline:none}
 input:focus,select:focus,textarea:focus{border-color:#FFD9BE;box-shadow:0 0 0 6px rgba(255,217,190,.26)}
 label{font-size:15px;color:#374151}
-.section{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+.section{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
 
-.grid{display:grid;gap:14px}.grid-2{grid-template-columns:1fr 1fr}
-@media (max-width:860px){.grid-2{grid-template-columns:1fr}}
+.grid{display:grid;gap:14px}
+.grid-2{grid-template-columns:1fr 1fr}
+.grid-4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:1020px){.grid-4{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:640px){.grid-4{grid-template-columns:1fr}}
 
-/* 보기 카드 – 이미지 축소 및 잘림 방지 */
-.opt{border:2px solid var(--line);border-radius:20px;overflow:hidden;cursor:pointer;background:#fff;box-shadow:var(--soft);transition:transform .12s,border-color .2s}
+/* 보기 카드 – 정사각 썸네일(동일 크기) */
+.opt{border:2px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;background:#fff;box-shadow:var(--soft);transition:transform .12s,border-color .2s}
 .opt:hover{transform:translateY(-2px)}
-/* 이미지 래퍼: 가운데 정렬 + contain, 기본적으로 카드의 35~45% 폭 */
-.opt .imgwrap{display:flex;align-items:center;justify-content:center;background:#fafafa;padding:10px}
-.opt .imgwrap img{max-width:45%;height:auto;display:block;object-fit:contain}
-/* 태블릿에서 더 작게(약 1/3~1/4) */
-@media (max-width:1024px){ .opt .imgwrap img{max-width:35%} }
-/* 모바일에서는 조금 키움 */
-@media (max-width:640px){ .opt .imgwrap img{max-width:55%} }
-
-.opt .cap{padding:12px 14px;color:#374151;font-weight:800;font-size:17px;line-height:1.35}
+.opt .thumb{width:58%;max-width:160px;aspect-ratio:1/1;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#fafafa;margin:14px auto 8px;display:flex;align-items:center;justify-content:center}
+.opt .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.opt .cap{padding:10px 12px 14px;color:#374151;font-weight:800;font-size:16px;line-height:1.35}
 
 @media (min-width:1024px){
   .test-grid-4{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
@@ -103,17 +100,19 @@ label{font-size:15px;color:#374151}
 @media (max-width:1023px){.sideNav{display:none}}
 .opt.sel{border-color:#FFD9BE;box-shadow:0 0 0 6px rgba(255,217,190,.25)}
 
-/* 동의 아코디언 */
-.acc{border-radius:14px;overflow:hidden;border:1px solid var(--line)}.acc-item{border-top:1px solid var(--line)}
+/* 동의 아코디언(기본 접힘) */
+.acc{border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+.acc-item{border-top:1px solid var(--line)}
 .acc-head{padding:15px 16px;background:#FFF4EC;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
-.acc-head span{font-weight:900;font-size:18px}.acc-body{padding:14px 16px;display:none;background:#fff}
+.acc-head span{font-weight:900;font-size:18px}
+.acc-body{padding:14px 16px;display:none;background:#fff}
 .acc-item.open .acc-body{display:block}
 .agreeList{display:grid;gap:10px;margin-top:10px}
 .agree-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 14px;border:1px solid var(--line);border-radius:12px;background:#fff}
 .agree-row .txt{font-size:16px;color:#0f172a;line-height:1.55;font-weight:700}
 .agree-row input[type="checkbox"]{width:21px;height:21px;accent-color:#FFB98A}
 
-/* 결과/차트 – 3개 레이아웃(레이블 문구 삭제) */
+/* 결과 레이아웃(그래프 3개) */
 .block{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 26px rgba(16,24,40,.06);page-break-inside:avoid;break-inside:avoid}
 .block h3{margin:0 0 10px}
 .result-grid{display:grid;grid-template-columns:3fr 2fr;gap:16px}
@@ -127,7 +126,16 @@ label{font-size:15px;color:#374151}
 .callout{position:relative;background:linear-gradient(135deg,#FFF2E6,#F8FBFF);padding:22px;border-radius:18px;border:1px solid var(--line);box-shadow:0 12px 34px rgba(255,185,138,.25)}
 .callout:before{content:"";position:absolute;inset:-1px;border-radius:18px;padding:1px;background:linear-gradient(90deg,#FFD9BE,#E6E2FF,#CFF7EE);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 
-/* 상세(블루) – 그대로 유지 */
+/* 자세한 결과 – 전문가 소견 카드 리디자인 */
+.expertBox{background:linear-gradient(180deg,#fff,#fffdf8);border:1px solid #ffe4c8;border-radius:18px;padding:18px;box-shadow:0 12px 26px rgba(255,185,138,.18)}
+.expertHeader{display:flex;align-items:center;gap:10px;font-weight:900;font-size:19px;margin-bottom:10px}
+.expertHeader .ic{width:34px;height:34px;border-radius:999px;display:grid;place-items:center;background:#ffefe5;border:1px solid #ffd9be}
+.ticks{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.ticks li{position:relative;padding-left:24px;line-height:1.6}
+.ticks li::before{content:"✓";position:absolute;left:0;top:2px;color:#0ea5a3;font-weight:900}
+.noteBar{background:#fff7ec;border:1px dashed #ffd9be;border-radius:12px;padding:10px 12px;color:#6b7280;margin-top:10px;font-size:13px}
+
+/* 상세(블루) */
 .detail-hero{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:8px}
 .detail-hero .ic{width:50px;height:50px;border-radius:999px;background:#e9efff;border:1px solid #dbe7ff;display:grid;place-items:center;font-weight:900;color:#3b61ff}
 .detail-title{font-size:29px;font-weight:900}
@@ -138,19 +146,14 @@ label{font-size:15px;color:#374151}
 .tcard.hint{background:#f9fbff}
 .tchip{background:#e6eeff;color:#2f5aff;border:1px solid #d9e3ff;padding:7px 11px;border-radius:999px;font-weight:800;font-size:13px}
 
-/* 프로그램/예약 */
-.programs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;justify-items:center;align-items:stretch;text-align:center}
-.prog{width:100%;max-width:420px;background:linear-gradient(180deg,#ffffff,#f0fbff);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 12px 30px rgba(16,24,40,.06)}
-.prog:nth-child(2){background:linear-gradient(180deg,#ffffff,#f9f1ff)}.prog h4{margin:0 0 8px}
-.check{color:#059669;font-weight:900}.price{margin-top:8px;font-weight:900;color:#374151}
-
+/* 상담 예약 */
 .reserve{margin-top:14px;text-align:center;background:linear-gradient(180deg,#fff7ec,#ffe7d1);border:1px solid #ffd9be;border-radius:18px;padding:18px}
 .reserve .title{font-weight:900;font-size:23px;color:#5a3f2f}
 .reserve .items{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:16px 0;justify-items:center}
 .reserve .pill{width:100%;max-width:360px;background:#fff;border:1px solid #ffe1c9;border-radius:14px;padding:12px}
 .reserve .pill .pt{font-weight:900;margin-bottom:6px}.reserve .note{font-size:13px;color:#6b7280;margin-top:8px}
 
-/* 프린트 & PDF */
+/* 프린트 */
 @media print{.header,.sticky,.btn,.btn-ghost,.sideNav,.no-pdf{display:none !important}.card{box-shadow:none;border:1px solid #ddd}.block{break-inside:avoid-page}}
 .pdf-screen-width{width:794px;max-width:none;margin:0 auto}
 
@@ -225,7 +228,7 @@ const STEPS=[
   {key:'profile',label:'프로필'},
   {key:'test',label:'테스트'},
   {key:'result',label:'결과'},
-  {key:'details',label:'자세한 결과'} /* ✅ 복구 */
+  {key:'details',label:'자세한 결과'}
 ];
 const STATE={step:'start',consent:false,profile:{},questions:[],idx:0,answers:[],result:null};
 
@@ -263,7 +266,28 @@ function navGo(step){STATE.step=step;if(step==='test'&&STATE.questions.length===
 
 /* GViz 파서 */
 function parseGViz(text){const s=text.indexOf('{'),e=text.lastIndexOf('}');if(s<0||e<0)return[];const obj=JSON.parse(text.slice(s,e+1));const cols=obj.table.cols.map(c=>c.label);return obj.table.rows.map(r=>r.c.map(c=>c?(c.f??c.v):'')).map(a=>Object.fromEntries(cols.map((k,i)=>[k,a[i]])))}
-async function loadQuestions(){try{const txt=await(await fetch(GVIZ_URL)).text();const rows=parseGViz(txt)||[];const act=rows.filter(r=>String(r.active).toUpperCase()==='TRUE').sort((a,b)=>(+a.order-+b.order));if(act.length){STATE.questions=act.map(r=>{const mkWeights=k=>{try{return JSON.parse(r[`${k}_weights`])||{}}catch{return{}}};const mkOpt=k=>({key:k,label:(r[`${k}_label`]||'').trim(),imageUrl:(r[`${k}_image`]||'').trim(),weights:mkWeights(k)});const opts=['A','B','C','D'].map(mkOpt).filter(o=>{const hasLabel=o.label.length>0;const hasImage=o.imageUrl.length>0;const hasWeight=Object.values(o.weights||{}).some(v=>Number(v||0)!==0);return hasLabel||hasImage||hasWeight});const safeOpts=opts.length>=2?opts:['A','B'].map(mkOpt);return{id:r.id||`q${r.order}`,order:+r.order,prompt:r.prompt||'',options:safeOpts}});return;}}catch(e){}STATE.questions=localQuestions()}
+async function loadQuestions(){
+  try{
+    const txt=await(await fetch(GVIZ_URL)).text();
+    const rows=parseGViz(txt)||[];
+    const act=rows.filter(r=>String(r.active).toUpperCase()==='TRUE').sort((a,b)=>(+a.order-+b.order));
+    if(act.length){
+      STATE.questions=act.map(r=>{
+        const mkWeights=k=>{try{return JSON.parse(r[`${k}_weights`])||{}}catch{return{}}};
+        const mkOpt=k=>({key:k,label:(r[`${k}_label`]||'').trim(),imageUrl:(r[`${k}_image`]||'').trim(),weights:mkWeights(k)});
+        const opts=['A','B','C','D'].map(mkOpt).filter(o=>{
+          const hasLabel=o.label.length>0;const hasImage=o.imageUrl.length>0;
+          const hasWeight=Object.values(o.weights||{}).some(v=>Number(v||0)!==0);
+          return hasLabel||hasImage||hasWeight;
+        });
+        const safeOpts=opts.length>=2?opts:['A','B'].map(mkOpt);
+        return{id:r.id||`q${r.order}`,order:+r.order,prompt:r.prompt||'',options:safeOpts}
+      });
+      return;
+    }
+  }catch(e){}
+  STATE.questions=localQuestions()
+}
 
 /* 시작 화면 */
 function startScreen(){
@@ -271,8 +295,10 @@ function startScreen(){
     <div class="hero">
       <div class="title center">${APP_TITLE}</div>
       <div class="sub center">아이의 미술 적성과 잠재력을 간단히 확인하고, 바로 결과를 저장·이메일 전송할 수 있어요.</div>
-      <div class="ctaRow"><button class="btn btn-xl" id="startBtn">테스트 시작하기 →</button>
-      <a class="btn-ghost btn-xl" href="index2.html" style="text-decoration:none">ADVANCE 테스트</a></div>
+      <div class="ctaRow">
+        <button class="btn btn-xl" id="startBtn">테스트 시작하기 →</button>
+        <a class="btn-ghost btn-xl" href="index2.html" style="text-decoration:none">ADVANCE 테스트</a>
+      </div>
     </div>
     <section class="features" style="margin:20px auto 8px;max-width:980px">
       <h2 style="text-align:center;font-weight:900">테스트 특징</h2>
@@ -287,12 +313,8 @@ function startScreen(){
 }
 function viewStart(){app().innerHTML=startScreen();$('startBtn').onclick=()=>navGo('consent');window.scrollTo({top:0,behavior:'smooth'})}
 
-/* 동의서/프로필/테스트 기존과 동일 — 이미지 태블릿 축소 위해 viewTest에서 래퍼 추가 */
-const AGE_TO_GRADE={7:'초등학교 1학년',8:'초등학교 2학년',9:'초등학교 3학년',10:'초등학교 4학년',11:'초등학교 5학년',12:'초등학교 6학년'};
-const GRADE_TO_AGE=Object.fromEntries(Object.entries(AGE_TO_GRADE).map(([a,g])=>[g,a]));
-const CAMPUSES=['압구정[본원]','반포 캠퍼스','한남 캠퍼스','방배 캠퍼스','목동 캠퍼스','송파 캠퍼스','서대문 캠퍼스','일산 캠퍼스','탄현 캠퍼스','김포 캠퍼스','송도 캠퍼스','부산 캠퍼스'];
-
-function accItem(t,html){return `<div class="acc-item open"><div class="acc-head"><span>${t}</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="acc-body small">${html}</div></div>`}
+/* 동의서 (기본 접힘) */
+function accItem(t,html){return `<div class="acc-item"><div class="acc-head"><span>${t}</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="acc-body small">${html}</div></div>`}
 function viewConsent(){
   app().innerHTML=`<h2 class="center">개인정보 수집·이용 동의서</h2>
   <div class="acc">
@@ -322,9 +344,14 @@ function viewConsent(){
   document.querySelectorAll('.acc-head').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
 }
 
+/* 프로필 – 4열 그리드 */
+const AGE_TO_GRADE={7:'초등학교 1학년',8:'초등학교 2학년',9:'초등학교 3학년',10:'초등학교 4학년',11:'초등학교 5학년',12:'초등학교 6학년'};
+const GRADE_TO_AGE=Object.fromEntries(Object.entries(AGE_TO_GRADE).map(([a,g])=>[g,a]));
+const CAMPUSES=['압구정[본원]','반포 캠퍼스','한남 캠퍼스','방배 캠퍼스','목동 캠퍼스','송파 캠퍼스','서대문 캠퍼스','일산 캠퍼스','탄현 캠퍼스','김포 캠퍼스','송도 캠퍼스','부산 캠퍼스'];
+
 function viewProfile(){
   app().innerHTML=`<h2 class="center">프로필 정보</h2>
-  <div class="grid grid-2" style="margin-top:8px">
+  <div class="grid grid-4" style="margin-top:8px">
     <div class="section"><label>아동 이름</label><input id="cname" placeholder="예: 홍길동"></div>
     <div class="section"><label>보호자 이름</label><input id="gname" placeholder="예: 김보호자"></div>
     <div class="section"><label>나이</label><select id="age">${[7,8,9,10,11,12].map(a=>`<option value="${a}">${a}</option>`).join('')}</select></div>
@@ -345,7 +372,7 @@ async function startTest(){
   await loadQuestions();STATE.idx=0;STATE.answers=[];STATE.step='test';render();
 }
 
-/* 테스트 – 이미지 래퍼 적용 */
+/* 테스트 – 정사각 썸네일 통일 */
 function pcGridClassFor(n){if(window.matchMedia('(min-width:1024px)').matches){return n===2?'test-grid-2':'test-grid-4'}return'grid grid-2'}
 function optionImageUrl(q,o){if(o.imageUrl)return o.imageUrl;const num=Number(q.order)||(STATE.idx+1);return `${ASSET_BASE}/${num}-${o.key}.png`}
 function viewTest(){
@@ -355,7 +382,7 @@ function viewTest(){
     <h2 class="center" style="margin-top:10px">${q.prompt||''}</h2>
     <div class="${gridCls}" style="margin-top:12px">
       ${q.options.map(o=>`<div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label||o.key}" data-key="${o.key}">
-        <div class="imgwrap"><img src="${optionImageUrl(q,o)}" alt="${o.label||o.key}" onerror="this.style.opacity=.2" loading="lazy"></div>
+        <div class="thumb"><img src="${optionImageUrl(q,o)}" alt="${o.label||o.key}" onerror="this.style.opacity=.2" loading="lazy"></div>
         <div class="cap center">${o.label||o.key}</div>
       </div>`).join('')}
     </div>
@@ -382,8 +409,8 @@ const adjust=v=>Math.round((2+v/2)*10)/10;function band(v){if(v>=3.6)return'S';i
 const DETAIL={'관찰력':n=>`${n}님은 대상의 특징을 캐치하는 눈이 좋아요. 작은 변화도 포착해 표현의 밀도를 높입니다.`,'색감각':n=>`${n}님은 색의 분위기를 읽고 조합하는 감이 탁월합니다. 미묘한 톤 차이도 안정적으로 다룹니다.`,'서사력':n=>`${n}님은 장면 속에 이야기를 심는 데 강점이 있어요. 감정과 사건을 자연스럽게 연결합니다.`,'공간감':n=>`${n}님은 원근·스케일을 활용해 입체감을 살립니다. 장면의 깊이를 안정적으로 구성합니다.`,'디테일':n=>`${n}님은 마감과 질감 표현이 섬세해요. 작품 완성도를 올리는 집중력이 강점입니다.`,'도전성':n=>`${n}님은 새로운 도구와 방식에 두려움이 적어요. 실험적인 프로젝트에서 성장 속도가 빠릅니다.`,'소통력':n=>`${n}님은 의도를 언어로 풀어내는 힘이 좋아요. 발표·비평 활동에서 설득력이 있습니다.`,'꾸준성':n=>`${n}님은 루틴을 유지하며 완성까지 밀어붙이는 힘이 돋보입니다. 학습 지속력이 강합니다.`}
 const PRAISE={'S':k=>`와, ${k}에서 <b>타고난 재능</b>이 돋보입니다. 높은 난이도도 스스로 기획해볼 수 있어요.`,'A':k=>`${k} 감각이 <b>뛰어납니다</b>. 한 단계 높은 과제도 무리 없이 소화합니다.`,'A-':k=>`${k} 실력이 <b>탄탄</b>합니다. 약간의 다듬기로 금방 상위권을 노려요.`,'B+':k=>`${k}이 안정적입니다. 새로운 시도에도 잘 적응합니다.`,'B':k=>`${k} 기본기가 좋습니다. 루틴을 넓히면 <b>성장 가속</b>!`}
 
-/* 이론/전문가 */
-const THEORY={'색감각':{theoryTitle:'Itten의 색채이론',theory:'색채감각은 색상·명도·채도의 조화를 인지하고 활용하는 능력으로, 감정 표현과 미적 감수성의 중요한 지표입니다.',expert:'“색채감각이 우수한 아동은 감정 표현력과 창의적 사고력이 함께 발달합니다.”',direction:'색상환 학습, 색채 대비 실험, 자연색 관찰 활동을 통해 체계적으로 개발할 수 있습니다.'},'디테일':{theoryTitle:'Csikszentmihalyi의 몰입이론',theory:'디테일 능력은 집중력과 완성도 추구 성향으로, 작품의 완결성과 정밀성을 결정하는 중요한 특성입니다.',expert:'“디테일이 높은 아동은 자기조절능력과 성취동기가 강합니다.”',direction:'세밀화 연습, 정밀한 공예활동, 단계적 완성 프로젝트를 통해 기를 수 있습니다.'},'서사력':{theoryTitle:'Bruner의 서사적 사고이론',theory:'서사력은 이야기를 구성하고 시각적으로 표현하는 능력으로, 상상력과 논리적 구성력이 결합된 복합적 사고능력입니다.',expert:'“서사력이 뛰어난 아동은 언어능력과 시각적 표현력이 균형 있게 발달합니다.”',direction:'그림일기, 만화 제작, 스토리보드 활동 등을 통해 향상시킬 수 있습니다.'},'공간감':{theoryTitle:'지각심리 & 원근법',theory:'공간감은 형태 간 상대적 위치와 깊이를 파악하는 능력으로, 장면 구성의 안정감을 높입니다.',expert:'“구도와 원근을 안정적으로 적용하면 몰입도 높은 장면 연출이 가능합니다.”',direction:'상자/기본형으로 거리감 실험, 소실점 훈련, 모형 배치 관찰 등을 권장합니다.'},'관찰력':{theoryTitle:'게슈탈트 지각 이론',theory:'관찰력은 대상을 구조적으로 파악해 특징을 포착하는 능력으로 표현의 밀도를 좌우합니다.',expert:'“관찰력은 사실적 표현과 창작 변형의 기반이 됩니다.”',direction:'광원 변화 관찰, 확대 스케치, 재질 탐구를 루틴화하세요.'},'도전성':{theoryTitle:'Dweck의 성장 마인드셋',theory:'도전성은 새로운 과제에 대한 개방성과 실패 후 학습의지로, 창의적 시도를 촉진합니다.',expert:'“성장형 마인드셋은 예술적 탐색과 혁신의 핵심입니다.”',direction:'새 도구 실험 기록, 변형 과제, 실패작 재해석을 수행하세요.'},'소통력':{theoryTitle:'비주얼 리터러시',theory:'소통력은 시각적 의도를 언어와 시각 요소로 설명·설득하는 능력입니다.',expert:'“설득력 있는 발표는 작품의 맥락을 강화합니다.”',direction:'작가노트 3문장, 피드백 1개 반영, 제목 3안 중 선택 활동을 권합니다.'},'꾸준성':{theoryTitle:'자기조절 학습',theory:'꾸준성은 계획-실행-점검의 루틴을 유지하는 능력으로, 장기 성장의 핵심입니다.',expert:'“짧고 빈번한 완성이 동기 유지를 돕습니다.”',direction:'5일 연속 15분 루틴, 체크리스트, 진행사진 기록을 습관화하세요.'}}
+/* 이론/전문가 템플릿 */
+const THEORY={'색감각':{theoryTitle:'Itten의 색채이론',theory:'색상·명도·채도의 조화를 인지하고 활용하는 능력.',expert:'“색채감각이 우수한 아동은 감정 표현력과 창의적 사고력이 함께 발달합니다.”',direction:'색상환 학습, 대비 실험, 자연색 관찰 활동 권장.'},'디테일':{theoryTitle:'몰입이론',theory:'세부 묘사 집중과 완성도 추구 성향.',expert:'“디테일이 높은 아동은 자기조절능력과 성취동기가 강합니다.”',direction:'세밀화 연습, 공예, 단계적 완성 프로젝트.'},'서사력':{theoryTitle:'서사적 사고',theory:'이야기 구성과 시각화 능력.',expert:'“서사력이 뛰어난 아동은 언어능력과 시각적 표현력이 균형 있게 발달합니다.”',direction:'그림일기, 만화/스토리보드 활동.'},'공간감':{theoryTitle:'지각심리 & 원근',theory:'상대 위치/깊이 파악 능력.',expert:'“구도와 원근을 안정적으로 적용하면 몰입도 높은 장면 연출이 가능합니다.”',direction:'소실점/박스 드로잉, 모형 관찰.'},'관찰력':{theoryTitle:'게슈탈트',theory:'대상의 구조적 파악과 특징 포착.',expert:'“관찰력은 사실적 표현과 창작 변형의 기반.”',direction:'광원 변화 관찰, 확대 스케치, 재질 탐구.'},'도전성':{theoryTitle:'성장 마인드셋',theory:'새 시도 개방성과 실패 후 학습의지.',expert:'“성장형 마인드셋은 예술적 탐색과 혁신의 핵심.”',direction:'새 도구 실험, 변형 과제, 리메이크.'},'소통력':{theoryTitle:'비주얼 리터러시',theory:'의도를 언어/시각 요소로 설명·설득.',expert:'“설득력 있는 발표는 작품의 맥락을 강화합니다.”',direction:'작가노트 3문장, 피드백 반영, 제목 3안.'},'꾸준성':{theoryTitle:'자기조절 학습',theory:'계획-실행-점검 루틴 유지.',expert:'“짧고 빈번한 완성이 동기 유지를 돕습니다.”',direction:'15분 루틴, 체크리스트, 진행사진 기록.'}}
 
 /* 제출 & 결과 */
 function nowKST(){const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())} KST`}
@@ -403,13 +430,12 @@ async function submitAllSafe(){
 
 let CHARTS=[];function destroyCharts(){CHARTS.forEach(c=>c.destroy?.());CHARTS=[]}
 
-/* 결과 – 3개의 그래프 + ‘자세한 결과 보기’ 버튼 유지 */
+/* 결과 */
 function viewResult(){
   const r=STATE.result,s=r?.scores||{};const T=r.top3;
   const ordered=Object.keys(s).sort((a,b)=>s[b]-s[a]);
   const top4=ordered.slice(0,4);
   const next4=ordered.slice(4,8);
-
   const longSummary=[`${STATE.profile.child_name}님은 <b>${T[0]}</b>를 중심으로 <b>${T[1]}</b>, <b>${T[2]}</b>에서 강점이 뚜렷합니다.`,`선택 과정에서 주의집중이 안정적이며, 과제를 빠르게 파악해 핵심을 잡는 유형입니다.`].join(' ');
 
   app().innerHTML=`<div id="pdfArea" class="pdf-screen-width">
@@ -462,21 +488,18 @@ function viewResult(){
 
   destroyCharts();
 
-  // 레이다: 상위 4개만 강조
   const rctx=document.getElementById('radar').getContext('2d',{willReadFrequently:true});
   CHARTS.push(new Chart(rctx,{type:'radar',
-    data:{labels:DOMAINS.map(d=>d),datasets:[{data:DOMAINS.map(k=>s[k]||0),borderColor:'#FFB98A',backgroundColor:'rgba(255,185,138,.22)',borderWidth:2,pointRadius:3,fill:true}]},
+    data:{labels:DOMAINS,datasets:[{data:DOMAINS.map(k=>s[k]||0),borderColor:'#FFB98A',backgroundColor:'rgba(255,185,138,.22)',borderWidth:2,pointRadius:3,fill:true}]},
     options:{maintainAspectRatio:false,animation:{duration:800},scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'#eef2f7'},angleLines:{color:'#eef2f7'}}},plugins:{legend:{display:false}}}
   }));
 
-  // 막대: TOP3
   const b1=document.getElementById('barsTop3').getContext('2d',{willReadFrequently:true});
   CHARTS.push(new Chart(b1,{type:'bar',
     data:{labels:T,datasets:[{data:T.map(k=>s[k]||0),borderRadius:12,borderSkipped:false,backgroundColor:['#FFD9BE','#E6E2FF','#CFF7EE']}]},
     options:{maintainAspectRatio:false,animation:{duration:700},scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}},plugins:{legend:{display:false}}}
   }));
 
-  // 막대: 다음 4개
   const b2=document.getElementById('barsNext').getContext('2d',{willReadFrequently:true});
   CHARTS.push(new Chart(b2,{type:'bar',
     data:{labels:next4,datasets:[{data:next4.map(k=>s[k]||0),borderRadius:12,borderSkipped:false,backgroundColor:['#E6E2FF','#CFF7EE','#FFD9BE','#E6E2FF']}]},
@@ -486,7 +509,7 @@ function viewResult(){
   $('btn_pdf').onclick=handleSavePdf;$('btn_email').onclick=openEmailModal;
 }
 
-/* ✅ 자세한 결과(복구) */
+/* 자세한 결과 – 전문가 소견 박스 리디자인 */
 function theoryItem(i,key){
   const t=THEORY[key]||{theoryTitle:'이론',theory:'-',expert:'-',direction:'-'};
   return `<div class="theoryWrap">
@@ -501,34 +524,24 @@ function theoryItem(i,key){
 function viewDetails(){
   const r=STATE.result,s=r?.scores||{};const T=r?.top3||[];
   const topBlocks=T.map((k,i)=>theoryItem(i+1,k)).join('');
+  const overview=`<b>${STATE.profile.child_name}</b>(${STATE.profile.age}세, ${STATE.profile.grade}) 아동은
+  <b>${T[0]||'-'}</b> 영역에서 상위 수준이며 <b>${T[1]||'-'}</b>, <b>${T[2]||'-'}</b> 또한 안정적으로 발달 중입니다.`;
 
-  app().innerHTML=`<div class="detail-hero"><div class="ic">📘</div><div class="detail-title">전문가 평가 및 이론적 배경</div></div><p class="detail-sub"><b>${STATE.profile.child_name}</b>의 미술적성에 대한 심화 분석 보고서</p>
+  app().innerHTML=`<div class="detail-hero"><div class="ic">📘</div><div class="detail-title">전문가 평가 및 이론적 배경</div></div><p class="detail-sub"><b>${STATE.profile.child_name}</b>의 미술적성 심화 분석 보고서</p>
   <div class="block" style="background:#f5f8ff;border-color:#e6eeff">
     <div style="font-weight:900;margin-bottom:6px;display:flex;align-items:center;gap:8px">🧩 강점 영역 이론적 배경 분석</div>
     ${topBlocks}
   </div>
 
-  <div class="panel" style="margin-top:14px">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-      <div class="ic">◎</div><div style="font-weight:900">종합 전문가 소견</div>
-    </div>
-    <div class="row">
-      <div class="block" style="background:#fff">
-        <div style="font-weight:900;margin-bottom:6px">바른미술학원 전문 평가팀</div>
-        <div class="small">
-          <b>${STATE.profile.child_name}</b>(${STATE.profile.age}세, ${STATE.profile.grade}) 아동은
-          <b>${T[0]||'-'}</b> 영역에서 또래 대비 상위 수준의 능력을 보이며,
-          <b>${T[1]||'-'}</b>, <b>${T[2]||'-'}</b>도 안정적으로 발달하고 있습니다.
-          현재는 표현 역량과 감수성이 급속히 확장되는 <b>결정적 시기</b>로, 적절한 교육적 지원이 중요합니다.
-        </div>
-        <div style="margin-top:10px">
-          <div class="line"><div class="ic">✓</div><div><b>개별화 교육</b>: 강점 영역 중심의 맞춤형 커리큘럼 적용</div></div>
-          <div class="line"><div class="ic">✓</div><div><b>단계적 발달</b>: 현재 수준에서 점진적 난이도 상승</div></div>
-          <div class="line"><div class="ic">✓</div><div><b>통합적 접근</b>: 약점 영역 보완을 위한 다각도 활동</div></div>
-        </div>
-        <div class="small" style="margin-top:10px;color:#6b7280">장기 전망: 체계적 훈련 시 중·고등학교 시기 <b>미술 특기자</b> 과정 진입 및 전문 분야 진로 탐색이 충분히 가능합니다.</div>
-      </div>
-    </div>
+  <div class="expertBox" style="margin-top:14px">
+    <div class="expertHeader"><div class="ic">🧠</div><div>종합 전문가 소견</div></div>
+    <ul class="ticks">
+      <li><b>바른미술학원 전문 평가팀</b> — ${overview}</li>
+      <li><b>개별화 교육</b>: 강점 영역 중심의 맞춤형 커리큘럼 적용</li>
+      <li><b>단계적 발달</b>: 현재 수준에서 점진적 난이도 상승</li>
+      <li><b>통합적 접근</b>: 약점 보완을 위한 다각도 활동(관찰·디테일·공간 등)</li>
+    </ul>
+    <div class="noteBar">장기 전망: 체계적 훈련 시 중·고교 <b>미술 특기자</b> 과정 및 관련 진로 탐색이 충분히 가능합니다.</div>
   </div>
 
   <div class="reserve">
@@ -536,7 +549,7 @@ function viewDetails(){
       <div class="badge" style="width:36px;height:36px;display:grid;place-items:center;border-radius:999px;font-size:18px">🗓</div>
       <div class="title">전문가 방문 상담 예약</div>
     </div>
-    <div class="small" style="margin-top:6px">아이의 테스트 결과를 바탕으로 <b>개별 맞춤 교육 계획</b>을 수립하고, <b>작품 포트폴리오</b> 검토를 통한 전문적인 진단과 상담을 제공합니다.</div>
+    <div class="small" style="margin-top:6px">테스트 결과 기반 <b>맞춤 교육 계획</b>과 <b>포트폴리오</b> 진단을 제공합니다.</div>
     <div class="items">
       <div class="pill"><div class="pt">전문가 진단</div><div class="small muted">미술교육 전문가의 1:1 개별 진단</div></div>
       <div class="pill"><div class="pt">맞춤 계획</div><div class="small muted">특성에 맞는 교육 로드맵 제시</div></div>
@@ -552,16 +565,14 @@ function viewDetails(){
   </div>`;
 }
 
-/* ===== PDF/이메일 핸들러 (기존) ===== */
+/* PDF/이메일 */
 function buildPdfWrapperFrom(node){
   const wrap=document.createElement('div');
   wrap.style.position='fixed';wrap.style.left='-10000px';wrap.style.top='0';
   wrap.style.width='794px';wrap.style.background='#fff';wrap.style.zIndex='-1';
   const clone=node.cloneNode(true);
   clone.querySelectorAll('img').forEach(img=>{
-    img.setAttribute('crossorigin','anonymous');
-    img.referrerPolicy='no-referrer';
-    img.src=img.src;
+    img.setAttribute('crossorigin','anonymous'); img.referrerPolicy='no-referrer'; img.src=img.src;
   });
   const srcC=node.querySelectorAll('canvas');const dstC=clone.querySelectorAll('canvas');
   srcC.forEach((src,i)=>{const dst=dstC[i];if(!dst)return;dst.width=src.width;dst.height=src.height;dst.getContext('2d',{willReadFrequently:true}).drawImage(src,0,0)});
@@ -628,7 +639,7 @@ async function handleSavePdf(){
   finally{node.classList.remove('pdf-screen-width');}
 }
 
-/* 이메일 모달 */
+/* 이메일 */
 function setModalVisible(show){const m=$('emailModal');if(show){m.classList.add('show');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}else{m.classList.remove('show');m.setAttribute('aria-hidden','true');document.body.style.overflow=''}}
 function openEmailModal(){setModalVisible(true);$('emailSubject').value=`${STATE.profile.child_name} 테스트 결과입니다`;$('emailTo').value=STATE.profile.email||'';$('emailMsg').textContent=''}
 $('emailCancel').onclick=()=>setModalVisible(false);document.addEventListener('keydown',e=>{if(e.key==='Escape')setModalVisible(false)})
@@ -652,7 +663,7 @@ $('emailSend').onclick=async()=>{
 function render(){renderNav();updateTopProgress();if(STATE.step==='start')return viewStart();if(STATE.step==='consent')return viewConsent();if(STATE.step==='profile')return viewProfile();if(STATE.step==='test')return viewTest();if(STATE.step==='result')return viewResult();if(STATE.step==='details')return viewDetails()}
 render();
 
-/* Fallback 문항 (동일) */
+/* Fallback 문항 */
 function W(w){const o={};DOMAINS.forEach(k=>o[k]=0);Object.entries(w).forEach(([k,v])=>o[k]=v);return o}
 function localQuestions(){
   const S=(q,p,a,b,c,d)=>({id:q,order:+q.replace('q',''),prompt:p,options:[{key:'A',label:a[0],imageUrl:a[1],weights:W(a[2])},{key:'B',label:b[0],imageUrl:b[1],weights:W(b[2])},{key:'C',label:c[0],imageUrl:c[1],weights:W(c[2])},{key:'D',label:d[0],imageUrl:d[1],weights:W(d[2])}]});
