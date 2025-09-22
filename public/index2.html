@@ -565,7 +565,7 @@ function viewResult(){
         +'<div class="right-stack">'
           /* ✔️ 변경: 차트 제목 및 ID 변경 */
           +'<div class="chartBox"><h4 class="center" style="margin:0 0 6px">뛰어난 영역 TOP 4</h4><canvas id="barsTop4"></canvas></div>'
-          +'<div class="chartBox"><h4 class="center" style="margin:0 0 6px">잠재적 영역 Bottom 4</h4><canvas id="barsBottom4"></canvas></div>'
+          +'<div class="chartBox"><h4 class="center" style="margin:0 0 6px">잠재적인 영역 Bottom 4</h4><canvas id="barsBottom4"></canvas></div>'
         +'</div>'
       +'</div>'
     +'</div>'
@@ -714,7 +714,15 @@ function viewDeep(){
     '</div>'+
     '<div class="small muted" style="margin-top:8px">* 본 추천은 적성 기반의 잠재력 분석이며, 실제 진로는 학생의 흥미, 노력, 환경적 요인을 종합적으로 고려하여 결정해야 합니다.</div>'
   );
-
+ var rubric=deepSection('포트폴리오 루브릭(5척도 요약)',
+    list([
+      '<b>구성력</b>: 화면 균형/리듬/시선유도',
+      '<b>완성도</b>: 질감·마감·디테일 일관성',
+      '<b>실험성</b>: 재료/방식 확장, 실패 수용',
+      '<b>서사·의도</b>: 맥락·메시지 명료성',
+      '<b>발표/소통</b>: 작가노트·발표·질의응답'
+    ])
+  );
   app().innerHTML= header 
     + deepSection('Top 5 강점 심층 분석', strengthsHTML) 
     + synergy
@@ -722,6 +730,7 @@ function viewDeep(){
     + proj 
     + weak 
     + career
+   + rubric
     + '<div class="center no-pdf" style="margin:16px 0;display:flex;gap:8px;justify-content:center">'
     + '<button class="btn-ghost" onclick="STATE.step=\'result\'; render()">요약 결과로</button>'
     + '<button class="btn" id="btn_pdf2">심층 리포트 PDF 저장</button>'
