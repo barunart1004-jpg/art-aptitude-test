@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>바른미술학원 · 미술적성테스트 V2. ADVANCE</title>
+<title>바른미술학원 · 미술적성테스트 V2. ADVANCE (수정본)</title>
 
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -296,7 +296,7 @@ function featureCard(badgeTitle, title, sub){
 function viewStart(){app().innerHTML=startScreen();$('startBtn').onclick=function(){navGo('consent')};window.scrollTo({top:0,behavior:'smooth'})}
 
 /* 동의서 */
-/* ✔️ 변경: accItem에서 'open' 클래스 제거하여 기본적으로 닫힌 상태로. */
+/** ✔️ 변경: accItem에서 'open' 클래스 제거하여 기본적으로 닫힌 상태로. */
 function accItem(t,html){return '<div class="acc-item"><div class="acc-head"><span>'+t+'</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#7b8fb0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="acc-body small">'+html+'</div></div>'}
 
 function viewConsent(){
@@ -322,8 +322,8 @@ function viewConsent(){
   function validate(){ $('btn_consent').disabled=!( $('chk_required').checked && $('chk_minor').checked ); }
   $('chk_required').addEventListener('change',validate);$('chk_minor').addEventListener('change',validate);
   $('btn_consent').onclick=function(){STATE.consent=true;navGo('profile')};
-  
-  /* ✔️ 변경: 아코디언 토글 기능 추가 및 버튼 기능 수정 */
+
+  /** ✔️ 변경: 아코디언 토글 기능 추가 및 버튼 기능 수정 */
   var items = document.querySelectorAll('.acc-item');
   items.forEach(function(item) {
     var head = item.querySelector('.acc-head');
@@ -332,6 +332,7 @@ function viewConsent(){
   $('btn_expand').onclick=function(){ items.forEach(function(it){it.classList.add('open')}) };
   $('btn_collapse').onclick=function(){ items.forEach(function(it){it.classList.remove('open')}) };
 }
+
 
 /* 프로필 (12–15세, 중1~중3) */
 var AGE_TO_GRADE={12:'중1(예비)',13:'중학교 1학년',14:'중학교 2학년',15:'중학교 3학년'};
@@ -403,7 +404,7 @@ function aggregateScores(ans){
   return raw;
 }
 
-/* ✔️ 변경: 점수 계산 로직. 강점은 더 강하게, 약점은 더 약하게 보이도록 비선형 변환 적용. */
+/** ✔️ 변경: 점수 계산 로직. 강점은 더 강하게, 약점은 더 약하게 보이도록 비선형 변환 적용. */
 function adjustScoresWithEmphasis(rawScores){
   var adjusted={};
   Object.keys(rawScores).forEach(function(k){
@@ -427,7 +428,7 @@ var PRAISE={
   'B':function(k){return LABEL[k]+' 기본기가 좋습니다. 체계적 반복으로 가속하세요.'}
 };
 
-/* ✔️ 변경: 심층 리포트용 THEORIES 객체 내용 대폭 강화 및 세분화 */
+/** ✔️ 변경: 심층 리포트용 THEORIES 객체 내용 대폭 강화 및 세분화 */
 var THEORY = {
   SPA:{title:'공간지각 및 구성',
     keywords:['입체감','원근법','구도','스케일','건축적 사고'],
@@ -523,7 +524,7 @@ var THEORY = {
 function nowKST(){var d=new Date(),p=function(n){return String(n).padStart(2,'0')};return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())+' KST'}
 async function submitAllSafe(){
   var raw=aggregateScores(STATE.answers);
-  var scores=adjustScoresWithEmphasis(raw); // ✔️ 변경: 새로운 점수 계산 함수 사용
+  var scores=adjustScoresWithEmphasis(raw); /** ✔️ 변경: 새로운 점수 계산 함수 사용 */
   var ordered=Object.keys(scores).sort(function(a,b){return scores[b]-scores[a]});
   var top3=ordered.slice(0,3); // Google Form 제출용 top3는 유지
   var resultId=(crypto&&crypto.randomUUID)?crypto.randomUUID():('r'+Date.now());
@@ -542,7 +543,7 @@ var CHARTS=[];function destroyCharts(){CHARTS.forEach(function(c){try{c.destroy(
 function viewResult(){
   var r=STATE.result||{}; var s=r.scores||{}; var ordered=r.ordered||Object.keys(s).sort(function(a,b){return s[b]-s[a]});
   
-  /* ✔️ 변경: top3 -> top4, potential -> bottom4 */
+  /** ✔️ 변경: top3 -> top4, potential -> bottom4 */
   var top4=ordered.slice(0,4);
   var bottom4=ordered.slice(-4).reverse(); // 낮은 순이므로 뒤에서 4개, 보기 좋게 역순 정렬
 
@@ -563,9 +564,9 @@ function viewResult(){
       +'<div class="report-grid" style="margin-top:8px">'
         +'<div class="chartBox"><canvas id="radar"></canvas></div>'
         +'<div class="right-stack">'
-          /* ✔️ 변경: 차트 제목 및 ID 변경 */
-          +'<div class="chartBox"><h4 class="center" style="margin:0 0 6px">뛰어난 영역 TOP 4</h4><canvas id="barsTop4"></canvas></div>'
-          +'<div class="chartBox"><h4 class="center" style="margin:0 0 6px">잠재적인 영역 Bottom 4</h4><canvas id="barsBottom4"></canvas></div>'
+          /** ✔️ 변경: 차트 제목 및 ID 변경 */
+          +'<div class="chartBox"><h4 class="center" style="margin:0 0 6px; color:var(--ink);">뛰어난 영역 TOP 4</h4><canvas id="barsTop4"></canvas></div>'
+          +'<div class="chartBox"><h4 class="center" style="margin:0 0 6px; color:var(--muted);">잠재적인 영역 Bottom 4</h4><canvas id="barsBottom4"></canvas></div>'
         +'</div>'
       +'</div>'
     +'</div>'
@@ -591,21 +592,21 @@ function viewResult(){
   var rctx=document.getElementById('radar').getContext('2d',{willReadFrequently:true});
   CHARTS.push(new Chart(rctx,{type:'radar',
     data:{labels:DOMS.map(function(d){return LABEL[d]}),datasets:[{data:DOMS.map(function(k){return s[k]||0}),borderColor:'#66E0FF',backgroundColor:'rgba(102,224,255,.18)',borderWidth:2,pointRadius:3,fill:true}]},
-    options:{maintainAspectRatio:false,animation:{duration:800},scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'#1E2A48'},angleLines:{color:'#1E2A48'}}},plugins:{legend:{display:false},tooltip:tooltipOff}}
+    options:{maintainAspectRatio:false,animation:{duration:800},scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{display:false, color: 'rgba(255,255,255,0.5)'},grid:{color:'#1E2A48'},angleLines:{color:'#1E2A48'}, pointLabels: { color: '#CFE3FF', font: { size: 11 } }}},plugins:{legend:{display:false},tooltip:tooltipOff}}
   }));
 
-  /* ✔️ 변경: Top3 차트 -> Top4 차트로 수정 */
+  /** ✔️ 변경: Top3 차트 -> Top4 차트로 수정 */
   var b1=document.getElementById('barsTop4').getContext('2d',{willReadFrequently:true});
   CHARTS.push(new Chart(b1,{type:'bar',
-    data:{labels:top4.map(function(d){return LABEL[d]}),datasets:[{data:top4.map(function(k){return s[k]||0}),borderRadius:12,borderSkipped:false,backgroundColor:['#66E0FF','#B4F1CB','#E9D5FF','#FFAA6C']}]},
-    options:{indexAxis:'y', maintainAspectRatio:false,animation:{duration:700},scales:{y:{grid:{display:false}},x:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'#1E2A48'}}},plugins:{legend:{display:false},tooltip:tooltipOff}}
+    data:{labels:top4.map(function(d){return LABEL[d]}),datasets:[{data:top4.map(function(k){return s[k]||0}),borderRadius:8,borderSkipped:false,backgroundColor:['#66E0FF','#B4F1CB','#E9D5FF','#FFAA6C']}]},
+    options:{indexAxis:'y', maintainAspectRatio:false,animation:{duration:700},scales:{y:{grid:{display:false}, ticks:{color: '#CFE3FF'}},x:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'#1E2A48'}}},plugins:{legend:{display:false},tooltip:tooltipOff}}
   }));
 
-  /* ✔️ 변경: Potential 차트 -> Bottom4 차트로 수정 */
+  /** ✔️ 변경: Potential 차트 -> Bottom4 차트로 수정 */
   var b2=document.getElementById('barsBottom4').getContext('2d',{willReadFrequently:true});
   CHARTS.push(new Chart(b2,{type:'bar',
-    data:{labels:bottom4.map(function(d){return LABEL[d]}),datasets:[{data:bottom4.map(function(k){return s[k]||0}),borderRadius:12,borderSkipped:false,backgroundColor:['#90A3B2','#90A3B2','#90A3B2','#90A3B2']}]},
-    options:{indexAxis:'y', maintainAspectRatio:false,animation:{duration:700},scales:{y:{grid:{display:false}},x:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'#1E2A48'}}},plugins:{legend:{display:false},tooltip:tooltipOff}}
+    data:{labels:bottom4.map(function(d){return LABEL[d]}),datasets:[{data:bottom4.map(function(k){return s[k]||0}),borderRadius:8,borderSkipped:false,backgroundColor:['#90A3B2','#90A3B2','#90A3B2','#90A3B2']}]},
+    options:{indexAxis:'y', maintainAspectRatio:false,animation:{duration:700},scales:{y:{grid:{display:false}, ticks:{color: '#CFE3FF'}},x:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'#1E2A48'}}},plugins:{legend:{display:false},tooltip:tooltipOff}}
   }));
 
   $('btn_pdf').onclick=handleSavePdf;$('btn_email').onclick=openEmailModal;
@@ -714,7 +715,8 @@ function viewDeep(){
     '</div>'+
     '<div class="small muted" style="margin-top:8px">* 본 추천은 적성 기반의 잠재력 분석이며, 실제 진로는 학생의 흥미, 노력, 환경적 요인을 종합적으로 고려하여 결정해야 합니다.</div>'
   );
- var rubric=deepSection('포트폴리오 루브릭(5척도 요약)',
+  
+  var rubric=deepSection('포트폴리오 루브릭(5척도 요약)',
     list([
       '<b>구성력</b>: 화면 균형/리듬/시선유도',
       '<b>완성도</b>: 질감·마감·디테일 일관성',
@@ -723,14 +725,15 @@ function viewDeep(){
       '<b>발표/소통</b>: 작가노트·발표·질의응답'
     ])
   );
+
   app().innerHTML= header 
     + deepSection('Top 5 강점 심층 분석', strengthsHTML) 
     + synergy
     + roadmap 
     + proj 
     + weak 
-    + career
-   + rubric
+    + career 
+    + rubric
     + '<div class="center no-pdf" style="margin:16px 0;display:flex;gap:8px;justify-content:center">'
     + '<button class="btn-ghost" onclick="STATE.step=\'result\'; render()">요약 결과로</button>'
     + '<button class="btn" id="btn_pdf2">심층 리포트 PDF 저장</button>'
