@@ -230,7 +230,7 @@ const app=()=>$('app');
 /* NAV + Progress */
 function renderNav(){
   const cur=STEPS.findIndex(s=>s.key===STATE.step);
-  $('topnav').innerHTML=STEPS.map((s,i)=>`<div class="step ${s.key===STATE.step?'active':''} ${cur>i?'done':''}" onclick="navGo('${s.key}')"><span class="num">${i+1}</span><span>${s.label}</span></div>`).join('')
+  $('topnav').innerHTML=STEPS.map((s,i)=>`<div class="step ${s.key===STATE.step?'active':''} ${cur>i?'done':''}" onclick="navGo('${s.key}')"><span class="num">${i+1}</span><span>${s.label}</span></div>`).join('');
 }
 function updateTopProgress(){
   const topbar=$('topbar'); const toplabel=$('toplabel'); const tp=$('topprogress'); const status=$('statusline');
@@ -273,12 +273,12 @@ async function loadQuestions(){
           return hasLabel||hasImage||hasWeight;
         });
         const safeOpts=opts.length>=2?opts:['A','B'].map(mkOpt);
-        return{id:r.id||`q${r.order}`,order:+r.order,prompt:r.prompt||'',options:safeOpts}
+        return{id:r.id||`q${r.order}`,order:+r.order,prompt:r.prompt||'',options:safeOpts};
       });
       return;
     }
   }catch(e){}
-  STATE.questions=localQuestions()
+  STATE.questions=localQuestions();
 }
 
 /* 시작 화면 */
@@ -364,7 +364,7 @@ async function startTest(){
   await loadQuestions();STATE.idx=0;STATE.answers=[];STATE.step='test';render();
 }
 
-/* 테스트 – 정사각 썸네일 통일 */
+/* 테스트 */
 function pcGridClassFor(n){if(window.matchMedia('(min-width:1024px)').matches){return n===2?'test-grid-2':'test-grid-4'}return'grid grid-2'}
 function optionImageUrl(q,o){if(o.imageUrl)return o.imageUrl;const num=Number(q.order)||(STATE.idx+1);return `${ASSET_BASE}/${num}-${o.key}.png`}
 function viewTest(){
@@ -418,7 +418,6 @@ function aggregateScores(ans){
   });
   return raw;
 }
-// 상위 구간 부각
 const adjust=v=>{
   const ratio=v/4;
   const curved = v*1.12 + Math.pow(Math.max(0,ratio-0.5),1.2)*1.0;
@@ -437,7 +436,7 @@ const DETAIL={
   '꾸준성':n=>`${n}님은 루틴을 유지하고 끝까지 밀어붙이는 힘이 있습니다. 점진적 향상에 최적화된 유형입니다.`
 };
 
-/* 이론/전문가/발달방향 — 각 영역별 5~6줄 분량, 전부 상이한 내용 */
+/* 이론/전문가/발달방향 — 각 영역별 긴 문장 */
 const THEORY={
   '색감각':{
     theoryTitle:'Itten 색채이론',
@@ -498,10 +497,17 @@ async function submitAllSafe(){
   const top3=ordered.slice(0,3);
   const resultId=crypto.randomUUID();
   const form=new FormData();
-  form.append(F.child_name,STATE.profile.child_name);form.append(F.age,STATE.profile.age);form.append(F.grade,STATE.profile.grade);
-  form.append(F.guardian,STATE.profile.guardian);form.append(F.phone,STATE.profile.phone);form.append(F.campus,STATE.profile.campus||'');
+  form.append(F.child_name,STATE.profile.child_name);
+  form.append(F.age,STATE.profile.age);
+  form.append(F.grade,STATE.profile.grade);
+  form.append(F.guardian,STATE.profile.guardian);
+  form.append(F.phone,STATE.profile.phone);
+  form.append(F.campus,STATE.profile.campus||'');
   form.append(F.answers,JSON.stringify({profile:STATE.profile,questions:STATE.answers,top3}));
-  form.append(F.scores,JSON.stringify(scores));form.append(F.top3,top3.join(','));form.append(F.resultId,resultId);form.append(F.timestamp,nowKST()));
+  form.append(F.scores,JSON.stringify(scores));
+  form.append(F.top3,top3.join(','));
+  form.append(F.resultId,resultId);
+  form.append(F.timestamp,nowKST()); /* ← 괄호 하나만! */
   try{await fetch(FORM_ACTION,{method:'POST',mode:'no-cors',body:form});}catch(e){}
   STATE.result={scores,scoresRaw:raw,top3,resultId};STATE.step='result';render();
 }
@@ -596,7 +602,7 @@ function viewResult(){
   $('btn_pdf').onclick=handleSavePdf;$('btn_email').onclick=openEmailModal;
 }
 
-/* 자세한 결과 – 강점(TOP4) / 잠재(하위4) 모두 이론·전문가·발달방향(긴 문장)만 표시 */
+/* 자세한 결과 */
 function theoryCard(i,key,tag){
   const t=THEORY[key]||{theoryTitle:'이론',theory:'-',expert:'-',direction:'-'};
   const chipColor = tag==='강점' ? '' : 'style="background:#fff0d9;color:#9a5c27;border-color:#ffd9ae"';
@@ -605,7 +611,7 @@ function theoryCard(i,key,tag){
     <div class="tgrid">
       <div class="tcard hint">
         <div style="font-weight:900;margin-bottom:6px">📍 이론적 근거 — ${t.theoryTitle}</div>
-        <div class="" style="font-size:15px">${t.theory}</div>
+        <div style="font-size:15px">${t.theory}</div>
       </div>
       <div class="tcard">
         <div style="font-weight:900;margin-bottom:6px">🧑‍🏫 전문가 의견</div>
@@ -618,7 +624,6 @@ function theoryCard(i,key,tag){
     </div>
   </div>`;
 }
-
 function viewDetails(){
   const r=STATE.result||{};const s=r.scores||{};
   const ordered=Object.keys(s).sort((a,b)=>s[b]-s[a]);
