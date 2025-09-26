@@ -82,18 +82,16 @@ label{font-size:15px;color:#374151}
 @media (max-width:1020px){.grid-4{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:640px){.grid-4{grid-template-columns:1fr}}
 
-/* 보기 카드 */
+/* 보기 카드 — 더 큼 + 이미지 확대 */
 .opt{border:2px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;background:#fff;box-shadow:var(--soft);transition:transform .12s,border-color .2s}
 .opt:hover{transform:translateY(-2px)}
-/* ⇩ 이미지 확대(PC/모바일 모두) */
-.opt .thumb{width:74%;max-width:220px;aspect-ratio:1/1;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#fafafa;margin:18px auto 10px;display:flex;align-items:center;justify-content:center}
-@media (max-width:640px){.opt .thumb{width:88%;max-width:280px}}
-.opt .thumb img{width:100%;height:100%;object-fit:cover;display:block;user-select:none;-webkit-user-drag:none}
-.opt .cap{padding:10px 12px 16px;color:#374151;font-weight:800;font-size:17px;line-height:1.35}
+.opt .thumb{width:72%;max-width:240px;aspect-ratio:4/3;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#fafafa;margin:16px auto 10px;display:flex;align-items:center;justify-content:center}
+.opt .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.opt .cap{padding:10px 12px 16px;color:#374151;font-weight:850;font-size:17px;line-height:1.35;text-align:center}
 
 @media (min-width:1024px){
-  .test-grid-4{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-  .test-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .test-grid-4{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  .test-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
   .sideNav{position:fixed;top:50%;transform:translateY(-50%);z-index:20}
   .sideNav.left{left:18px}.sideNav.right{right:18px}
   .sideBtn{background:linear-gradient(90deg,#fff,#FFF4EC);border:1px solid var(--line);width:48px;height:48px;border-radius:50%;display:grid;place-items:center;box-shadow:0 12px 26px rgba(16,24,40,.08);cursor:pointer;font-weight:900}
@@ -147,10 +145,6 @@ label{font-size:15px;color:#374151}
 .reserve .pill{width:100%;max-width:360px;background:#fff;border:1px solid #ffe1c9;border-radius:14px;padding:12px}
 .reserve .pill .pt{font-weight:900;margin-bottom:6px}.reserve .note{font-size:13px;color:#6b7280;margin-top:8px}
 
-/* 푸터(저작권) */
-.footer{width:100%;max-width:1100px;margin:18px auto 30px auto;color:#6b7280;font-size:13px;text-align:center}
-.footer small{display:block;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
-
 /* 프린트 */
 @media print{.header,.sticky,.btn,.btn-ghost,.sideNav,.no-pdf{display:none !important}.card{box-shadow:none;border:1px solid #ddd}.block{break-inside:avoid-page}}
 .pdf-screen-width{width:794px;max-width:none;margin:0 auto}
@@ -161,8 +155,9 @@ label{font-size:15px;color:#374151}
 .modal{width:min(520px,92vw);background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 60px rgba(16,24,40,.18);padding:18px}
 .modal h3{margin:0 0 10px}.modal .row{display:grid;gap:8px;margin:10px 0}.modal .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
 
-/* 기본 UX */
-img,canvas{pointer-events:none}
+/* 페이지 하단 저작권 */
+.footer{width:100%;max-width:1100px;margin:8px auto 24px;display:flex;justify-content:center}
+.footer .copyright{width:100%;padding:10px 14px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b7280;font-size:13px;text-align:center}
 </style>
 </head>
 <body>
@@ -184,12 +179,12 @@ img,canvas{pointer-events:none}
       <div class="statusline" id="statusline">진행률 0%</div>
     </div>
     <section class="card" id="app"></section>
-
-    <!-- 저작권 표기 -->
-    <footer class="footer">
-      <small id="copyrightText">© 바른미술학원. All rights reserved.</small>
-    </footer>
   </main>
+
+  <!-- 하단 저작권 고정 표기 -->
+  <div class="footer no-pdf">
+    <div class="copyright">© 바른미술학원. 본 서비스 및 결과 리포트의 저작권은 바른미술학원에 있으며, 무단 전재·배포를 금합니다.</div>
+  </div>
 </div>
 
 <div class="sideNav left" id="sideLeft" style="display:none"><button class="sideBtn" onclick="prev()" aria-label="이전">‹</button></div>
@@ -241,10 +236,10 @@ const STATE={step:'start',consent:false,profile:{},questions:[],idx:0,answers:[]
 const $=id=>document.getElementById(id);
 const app=()=>$('app');
 
-/* ===== 가중치 보강기 ===== */
+/* ===== 가중치 보강기 (평준화 축소: base ↓) ===== */
 function boostAllWeights(w){
   const out={};
-  const base=0.22; // 모든 영역 기본치 (낮게 나오지 않도록)
+  const base=0.10; // 0.22 → 0.10 로 낮춰 저점 더 내려가게
   DOMAINS.forEach(d=>out[d]=base);
   Object.entries(w||{}).forEach(([k,v])=>{
     const val=Math.max(0,Number(v)||0);
@@ -258,21 +253,16 @@ function boostAllWeights(w){
   return out;
 }
 
-/* ===== 결과 표시용 대비 강화(그래프 전용) =====
-   내부 저장(scores)은 기존 로직 유지, 차트/막대/진행바에만 적용 */
-function enhanceScoresDisplay(scores, contrast=1.3){
-  const keys=Object.keys(scores||{});
-  if(!keys.length) return {};
-  const vals=keys.map(k=>scores[k]);
-  const m=vals.reduce((a,b)=>a+b,0)/vals.length;
-  const out={};
-  for(const k of keys){
-    let v=scores[k];                // 0..4
-    let e=m + (v - m) * contrast;   // 평균 중심 확대
-    e=Math.max(0, Math.min(4, e));  // 0..4 클램프
-    out[k]=+e.toFixed(2);
-  }
-  return out;
+/* ===== 시각 대비 함수(그래프 격차 확대) ===== */
+function contrastValue(v){
+  // v: 0~4 → 감마 매핑으로 저점 더 눌리고 고점은 유지되도록
+  const x=Math.max(0,Math.min(4, v))/4; // 0~1
+  const gammaLow=2.35;   // 저점 더 눌림 (기존보다 상승)
+  const gammaHigh=1.15;  // 고점은 거의 그대로
+  let y;
+  if(x<0.5){ y=Math.pow(x*2, gammaLow)/2; }
+  else{ y=1-(Math.pow((1-x)*2, gammaHigh)/2); }
+  return Math.max(0,Math.min(1,y))*4;
 }
 
 /* NAV + Progress */
@@ -427,7 +417,7 @@ function viewTest(){
     <div class="${gridCls}" style="margin-top:12px">
       ${q.options.map(o=>`<div class="opt" id="opt_${o.key}" tabindex="0" role="button" aria-label="${o.label||o.key}" data-key="${o.key}">
         <div class="thumb"><img src="${optionImageUrl(q,o)}" alt="${o.label||o.key}" onerror="this.style.opacity=.2" loading="lazy"></div>
-        <div class="cap center">${o.label||o.key}</div>
+        <div class="cap">${o.label||o.key}</div>
       </div>`).join('')}
     </div>
     <div class="center" style="margin-top:18px;display:flex;gap:10px;justify-content:center">
@@ -455,7 +445,12 @@ function aggregateScores(ans){
   const raw={};DOMAINS.forEach(d=>{const v=(sum[d]||0)/n*4;raw[d]=Math.max(0,Math.round(v*10)/10)});
   return raw;
 }
-const adjust=v=>Math.round((2+v/2)*10)/10; // 내부 저장용만 사용(기존 유지)
+
+/* 결과 보정 축소(바닥 1.0, 기울기 0.75) */
+const adjust=v=>{
+  const mapped=1.0 + 0.75 * Math.max(0, Math.min(4, v)); // 0→1.0, 4→4.0
+  return Math.round(mapped*10)/10;
+};
 
 /* 영역별 설명 + 칭찬(비등급) */
 const DETAIL={
@@ -478,7 +473,7 @@ function praiseMessage(v){
 function nowKST(){const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())} KST`}
 async function submitAllSafe(){
   const raw=aggregateScores(STATE.answers);
-  const scores=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,adjust(v)])); // 내부 저장용 유지
+  const scores=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,adjust(v)])); // 저장 값
   const top3=Object.keys(scores).sort((a,b)=>scores[b]-scores[a]).slice(0,3);
   const resultId=crypto.randomUUID();
   const form=new FormData();
@@ -494,9 +489,7 @@ let CHARTS=[];function destroyCharts(){CHARTS.forEach(c=>c.destroy?.());CHARTS=[
 
 /* 결과 */
 function viewResult(){
-  const r=STATE.result,s=r?.scores||{}; // 내부 점수(저장용)
-  const disp=enhanceScoresDisplay(s, 1.3); // 그래프 표시용 대비 강화
-  const ordered=Object.keys(disp).sort((a,b)=>disp[b]-disp[a]); // 시각화 기준
+  const r=STATE.result,s=r?.scores||{};const ordered=Object.keys(s).sort((a,b)=>s[b]-s[a]);
   const top4=ordered.slice(0,4);
   const next4=ordered.slice(4,8);
 
@@ -537,9 +530,8 @@ function viewResult(){
     <div class="block"><h3>항목별 해석</h3>
       <div class="grid" style="grid-template-columns:1fr 1fr 1fr">
         ${DOMAINS.map(k=>{
-          const vText = +(s[k]||0);          // 텍스트/멘트는 내부 점수 기준
-          const vDisp = +(disp[k]||0);       // 그래프/게이지는 표시용 대비 강화
-          const w = Math.min(100,(vDisp/4)*100);
+          const v = +(s[k]||0);
+          const w = Math.min(100,(v/4)*100);
           return `
             <div style="border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff;box-shadow:0 10px 26px rgba(16,24,40,.06)">
               <div style="font-weight:900;margin-bottom:8px">${k}</div>
@@ -547,11 +539,13 @@ function viewResult(){
                 <div style="width:${w}%;height:100%;background:linear-gradient(90deg,#B9C8FF,#9DE5D5,#FFD9BE)"></div>
               </div>
               <div class="small" style="color:#0f172a">${DETAIL[k](STATE.profile.child_name)}</div>
-              <div class="small" style="margin-top:6px;color:#0f172a">${praiseMessage(vText)}</div>
+              <div class="small" style="margin-top:6px;color:#0f172a">${praiseMessage(v)}</div>
             </div>`;
         }).join('')}
       </div>
     </div>
+
+    <div class="small muted center" style="margin:10px 0 0">© 바른미술학원. 본 서비스 및 결과 리포트의 저작권은 바른미술학원에 있으며, 무단 전재·배포를 금합니다.</div>
   </div>
 
   <div class="center no-pdf" style="margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
@@ -563,21 +557,23 @@ function viewResult(){
 
   destroyCharts();
 
+  const c=contrastValue; // 시각적 격차 확대용
+
   const rctx=document.getElementById('radar').getContext('2d',{willReadFrequently:true});
   CHARTS.push(new Chart(rctx,{type:'radar',
-    data:{labels:DOMAINS,datasets:[{data:DOMAINS.map(k=>disp[k]||0),borderColor:'#FFB98A',backgroundColor:'rgba(255,185,138,.22)',borderWidth:2,pointRadius:3,fill:true}]},
+    data:{labels:DOMAINS,datasets:[{data:DOMAINS.map(k=>c(s[k]||0)),borderColor:'#FFB98A',backgroundColor:'rgba(255,185,138,.22)',borderWidth:2,pointRadius:3,fill:true}]},
     options:{maintainAspectRatio:false,animation:{duration:800},scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'#eef2f7'},angleLines:{color:'#eef2f7'}}},plugins:{legend:{display:false}}}
   }));
 
   const b1=document.getElementById('barsTop4').getContext('2d',{willReadFrequently:true});
   CHARTS.push(new Chart(b1,{type:'bar',
-    data:{labels:top4,datasets:[{data:top4.map(k=>disp[k]||0),borderRadius:12,borderSkipped:false,backgroundColor:['#FFD9BE','#E6E2FF','#CFF7EE','#FFD9BE']}]},
+    data:{labels:top4,datasets:[{data:top4.map(k=>c(s[k]||0)),borderRadius:12,borderSkipped:false,backgroundColor:['#FFD9BE','#E6E2FF','#CFF7EE','#FFD9BE']}]},
     options:{maintainAspectRatio:false,animation:{duration:700},scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}},plugins:{legend:{display:false}}}
   }));
 
   const b2=document.getElementById('barsNext').getContext('2d',{willReadFrequently:true});
   CHARTS.push(new Chart(b2,{type:'bar',
-    data:{labels:next4,datasets:[{data:next4.map(k=>disp[k]||0),borderRadius:12,borderSkipped:false,backgroundColor:['#E6E2FF','#CFF7EE','#FFD9BE','#E6E2FF']}]},
+    data:{labels:next4,datasets:[{data:next4.map(k=>c(s[k]||0)),borderRadius:12,borderSkipped:false,backgroundColor:['#E6E2FF','#CFF7EE','#FFD9BE','#E6E2FF']}]},
     options:{maintainAspectRatio:false,animation:{duration:700},scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'#f1f5f9'}},x:{grid:{display:false}}},plugins:{legend:{display:false}}}
   }));
 
@@ -790,12 +786,8 @@ function localQuestions(){
   ].map(q=>{q.options=q.options.filter(o=>(o.label||o.imageUrl));if(q.options.length<2)q.options=q.options.slice(0,2);return q});
 }
 
-/* 우클릭/드래그 방지 */
-document.addEventListener('contextmenu',e=>e.preventDefault(),{passive:false});
-document.addEventListener('dragstart',e=>e.preventDefault(),{passive:false});
-
-/* 저작권 연도 출력 */
-(function(){ const y=new Date().getFullYear(); const el=$('copyrightText'); if(el) el.textContent=`© ${y} 바른미술학원. All rights reserved.`; })();
+/* —— 보안: 우클릭 방지 —— */
+document.addEventListener('contextmenu',e=>e.preventDefault(),{capture:true});
 </script>
 </body>
 </html>
