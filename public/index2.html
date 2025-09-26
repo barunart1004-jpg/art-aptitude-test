@@ -86,11 +86,13 @@ label{font-size:14px;color:#CFE3FF}
 .grid{display:grid;gap:14px}.grid-2{grid-template-columns:1fr 1fr}
 @media (max-width:860px){.grid-2{grid-template-columns:1fr}}
 
-/* 보기 카드 — 이미지 조금 줄이고 캡션 글자 키움 */
+/* 보기 카드 (ADV: 이미지 더 작게, 캡션 더 크게) */
 .opt{border:2px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;background:#0C1426;box-shadow:var(--soft);transition:transform .12s,border-color .2s}
 .opt:hover{transform:translateY(-2px)}
-.opt img{width:100%;display:block;aspect-ratio:16/10;object-fit:cover} /* 높이 살짝 축소(기존 4/3) */
-.opt .cap{padding:14px 16px;color:#CFE3FF;font-weight:850;font-size:18px;line-height:1.35} /* 캡션 확대 */
+.opt .thumb{width:78%;max-width:420px;aspect-ratio:4/3;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#0B1326;margin:16px auto 10px;display:flex;align-items:center;justify-content:center}
+.opt .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.opt .cap{padding:12px 14px 16px;color:#CFE3FF;font-weight:850;font-size:18px;line-height:1.35;text-align:center}
+
 @media (min-width:1024px){
   .test-grid-4{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
   .test-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
@@ -139,9 +141,9 @@ label{font-size:14px;color:#CFE3FF}
 .modal{width:min(520px,92vw);background:#0E172B;border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 60px rgba(0,0,0,.45);padding:18px;color:#EAF2FF}
 .modal h3{margin:0 0 10px}.modal .row{display:grid;gap:8px;margin:10px 0}.modal .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
 
-/* 페이지 하단 저작권(화면에서 1회만 노출) */
-footer.copyright{width:100%;max-width:1200px;margin:10px auto 24px;padding:10px 14px;border:1px dashed #213355;border-radius:12px;color:#9CB3C8;background:#0C152A}
-footer.copyright .inner{font-size:12px;text-align:center}
+/* 페이지 하단 저작권(한 번만 표시, PDF 제외) */
+.footer{width:100%;max-width:1200px;margin:8px auto 24px;display:flex;justify-content:center}
+.footer .copyright{width:100%;padding:10px 14px;border:1px solid var(--line);border-radius:999px;background:#0F172A;color:#90A3B2;font-size:13px;text-align:center}
 </style>
 </head>
 <body>
@@ -165,10 +167,10 @@ footer.copyright .inner{font-size:12px;text-align:center}
     <section class="card" id="app"></section>
   </main>
 
-  <!-- 화면용 저작권: 화면에서는 여기 1번만 보입니다 (PDF에는 자동 삽입됨) -->
-  <footer class="copyright no-pdf">
-    <div class="inner">© 바른미술학원. 본 서비스 및 결과 리포트의 저작권은 바른미술학원에 있으며 무단 전재·배포를 금합니다.</div>
-  </footer>
+  <!-- 하단 저작권(한 번만) -->
+  <div class="footer no-pdf">
+    <div class="copyright">© 바른미술학원. 본 서비스 및 결과 리포트의 저작권은 바른미술학원에 있으며, 무단 전재·배포를 금합니다.</div>
+  </div>
 </div>
 
 <div class="sideNav left" id="sideLeft" style="display:none"><button class="sideBtn" onclick="prev()" aria-label="이전">‹</button></div>
@@ -264,18 +266,18 @@ var SUMMARIES={
        rec:'프로덕션 매니지먼트·학습 커뮤니티 운영에 강점이 있습니다.'}
 };
 
-/* ===== 가중치 증폭기 (저점 방어 + 강점 강조) ===== */
+/* ===== 가중치 증폭기 (저점 더 낮게, 평준화 축소) ===== */
 function boostWeightsAdv(w){
-  var out={}; var base=0.18; // 모든 선택지에 기본치
+  var out={}; var base=0.10; // 기존 0.18 → 0.10
   DOMS.forEach(function(d){out[d]=base});
   Object.entries(w||{}).forEach(function(entry){
     var k=entry[0], v=Number(entry[1])||0;
     var bonus=0;
-    if(v>=0.95) bonus=0.60;
-    else if(v>=0.8) bonus=0.48;
-    else if(v>=0.6) bonus=0.36;
-    else if(v>0) bonus=0.24;
-    out[k]=Math.min(2.0, base + v*1.35 + bonus);
+    if(v>=0.95) bonus=0.30;
+    else if(v>=0.8) bonus=0.22;
+    else if(v>=0.6) bonus=0.16;
+    else if(v>0)  bonus=0.10;
+    out[k]=Math.min(1.5, base + v*1.10 + bonus);  // 스케일 완화(1.35→1.10)
   });
   return out;
 }
@@ -344,6 +346,7 @@ async function loadQuestions(){
 }
 
 /* ============ 화면들 ============ */
+/* 시작 */
 function startScreen(){
   return '<div class="hero">'
     +'<div class="title center">'+APP_TITLE+'</div>'
@@ -369,7 +372,7 @@ function featureCard(badgeTitle, title, sub){
 }
 function viewStart(){app().innerHTML=startScreen();$('startBtn').onclick=function(){navGo('consent')};window.scrollTo({top:0,behavior:'smooth'})}
 
-/* 동의서 */
+/* 동의서 (초기: 접힘 + 클릭 토글) */
 function accItem(t,html){return '<div class="acc-item"><div class="acc-head"><span>'+t+'</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#7b8fb0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="acc-body small">'+html+'</div></div>'}
 function viewConsent(){
   app().innerHTML='<h2 class="center">개인정보 수집·이용 동의서</h2>'
@@ -398,7 +401,7 @@ function viewConsent(){
   document.querySelectorAll('.acc-head').forEach(function(h){h.addEventListener('click',function(){h.parentElement.classList.toggle('open')})});
 }
 
-/* 프로필 (12–15세) */
+/* 프로필 (12–15세, 중1~중3) */
 var AGE_TO_GRADE={12:'중1(예비)',13:'중학교 1학년',14:'중학교 2학년',15:'중학교 3학년'};
 var GRADE_TO_AGE={'중1(예비)':12,'중학교 1학년':13,'중학교 2학년':14,'중학교 3학년':15};
 var CAMPUSES=['압구정[본원]','반포','한남','방배','목동','송파','서대문','일산','탄현','김포','송도','부산'];
@@ -437,8 +440,8 @@ function viewTest(){
     +'<div class="'+gridCls+'" style="margin-top:12px">'
       + q.options.map(function(o){
         return '<div class="opt" id="opt_'+o.key+'" tabindex="0" role="button" aria-label="'+(o.label||o.key)+'" data-key="'+o.key+'">'
-          +'<img src="'+optionImageUrl(q,o)+'" alt="'+(o.label||o.key)+'" onerror="this.style.opacity=.2" loading="lazy">'
-          +'<div class="cap center">'+(o.label||o.key)+'</div>'
+          +'<div class="thumb"><img src="'+optionImageUrl(q,o)+'" alt="'+(o.label||o.key)+'" onerror="this.style.opacity=.2" loading="lazy"></div>'
+          +'<div class="cap">'+(o.label||o.key)+'</div>'
         +'</div>';
       }).join('')
     +'</div>'
@@ -467,29 +470,25 @@ function aggregateScores(ans){
   DOMS.forEach(function(d){var v=(sum[d]||0)/n*4;raw[d]=Math.max(0,Math.round(v*10)/10)});
   return raw;
 }
-function adjust(v){return Math.round((2+v/2)*10)/10} // 바닥 2.0, 강점 가중
-function band(v){if(v>=3.6)return'S';if(v>=3.2)return'A';if(v>=2.8)return'A-';if(v>=2.4)return'B+';if(v>=2.0)return'B';if(v>=1.6)return'B-';if(v>=1.0)return'C+';return'C'}
 
-/* ===== 결과 그래프 대비 강조(저점은 더 낮게) =====
-   0~4 점수를 0.5(=2.0) 중심으로 비선형 확대.
-   - 낮은 구간(x<0.5): 감마 1.8~1.9로 더 눌러서 낮게
-   - 높은 구간(x>0.5): 감마 1.25로 살짝 더 높게  */
-function contrastValue(v){
-  var x=Math.max(0,Math.min(1,v/4)); // 0..1
-  var gammaLow=1.9, gammaHigh=1.25;
-  var y;
-  if(x<0.5){
-    var t=x/0.5;                 // 0..1
-    y=0.5*Math.pow(t,gammaLow);  // 더 눌림
-  }else{
-    var t=(1-x)/0.5;             // 0..1
-    y=1-0.5*Math.pow(t,gammaHigh); // 더 부스트
-  }
-  y=Math.max(0,Math.min(1,y));
-  return Math.round(y*4*100)/100; // 0..4, 소수2자리
+/* 결과 보정 축소: 0→1.2, 4→4.0 */
+function adjust(v){
+  var x=Math.max(0,Math.min(4,v));
+  var mapped=1.2 + 0.7*x;
+  return Math.round(mapped*10)/10;
 }
 
-/* 밴드별 한 줄 */
+/* 시각적 대비(그래프에서 저점↓/고점↑) */
+function contrastValue(v){
+  var x=Math.max(0,Math.min(4,v))/4; // 0~1
+  var gammaLow=2.25, gammaHigh=1.10;
+  var y = x<0.5 ? Math.pow(x*2,gammaLow)/2 : 1 - Math.pow((1-x)*2,gammaHigh)/2;
+  return Math.max(0,Math.min(1,y))*4;
+}
+
+function band(v){if(v>=3.6)return'S';if(v>=3.2)return'A';if(v>=2.8)return'A-';if(v>=2.4)return'B+';if(v>=2.0)return'B';if(v>=1.6)return'B-';if(v>=1.0)return'C+';return'C'}
+
+/* 밴드별 자연스런 한줄 문구 */
 function keylineByDomain(k, vBand){
   var S=SUMMARIES[k];
   var endByBand={
@@ -505,7 +504,7 @@ function keylineByDomain(k, vBand){
   return S.lead+' '+S.synergy+' '+endByBand;
 }
 
-/* ===== THEORY (생략 없이 기존 유지) ===== */
+/* 전문 해석/진로 매핑(기본 정의) — [원문 유지] */
 var THEORY={
   SPA:{title:'공간 구성/원근',
       baseTheory:'공간 지능은 시지각과 운동감각이 결합된 고차 능력입니다. 2D에서 3D 깊이를 환기시키는 기술, 소실점·시점·시선유도선의 통합 운용이 핵심입니다. 구조→덩어리→광원→세부의 순서를 지키면 오류가 누적되지 않습니다.',
@@ -575,7 +574,7 @@ var THEORY={
       careers:['프로덕션 매니저','아트 리드/PM','커뮤니티 아트','교육 콘텐츠']}
 };
 
-/* 밴드별 문단 생성 */
+/* 긴 문장 생성 함수 */
 function multiline(lines){return lines.map(function(s){return s}).join(' ')}
 function genTheoryText(k, b){
   var t=THEORY[k];
@@ -583,18 +582,11 @@ function genTheoryText(k, b){
     'S':'핵심 원리가 이미 체화돼 있어 복잡한 조건에서도 일관된 품질을 유지합니다.',
     'A':'핵심 이론 이해가 깊어 새로운 상황에도 적용이 빠릅니다.',
     'A-':'개념이 잘 잡혀 있어 난도가 올라가도 방향을 잃지 않습니다.',
-    'B+':'개념을 실전으로 옮기는 단계이며 반복 속도가 성장의 열쇠입니다.',
+    'B+':'핵심 개념을 실전으로 옮기는 단계이며 반복 속도가 성장의 열쇠입니다.',
     'B':'기본 개념을 안정화하는 중으로 작은 완성을 자주 만들면 좋습니다.',
     'default':'관찰과 개념 연결고리를 분명히 할수록 성장이 가속됩니다.'
   }[b] || '관찰과 개념 연결고리를 분명히 할수록 성장이 가속됩니다.';
-  var arr=[
-    t.baseTheory,
-    '연구와 실습을 오가며 규칙과 예외를 구분하는 습관이 중요합니다.',
-    '참조 이미지는 단순 모사가 아니라 구조 해석의 도구로 쓰일 때 가치가 커집니다.',
-    '작업 초반의 결정을 기록해두면 이후 수정이 체계적으로 이뤄집니다.',
-    '마감 단계에서는 기준선을 낮추기보다 과감히 덜어내는 선택이 전체 완성도를 지키는 경우가 많습니다.',
-    pos
-  ];
+  var arr=[t.baseTheory,'연구와 실습을 오가며 규칙과 예외를 구분하는 습관이 중요합니다.','참조 이미지는 단순 모사가 아니라 구조 해석의 도구로 쓰일 때 가치가 커집니다.','작업 초반의 결정을 기록해두면 이후 수정이 체계적으로 이뤄집니다.','마감 단계에서는 기준선을 낮추기보다 과감히 덜어내는 선택이 전체 완성도를 지키는 경우가 많습니다.',pos];
   return multiline(arr);
 }
 function genExpertText(k, b){
@@ -621,12 +613,7 @@ function genExpertText(k, b){
     CRT:'문제 지점을 근거로 짚고 실행 가능한 대안을 제시합니다.',
     SOC:'요청과 기대치를 명확히 언어화해 협업 마찰을 낮춥니다.'
   }[k];
-  var arr=[
-    commonHead + specific,
-    '반대로 약점으로 출발하더라도, 동일한 체크리스트를 쓰면 단기간에 안정 구간에 진입하는 사례가 많습니다.',
-    '작업 기록(의도·선택·대안)을 남기는 습관은 다음 프로젝트의 리드타임을 줄이고 설득력 있는 포트폴리오를 만드는 데 도움이 됩니다.',
-    tail
-  ];
+  var arr=[commonHead + specific,'반대로 약점으로 출발하더라도, 동일한 체크리스트를 쓰면 단기간에 안정 구간에 진입하는 사례가 많습니다.','작업 기록(의도·선택·대안)을 남기는 습관은 다음 프로젝트의 리드타임을 줄이고 설득력 있는 포트폴리오를 만드는 데 도움이 됩니다.',tail];
   return multiline(arr);
 }
 
@@ -649,7 +636,7 @@ async function submitAllSafe(){
 
 var CHARTS=[];function destroyCharts(){CHARTS.forEach(function(c){try{c.destroy()}catch(_){}});CHARTS=[]}
 
-/* 요약 코멘트 */
+/* 요약 코멘트(4~5줄) */
 function buildLongSummary(top4, low4){
   var a=top4[0], b=top4[1], c=top4[2], d=top4[3];
   var s1='<b>'+STATE.profile.child_name+'</b> 학생은 <b>'+LABEL[a]+'</b> 축을 중심으로 '+LABEL[b]+', '+LABEL[c]+'에서 강점이 분명합니다.';
@@ -660,7 +647,7 @@ function buildLongSummary(top4, low4){
   return [s1,s2,s3,s4,s5].filter(Boolean).join(' ');
 }
 
-/* 결과 화면 */
+/* 결과(편차 강조: 차트/타일 모두 contrastValue 사용) */
 function viewResult(){
   var r=STATE.result||{}; var s=r.scores||{}; var ordered=r.ordered||Object.keys(s).sort(function(a,b){return s[b]-s[a]});
   var top4=ordered.slice(0,4);
@@ -702,32 +689,33 @@ function viewResult(){
   destroyCharts();
 
   var tooltipOff={enabled:false,external:function(){return}}; // 숫자 노출 방지
+  var c=contrastValue;
 
-  // 레이더(11차원) — 대비 강조값 적용
+  // 레이더(11차원) — contrastValue 적용
   var rctx=document.getElementById('radar').getContext('2d',{willReadFrequently:true});
   CHARTS.push(new Chart(rctx,{type:'radar',
-    data:{labels:DOMS.map(function(d){return LABEL[d]}),datasets:[{data:DOMS.map(function(k){return contrastValue(s[k]||0)}),borderColor:'#66E0FF',backgroundColor:'rgba(102,224,255,.18)',borderWidth:2,pointRadius:3,fill:true}]},
+    data:{labels:DOMS.map(function(d){return LABEL[d]}),datasets:[{data:DOMS.map(function(k){return c(s[k]||0)}),borderColor:'#66E0FF',backgroundColor:'rgba(102,224,255,.18)',borderWidth:2,pointRadius:3,fill:true}]},
     options:{maintainAspectRatio:false,animation:{duration:800},scales:{r:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'#1E2A48'},angleLines:{color:'#1E2A48'}}},plugins:{legend:{display:false},tooltip:tooltipOff}}
   }));
 
   // TOP4 (뛰어난 영역)
   var b1=document.getElementById('barsTop4').getContext('2d',{willReadFrequently:true});
   CHARTS.push(new Chart(b1,{type:'bar',
-    data:{labels:top4.map(function(d){return LABEL[d]}),datasets:[{data:top4.map(function(k){return contrastValue(s[k]||0)}),borderRadius:12,borderSkipped:false,backgroundColor:['#66E0FF','#B4F1CB','#E9D5FF','#FFAA6C']}]},
+    data:{labels:top4.map(function(d){return LABEL[d]}),datasets:[{data:top4.map(function(k){return c(s[k]||0)}),borderRadius:12,borderSkipped:false,backgroundColor:['#66E0FF','#B4F1CB','#E9D5FF','#FFAA6C']}]},
     options:{maintainAspectRatio:false,animation:{duration:700},scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'#1E2A48'}},x:{grid:{display:false}}},plugins:{legend:{display:false},tooltip:tooltipOff}}
   }));
 
   // 하위 4 (잠재적인 영역)
   var b2=document.getElementById('barsPotential').getContext('2d',{willReadFrequently:true});
   CHARTS.push(new Chart(b2,{type:'bar',
-    data:{labels:low4.map(function(d){return LABEL[d]}),datasets:[{data:low4.map(function(k){return contrastValue(s[k]||0)}),borderRadius:12,borderSkipped:false,backgroundColor:['#B4F1CB','#E9D5FF','#66E0FF','#FFAA6C']}]},
+    data:{labels:low4.map(function(d){return LABEL[d]}),datasets:[{data:low4.map(function(k){return c(s[k]||0)}),borderRadius:12,borderSkipped:false,backgroundColor:['#B4F1CB','#E9D5FF','#66E0FF','#FFAA6C']}]},
     options:{maintainAspectRatio:false,animation:{duration:700},scales:{y:{suggestedMin:0,suggestedMax:4,ticks:{display:false},grid:{color:'#1E2A48'}},x:{grid:{display:false}}},plugins:{legend:{display:false},tooltip:tooltipOff}}
   }));
 
   $('btn_pdf').onclick=handleSavePdf;$('btn_email').onclick=openEmailModal;
 }
 
-/* 항목 타일 */
+/* 항목 타일(contrastValue로 편차 강조) */
 function summaryTiles(scores, ordered){
   return '<div class="block"><h3>항목별 핵심 한 줄</h3>'
     +'<div class="grid" style="grid-template-columns:1fr 1fr 1fr">'
@@ -748,6 +736,7 @@ function summaryTiles(scores, ordered){
 /* ================= 심층 리포트 ================= */
 function deepSection(title, html){return '<div class="block" style="margin-top:12px"><h3>'+title+'</h3>'+html+'</div>'}
 function list(items){return '<ul style="margin:6px 0 0 18px">'+items.map(function(x){return '<li class="small">'+x+'</li>'}).join('')+'</ul>'}
+
 function deepBlock(k,i,scoreBand){
   var t=THEORY[k];
   return '<div class="card" style="margin:8px 0;background:#0C152A;border-color:#223358">'
@@ -759,6 +748,7 @@ function deepBlock(k,i,scoreBand){
     +'<div class="small" style="margin-top:6px"><b>연계 직업군</b>: '+t.careers.join(' · ')+'</div>'
   +'</div>';
 }
+
 function viewDeep(){
   var s=(STATE.result||{}).scores||{}; 
   var ordered=(STATE.result||{}).ordered||Object.keys(s).sort(function(a,b){return s[b]-s[a]});
@@ -853,16 +843,9 @@ function buildPdfWrapperFrom(node){
   wrap.style.position='fixed';wrap.style.left='-10000px';wrap.style.top='0';
   wrap.style.width='794px';wrap.style.background='#fff';wrap.style.zIndex='-1';
   var clone=node.cloneNode(true);
-  // 이미지/캔버스 동기화
   clone.querySelectorAll('img').forEach(function(img){img.setAttribute('crossorigin','anonymous');img.referrerPolicy='no-referrer';img.src=img.src});
   var srcC=node.querySelectorAll('canvas');var dstC=clone.querySelectorAll('canvas');
   srcC.forEach(function(src,i){var dst=dstC[i];if(!dst)return;dst.width=src.width;dst.height=src.height;dst.getContext('2d',{willReadFrequently:true}).drawImage(src,0,0)});
-  // ✅ PDF에만 저작권 표시 추가 (화면 중복 제거)
-  var cp=document.createElement('div');
-  cp.style.cssText='font-size:11px;color:#333;margin:12px 6px 0;text-align:center';
-  cp.innerHTML='© 바른미술학원 · 본 서비스 및 결과 리포트의 저작권은 바른미술학원에 있으며 무단 전재·배포를 금합니다.';
-  clone.appendChild(cp);
-
   wrap.appendChild(clone);document.body.appendChild(wrap);
   return wrap;
 }
@@ -930,7 +913,7 @@ async function handleSavePdf(){
 /* 이메일 모달 */
 function setModalVisible(show){var m=$('emailModal');if(show){m.classList.add('show');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}else{m.classList.remove('show');m.setAttribute('aria-hidden','true');document.body.style.overflow=''}}
 function openEmailModal(){setModalVisible(true);$('emailSubject').value=STATE.profile.child_name+' ADVANCE 결과입니다';$('emailTo').value=STATE.profile.email||'';$('emailMsg').textContent=''}
-$('emailCancel').onclick=function(){setModalVisible(false)};document.addEventListener('keydown',function(e){if(e.key==='Escape')setModalVisible=false});
+$('emailCancel').onclick=function(){setModalVisible(false)};document.addEventListener('keydown',function(e){if(e.key==='Escape')setModalVisible(false)});
 function blobToBase64(blob){return new Promise(function(resolve,reject){var reader=new FileReader();reader.onloadend=function(){resolve(reader.result.split(',')[1])};reader.onerror=reject;reader.readAsDataURL(blob)})}
 $('emailSend').onclick=async function(){
   var to=$('emailTo').value.trim();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)){ $('emailMsg').textContent='이메일 형식을 확인해 주세요.'; return; }
@@ -973,7 +956,7 @@ function localQuestionsADV(){
     S('q12','평범한 신발을 비범하게 만든다면?', ['형태 해체·재조합',IMG(12,'A'),{CON:0.7,CHK:0.5}],['재질 극사실 묘사',IMG(12,'B'),{DET:0.9,OBS:0.5}],['색/무늬 장식',IMG(12,'C'),{COL:0.8}],['살아있는 듯 스토리',IMG(12,'D'),{NAR:0.7}]),
     S('q13','미술관에서 가장 먼저 드는 생각?', ['얼마나 오래 걸렸을까',IMG(13,'A'),{GRT:0.6,DET:0.4}],['저 색 대신 다른 색',IMG(13,'B'),{COL:0.7,CRT:0.5}],['어떤 의도/스토리일까',IMG(13,'C'),{NAR:0.7,CON:0.6}],['화가의 삶은 어땠을까',IMG(13,'D'),{EXP:0.5,NAR:0.4}]),
     S('q14','감정을 가장 잘 표현하는 요소는?', ['선 굵기/거친 질감',IMG(14,'A'),{DET:0.5}],['강렬/부드러운 색',IMG(14,'B'),{COL:0.7,EXP:0.5}],['표정',IMG(14,'C'),{NAR:0.6,EXP:0.6}],['분위기/구도',IMG(14,'D'),{SPA:0.6}]),
-    S('q15','잊지 못할 1년 장기 프로젝트라면?', ['도시 디테일 기록',IMG(15,'A'),{OBS:0.6,GRT:0.6,DET:0.5}],['한 인물의 일생 연작',IMG(15,'B'),{NAR:0.7,GRT:0.6}],['새 재료 지속 실험',IMG(15,'C'),{CHK:0.7,GRT:0.5}],['심리 변화 시각화',IMG(15,'D'),{EXP:0.6,CON:0.6}]),
+    S('q15','1년 장기 프로젝트라면?', ['도시 디테일 기록',IMG(15,'A'),{OBS:0.6,GRT:0.6,DET:0.5}],['한 인물의 일생 연작',IMG(15,'B'),{NAR:0.7,GRT:0.6}],['새 재료 지속 실험',IMG(15,'C'),{CHK:0.7,GRT:0.5}],['심리 변화 시각화',IMG(15,'D'),{EXP:0.6,CON:0.6}]),
     S('q16','가장 중요한 작품을 고르는 이유는?', ['강한 감동',IMG(16,'A'),{EXP:0.7}],['사회 메시지/새 아이디어',IMG(16,'B'),{CON:0.7,NAR:0.5}],['정교하고 사실적',IMG(16,'C'),{DET:0.8,OBS:0.6}],['색/형태가 매우 독특',IMG(16,'D'),{COL:0.7,CHK:0.6}]),
     S('q17','“두려움”을 표현한다면?', ['복잡한 선/모양',IMG(17,'A'),{CHK:0.6,EXP:0.5}],['어둡고 차가운 색',IMG(17,'B'),{COL:0.6,EXP:0.5}],['숨은 인물/작게',IMG(17,'C'),{DET:0.5,NAR:0.5,OBS:0.5}],['나만의 상징',IMG(17,'D'),{EXP:0.6,CON:0.6}]),
     S('q18','큰 작품에서 가장 힘든 점은?', ['계획과 달라짐',IMG(18,'A'),{CON:0.4,CRT:0.5}],['반복 수정',IMG(18,'B'),{DET:0.5,GRT:0.6}],['끝없이 느껴짐',IMG(18,'C'),{GRT:0.5}],['의도 이해 못할까 불안',IMG(18,'D'),{SOC:0.5,EXP:0.4}]),
@@ -982,8 +965,8 @@ function localQuestionsADV(){
   ];
 }
 
-/* ==== 우클릭 방지 ==== */
-document.addEventListener('contextmenu', function(e){ e.preventDefault(); }, {capture:true});
+/* —— 보안: 우클릭 방지 —— */
+document.addEventListener('contextmenu',function(e){e.preventDefault()},{capture:true});
 </script>
 </body>
 </html>
